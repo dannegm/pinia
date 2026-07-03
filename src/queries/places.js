@@ -25,3 +25,17 @@ export const createPlaceMutation = (opts = {}) => ({
     },
     ...opts,
 });
+
+export const updatePlaceMutation = (opts = {}) => ({
+    mutationFn: async ({ id, ...fields }) => {
+        const { data, error } = await supabase()
+            .from('places')
+            .update(fields)
+            .eq('id', id)
+            .select('*, category:categories(*)')
+            .single();
+        if (error) throw error;
+        return data;
+    },
+    ...opts,
+});

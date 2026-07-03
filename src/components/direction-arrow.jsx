@@ -3,7 +3,7 @@ import { ArrowUp } from 'lucide-react';
 import { useMap } from '@/ui/map';
 import { cn } from '@/helpers/utils';
 
-export const DirectionArrow = ({ coords, className, flyToZoom = 14 }) => {
+export const DirectionArrow = ({ coords, color, className, flyToZoom = 14 }) => {
     const { map, isLoaded } = useMap();
     const [arrow, setArrow] = useState(null);
 
@@ -52,10 +52,15 @@ export const DirectionArrow = ({ coords, className, flyToZoom = 14 }) => {
     return (
         <div
             className={cn(
-                'flex-center absolute top-(--arrow-y) left-(--arrow-x) z-10 size-8 -translate-x-1/2 -translate-y-1/2 cursor-pointer rounded-full text-white shadow-lg shadow-black/50 transition-colors [&>svg]:size-4',
+                'flex-center absolute top-(--arrow-y) left-(--arrow-x) z-10 size-8 -translate-x-1/2 -translate-y-1/2 cursor-pointer rounded-full text-white shadow-lg shadow-black/50 transition-[filter] hover:brightness-110 [&>svg]:size-4',
+                color && 'bg-(--arrow-color)',
                 className,
             )}
-            style={{ '--arrow-x': `${arrow.x}px`, '--arrow-y': `${arrow.y}px` }}
+            style={{
+                '--arrow-x': `${arrow.x}px`,
+                '--arrow-y': `${arrow.y}px`,
+                ...(color && { '--arrow-color': color }),
+            }}
             onClick={() =>
                 map.flyTo({ center: [coords.lng, coords.lat], zoom: flyToZoom, duration: 800 })
             }
