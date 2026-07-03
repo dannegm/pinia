@@ -1,17 +1,20 @@
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { useNavigate } from '@tanstack/react-router';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useNavigate, useParams } from '@tanstack/react-router';
 import { X } from 'lucide-react';
 import { CategoryForm } from '@/components/category-form';
-import { createCategoryMutation } from '@/queries/categories';
+import { categoriesQuery, updateCategoryMutation } from '@/queries/categories';
 
-export const AddCategoryPage = () => {
+export const EditCategoryPage = () => {
     const navigate = useNavigate();
+    const { categoryId } = useParams({ strict: false });
     const queryClient = useQueryClient();
+    const { data: categories = [] } = useQuery(categoriesQuery());
+    const category = categories.find(c => c.id === categoryId);
 
     const goBack = () => navigate({ to: '/categories' });
 
     const mutation = useMutation(
-        createCategoryMutation({
+        updateCategoryMutation({
             onSuccess: () => {
                 queryClient.invalidateQueries({ queryKey: ['categories'] });
                 goBack();
@@ -19,10 +22,12 @@ export const AddCategoryPage = () => {
         }),
     );
 
+    if (!category) return null;
+
     return (
         <div className='flex h-full flex-col gap-3'>
             <div className='flex items-center justify-between'>
-                <h2 className='text-base font-medium text-foreground/90'>Nueva categoría</h2>
+                <h2 className='text-base font-medium text-foreground/90'>Editar categoría</h2>
                 <button
                     type='button'
                     aria-label='Cancelar'
@@ -34,8 +39,9 @@ export const AddCategoryPage = () => {
             </div>
 
             <CategoryForm
-                onSubmit={values => mutation.mutate(values)}
-                submitLabel='Agregar categoría'
+                initialValues={category}
+                onSubmit={values => mutation.mutate({ id: categoryId, ...values })}
+                submitLabel='Guardar cambios'
                 pending={mutation.isPending}
             />
         </div>

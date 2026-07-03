@@ -7,6 +7,8 @@ import { PlacesPage } from '@/pages/places';
 import { AddPlacePage } from '@/pages/places-new';
 import { CategoriesPage } from '@/pages/categories';
 import { AddCategoryPage } from '@/pages/categories-new';
+import { EditCategoryPage } from '@/pages/categories-edit';
+import { EditPlacePage } from '@/pages/places-edit';
 import { SettingsPage } from '@/pages/settings';
 
 const rootRoute = createRootRoute({
@@ -27,6 +29,11 @@ const addPlaceRoute = createRoute({
     path: '/places/new',
     component: AddPlacePage,
 });
+const editPlaceRoute = createRoute({
+    getParentRoute: () => shellRoute,
+    path: '/places/$placeId/edit',
+    component: EditPlacePage,
+});
 const categoriesRoute = createRoute({
     getParentRoute: () => shellRoute,
     path: '/categories',
@@ -36,6 +43,11 @@ const addCategoryRoute = createRoute({
     getParentRoute: () => shellRoute,
     path: '/categories/new',
     component: AddCategoryPage,
+});
+const editCategoryRoute = createRoute({
+    getParentRoute: () => shellRoute,
+    path: '/categories/$categoryId/edit',
+    component: EditCategoryPage,
 });
 const settingsRoute = createRoute({
     getParentRoute: () => shellRoute,
@@ -49,8 +61,10 @@ const routeTree = rootRoute.addChildren([
         searchRoute,
         placesRoute,
         addPlaceRoute,
+        editPlaceRoute,
         categoriesRoute,
         addCategoryRoute,
+        editCategoryRoute,
         settingsRoute,
     ]),
 ]);

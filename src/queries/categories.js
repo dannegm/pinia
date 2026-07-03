@@ -22,3 +22,25 @@ export const createCategoryMutation = (opts = {}) => ({
     },
     ...opts,
 });
+
+export const updateCategoryMutation = (opts = {}) => ({
+    mutationFn: async ({ id, ...fields }) => {
+        const { data, error } = await supabase()
+            .from('categories')
+            .update(fields)
+            .eq('id', id)
+            .select()
+            .single();
+        if (error) throw error;
+        return data;
+    },
+    ...opts,
+});
+
+export const deleteCategoryMutation = (opts = {}) => ({
+    mutationFn: async id => {
+        const { error } = await supabase().from('categories').delete().eq('id', id);
+        if (error) throw error;
+    },
+    ...opts,
+});

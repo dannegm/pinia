@@ -39,3 +39,11 @@ export const updatePlaceMutation = (opts = {}) => ({
     },
     ...opts,
 });
+
+export const deletePlaceMutation = (opts = {}) => ({
+    mutationFn: async id => {
+        const { error } = await supabase().from('places').delete().eq('id', id);
+        if (error) throw error;
+    },
+    ...opts,
+});
