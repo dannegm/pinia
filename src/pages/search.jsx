@@ -5,6 +5,7 @@ import { Search } from 'lucide-react';
 import { InputGroup, InputGroupAddon, InputGroupInput } from '@/ui/input-group';
 import { DynamicIcon } from '@/ui/dynamic-icon';
 import { useMap } from '@/ui/map';
+import { PanelHeader } from '@/components/panel-header';
 import { placesQuery } from '@/queries/places';
 import { match } from '@/helpers/utils';
 
@@ -67,7 +68,7 @@ export const SearchPage = () => {
 
     return (
         <div className='flex flex-col gap-3'>
-            <h2 className='text-base font-medium text-foreground/90'>Buscar</h2>
+            <PanelHeader title='Buscar' />
 
             <InputGroup>
                 <InputGroupAddon>

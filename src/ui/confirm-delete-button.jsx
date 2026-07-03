@@ -10,23 +10,29 @@ import {
     AlertDialogTitle,
     AlertDialogTrigger,
 } from '@/ui/alert-dialog';
+import { Button } from '@/ui/button';
 import { cn } from '@/helpers/utils';
 
-export const ConfirmDeleteButton = ({ onConfirm, itemLabel = 'este elemento', className }) => (
+export const ConfirmDeleteButton = ({ onConfirm, itemLabel = 'este elemento', label, className }) => (
     <AlertDialog>
         <AlertDialogTrigger
             render={
-                <button
-                    type='button'
-                    aria-label='Eliminar'
-                    className={cn(
-                        'flex-center size-8 shrink-0 rounded-md text-destructive transition-colors hover:bg-destructive/10 [&>svg]:size-4',
-                        className,
-                    )}
-                />
+                label ? (
+                    <Button type='button' variant='destructive' aria-label='Eliminar' className={className} />
+                ) : (
+                    <button
+                        type='button'
+                        aria-label='Eliminar'
+                        className={cn(
+                            'flex-center size-8 shrink-0 rounded-md text-destructive transition-colors hover:bg-destructive/10 [&>svg]:size-4',
+                            className,
+                        )}
+                    />
+                )
             }
         >
             <Trash2 />
+            {label}
         </AlertDialogTrigger>
         <AlertDialogContent>
             <AlertDialogHeader>

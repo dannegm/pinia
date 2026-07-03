@@ -3,9 +3,21 @@ import { ArrowUp } from 'lucide-react';
 import { useMap } from '@/ui/map';
 import { cn } from '@/helpers/utils';
 
-export const DirectionArrow = ({ coords, color, className, flyToZoom = 14 }) => {
+const TOOLTIP_POSITION_CLASSES = {
+    'top:start': 'bottom-full mb-1.5 left-0',
+    'top:end': 'bottom-full mb-1.5 right-0',
+    'bottom:start': 'top-full mt-1.5 left-0',
+    'bottom:end': 'top-full mt-1.5 right-0',
+    'left:start': 'right-full mr-1.5 top-0',
+    'left:end': 'right-full mr-1.5 bottom-0',
+    'right:start': 'left-full ml-1.5 top-0',
+    'right:end': 'left-full ml-1.5 bottom-0',
+};
+
+export const DirectionArrow = ({ coords, color, className, flyToZoom = 14, label, offsets = {} }) => {
     const { map, isLoaded } = useMap();
     const [arrow, setArrow] = useState(null);
+    const { top = 0, right = 0, bottom = 0, left = 0 } = offsets;
 
     useEffect(() => {
         if (!isLoaded || !map || !coords) return;
@@ -25,14 +37,33 @@ export const DirectionArrow = ({ coords, color, className, flyToZoom = 14 }) => 
             const dy = projected.y - cy;
 
             const pad = 40;
-            const scaleX = dx !== 0 ? (width / 2 - pad) / Math.abs(dx) : Infinity;
-            const scaleY = dy !== 0 ? (height / 2 - pad) / Math.abs(dy) : Infinity;
+            const minX = pad + left;
+            const maxX = width - pad - right;
+            const minY = pad + top;
+            const maxY = height - pad - bottom;
+
+            const scaleX = dx > 0 ? (maxX - cx) / dx : dx < 0 ? (minX - cx) / dx : Infinity;
+            const scaleY = dy > 0 ? (maxY - cy) / dy : dy < 0 ? (minY - cy) / dy : Infinity;
             const scale = Math.min(scaleX, scaleY);
 
+            const isHorizontalBound = scaleX <= scaleY;
+            const tooltipSide = isHorizontalBound ? (dx > 0 ? 'left' : 'right') : dy > 0 ? 'top' : 'bottom';
+
+            const finalX = cx + dx * scale;
+            const finalY = cy + dy * scale;
+            const crossAlign = isHorizontalBound
+                ? finalY < height / 2
+                    ? 'start'
+                    : 'end'
+                : finalX < width / 2
+                  ? 'start'
+                  : 'end';
+
             setArrow({
-                x: cx + dx * scale,
-                y: cy + dy * scale,
+                x: finalX,
+                y: finalY,
                 angle: Math.atan2(dy, dx) * (180 / Math.PI) + 90,
+                tooltipPosition: `${tooltipSide}:${crossAlign}`,
             });
         };
 
@@ -45,14 +76,14 @@ export const DirectionArrow = ({ coords, color, className, flyToZoom = 14 }) => 
             map.off('zoom', update);
             setArrow(null);
         };
-    }, [isLoaded, map, coords]);
+    }, [isLoaded, map, coords, top, right, bottom, left]);
 
     if (!arrow) return null;
 
     return (
         <div
             className={cn(
-                'flex-center absolute top-(--arrow-y) left-(--arrow-x) z-10 size-8 -translate-x-1/2 -translate-y-1/2 cursor-pointer rounded-full text-white shadow-lg shadow-black/50 transition-[filter] hover:brightness-110 [&>svg]:size-4',
+                'group flex-center absolute top-(--arrow-y) left-(--arrow-x) z-10 size-8 -translate-x-1/2 -translate-y-1/2 cursor-pointer rounded-full text-white shadow-lg shadow-black/50 transition-[filter] hover:brightness-110 [&>svg]:size-4',
                 color && 'bg-(--arrow-color)',
                 className,
             )}
@@ -66,6 +97,17 @@ export const DirectionArrow = ({ coords, color, className, flyToZoom = 14 }) => 
             }
         >
             <ArrowUp className='rotate-(--arrow-angle)' style={{ '--arrow-angle': `${arrow.angle}deg` }} />
+
+            {label && (
+                <span
+                    className={cn(
+                        'bg-foreground text-background pointer-events-none absolute rounded-md px-2 py-1 text-xs whitespace-nowrap opacity-0 shadow-md transition-opacity duration-150 group-hover:opacity-100',
+                        TOOLTIP_POSITION_CLASSES[arrow.tooltipPosition],
+                    )}
+                >
+                    {label}
+                </span>
+            )}
         </div>
     );
 };

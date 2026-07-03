@@ -6,7 +6,7 @@ export const placesQuery = (opts = {}) => ({
         const { data, error } = await supabase()
             .from('places')
             .select('*, category:categories(*)')
-            .order('name');
+            .order('created_at', { ascending: false });
         if (error) throw error;
         return data;
     },
@@ -14,10 +14,20 @@ export const placesQuery = (opts = {}) => ({
 });
 
 export const createPlaceMutation = (opts = {}) => ({
-    mutationFn: async ({ name, categoryId, address, lat, lng }) => {
+    mutationFn: async ({ name, categoryId, address, lat, lng, hours, notes, isFavorite, isBeacon }) => {
         const { data, error } = await supabase()
             .from('places')
-            .insert({ name, category_id: categoryId, address, lat, lng })
+            .insert({
+                name,
+                category_id: categoryId,
+                address,
+                lat,
+                lng,
+                hours,
+                notes,
+                is_favorite: isFavorite ?? false,
+                is_beacon: isBeacon ?? false,
+            })
             .select('*, category:categories(*)')
             .single();
         if (error) throw error;

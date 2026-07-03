@@ -1,32 +1,19 @@
-import { Outlet, useLocation, useNavigate } from '@tanstack/react-router';
+import { Outlet, useNavigate } from '@tanstack/react-router';
 import { useEffect } from 'react';
 import { useMap } from '@/ui/map';
-import { useMediaQuery } from '@/hooks/use-media-query';
+import { usePanelOffset } from '@/hooks/use-panel-offset';
 import { cn } from '@/helpers/utils';
 import { Drawer, DrawerContent } from '@/ui/drawer';
 import { PanelNavButtons } from '@/components/panel-nav-buttons';
 
-const RAIL_WIDTH = 56;
-const PANEL_WIDTH = 320;
-const MOBILE_NAV_HEIGHT = 56;
-
 export const PanelContainer = () => {
     const { map } = useMap();
-    const { pathname } = useLocation();
     const navigate = useNavigate();
-    const isDesktop = useMediaQuery('(min-width: 640px)');
-    const isOpen = pathname !== '/';
+    const { isDesktop, isOpen, left, bottom } = usePanelOffset();
 
     useEffect(() => {
-        if (!isDesktop) {
-            map.easeTo({ padding: { left: 0, bottom: MOBILE_NAV_HEIGHT }, duration: 200 });
-            return;
-        }
-        map.easeTo({
-            padding: { left: RAIL_WIDTH + (isOpen ? PANEL_WIDTH : 0), bottom: 0 },
-            duration: 200,
-        });
-    }, [map, isDesktop, isOpen]);
+        map.easeTo({ padding: { left, bottom }, duration: 200 });
+    }, [map, left, bottom]);
 
     const close = () => navigate({ to: '/' });
 

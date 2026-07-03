@@ -1,16 +1,19 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { RotateCcw } from 'lucide-react';
 import { useMap } from '@/ui/map';
 import { useSettings } from '@/hooks/use-settings';
 import { Button } from '@/ui/button';
 import { Field, FieldGroup, FieldLabel, FieldDescription } from '@/ui/field';
-import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/ui/select';
+import { PanelHeader } from '@/components/panel-header';
+import { PlaceSelect } from '@/components/place-select';
 import { DEFAULT_VIEWPORT } from '@/constants/map-defaults';
-import { placesQuery } from '@/queries/places';
 import { systemPlaceQuery, setSystemPlaceMutation } from '@/queries/system-places';
 
 const MapCenterSetting = () => {
     const { map } = useMap();
     const [center, setCenter] = useSettings('mapCenter', DEFAULT_VIEWPORT.center);
+    const isDefault =
+        center[0] === DEFAULT_VIEWPORT.center[0] && center[1] === DEFAULT_VIEWPORT.center[1];
 
     const useCurrentCenter = () => {
         const { lng, lat } = map.getCenter();
@@ -23,15 +26,27 @@ const MapCenterSetting = () => {
             <FieldDescription>
                 {center[1].toFixed(4)}, {center[0].toFixed(4)}
             </FieldDescription>
-            <Button type='button' variant='outline' onClick={useCurrentCenter}>
-                Usar centro actual
-            </Button>
+            <div className='flex gap-1.5'>
+                <Button type='button' variant='outline' onClick={useCurrentCenter}>
+                    Usar centro actual
+                </Button>
+                <Button
+                    type='button'
+                    variant='outline'
+                    size='icon'
+                    aria-label='Revertir al centro por defecto'
+                    title='Revertir al centro por defecto'
+                    disabled={isDefault}
+                    onClick={() => setCenter(DEFAULT_VIEWPORT.center)}
+                >
+                    <RotateCcw />
+                </Button>
+            </div>
         </Field>
     );
 };
 
 const HomePlaceSetting = () => {
-    const { data: places = [] } = useQuery(placesQuery());
     const { data: casa } = useQuery(systemPlaceQuery('casa'));
     const queryClient = useQueryClient();
 
@@ -45,23 +60,10 @@ const HomePlaceSetting = () => {
         <Field>
             <FieldLabel>Casa</FieldLabel>
             <FieldDescription>Se usa como origen para "desde casa" al pedir rutas.</FieldDescription>
-            <Select
-                value={casa?.place_id ?? ''}
-                onValueChange={placeId => mutation.mutate({ key: 'casa', placeId })}
-            >
-                <SelectTrigger className='w-full'>
-                    <SelectValue placeholder='Elige un lugar' />
-                </SelectTrigger>
-                <SelectContent>
-                    <SelectGroup>
-                        {places.map(place => (
-                            <SelectItem key={place.id} value={place.id}>
-                                {place.name}
-                            </SelectItem>
-                        ))}
-                    </SelectGroup>
-                </SelectContent>
-            </Select>
+            <PlaceSelect
+                value={casa?.place_id ?? null}
+                onChange={placeId => mutation.mutate({ key: 'casa', placeId })}
+            />
         </Field>
     );
 };
@@ -69,7 +71,7 @@ const HomePlaceSetting = () => {
 export const SettingsPage = () => {
     return (
         <div className='flex flex-col gap-4'>
-            <h2 className='text-base font-medium text-foreground/90'>Ajustes</h2>
+            <PanelHeader title='Ajustes' />
             <FieldGroup>
                 <MapCenterSetting />
                 <HomePlaceSetting />

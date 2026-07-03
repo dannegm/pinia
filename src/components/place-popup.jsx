@@ -1,23 +1,10 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { Star, Radar } from 'lucide-react';
+import { Star, FlagTriangleRight } from 'lucide-react';
 import { MarkerPopup } from '@/ui/map';
 import { cn } from '@/helpers/utils';
+import { ToggleIconButton } from '@/ui/toggle-icon-button';
 import { updatePlaceMutation } from '@/queries/places';
-
-const ToggleIconButton = ({ active, onClick, label, activeClassName, children }) => (
-    <button
-        type='button'
-        aria-label={label}
-        aria-pressed={active}
-        onClick={onClick}
-        className={cn(
-            'flex-center size-8 rounded-md border border-border text-foreground/70 transition-colors hover:bg-accent [&>svg]:size-4',
-            active && activeClassName,
-        )}
-    >
-        {children}
-    </button>
-);
+import { PlaceNavigationRow } from '@/components/place-navigation-row';
 
 export const PlacePopup = ({ place }) => {
     const queryClient = useQueryClient();
@@ -56,7 +43,7 @@ export const PlacePopup = ({ place }) => {
                             label='Beacon'
                             activeClassName='border-red-500 bg-red-500/10 text-red-500'
                         >
-                            <Radar />
+                            <FlagTriangleRight />
                         </ToggleIconButton>
                     </div>
                 </div>
@@ -64,6 +51,8 @@ export const PlacePopup = ({ place }) => {
                 {place.address && <p className='text-xs text-foreground/70'>{place.address}</p>}
                 {place.hours && <p className='text-xs text-foreground/70'>{place.hours}</p>}
                 {place.notes && <p className='text-xs text-foreground/70'>{place.notes}</p>}
+
+                <PlaceNavigationRow place={place} />
             </div>
         </MarkerPopup>
     );

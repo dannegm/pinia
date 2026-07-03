@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from '@tanstack/react-router';
-import { X } from 'lucide-react';
 import { PlaceForm } from '@/components/place-form';
+import { PanelHeader } from '@/components/panel-header';
 import { createPlaceMutation } from '@/queries/places';
 
 export const AddPlacePage = () => {
@@ -21,17 +21,7 @@ export const AddPlacePage = () => {
 
     return (
         <div className='flex h-full flex-col gap-3'>
-            <div className='flex items-center justify-between'>
-                <h2 className='text-base font-medium text-foreground/90'>Nuevo lugar</h2>
-                <button
-                    type='button'
-                    aria-label='Cancelar'
-                    onClick={goBack}
-                    className='flex-center size-6 rounded-md hover:bg-accent [&>svg]:size-4'
-                >
-                    <X />
-                </button>
-            </div>
+            <PanelHeader title='Nuevo lugar' onBack={goBack} />
 
             <PlaceForm
                 onSubmit={values => mutation.mutate(values)}
