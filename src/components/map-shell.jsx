@@ -2,7 +2,6 @@ import { Outlet } from '@tanstack/react-router';
 import { LocateFixed } from 'lucide-react';
 import { Map, MapControls, useMap } from '@/ui/map';
 import { DEFAULT_VIEWPORT, MIN_ZOOM, MAX_ZOOM } from '@/constants/map-defaults';
-import customMapStyle from '@/constants/map-style.json';
 import { cn } from '@/helpers/utils';
 import { useSettings } from '@/hooks/use-settings';
 import { useGeolocation } from '@/hooks/use-geolocation';
@@ -45,7 +44,6 @@ export const MapShell = () => {
         <div className='relative h-dvh w-dvw overflow-hidden'>
             <Map
                 theme='light'
-                styles={{ light: customMapStyle }}
                 viewport={{ center: savedCenter, zoom: DEFAULT_VIEWPORT.zoom }}
                 minZoom={MIN_ZOOM}
                 maxZoom={MAX_ZOOM}
