@@ -1,18 +1,21 @@
 import { ChevronLeft } from 'lucide-react';
 
-export const PanelHeader = ({ title, onBack, action }) => (
-    <div className='flex items-center gap-1'>
-        {onBack && (
-            <button
-                type='button'
-                onClick={onBack}
-                aria-label='Regresar'
-                className='flex-center -ml-1.5 size-8 shrink-0 rounded-md text-foreground/70 transition-colors hover:bg-accent [&>svg]:size-5'
-            >
-                <ChevronLeft />
-            </button>
-        )}
-        <h2 className='flex-1 truncate text-left text-base font-medium text-foreground/90'>{title}</h2>
-        {action}
+export const PanelHeader = ({ title, description, onBack, action }) => (
+    <div className='flex shrink-0 flex-col gap-1 border-b border-border/70 p-4 pb-3'>
+        <div className='flex items-center gap-1'>
+            {onBack && (
+                <button
+                    type='button'
+                    onClick={onBack}
+                    aria-label='Regresar'
+                    className='flex-center -ml-1.5 size-9 shrink-0 rounded-lg text-foreground/70 transition-colors hover:bg-accent hover:text-accent-foreground [&>svg]:size-5'
+                >
+                    <ChevronLeft />
+                </button>
+            )}
+            <h2 className='flex-1 truncate text-left text-lg font-semibold text-foreground'>{title}</h2>
+            {action}
+        </div>
+        {description && <p className='text-sm text-foreground/70'>{description}</p>}
     </div>
 );

@@ -23,7 +23,7 @@ export const AddPlacePage = () => {
     );
 
     return (
-        <div className='flex h-full flex-col gap-3'>
+        <div className='flex h-full min-h-0 flex-col'>
             <PanelHeader title='Nuevo lugar' onBack={goBack} />
 
             <PlaceForm

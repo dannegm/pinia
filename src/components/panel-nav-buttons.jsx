@@ -1,9 +1,8 @@
-import { Search, MapPin, Tag, Settings } from 'lucide-react';
+import { MapPin, Tag, Settings } from 'lucide-react';
 import { useLocation, useNavigate } from '@tanstack/react-router';
 import { cn } from '@/helpers/utils';
 
 const PANELS = [
-    { path: '/search', label: 'Buscador', icon: Search },
     { path: '/places', label: 'Lugares', icon: MapPin },
     { path: '/categories', label: 'Categorías', icon: Tag },
     { path: '/settings', label: 'Ajustes', icon: Settings },
@@ -25,9 +24,9 @@ export const PanelNavButtons = ({ className, buttonClassName }) => {
                     aria-label={label}
                     onClick={() => toggle(path)}
                     className={cn(
-                        'flex-center text-foreground transition-colors hover:bg-accent [&>svg]:size-5',
+                        'flex-center text-foreground/70 transition-colors hover:bg-accent hover:text-accent-foreground [&>svg]:size-5',
                         buttonClassName,
-                        { 'bg-accent': isActive(path) },
+                        { 'bg-primary/10 text-primary': isActive(path) },
                     )}
                 >
                     <Icon />

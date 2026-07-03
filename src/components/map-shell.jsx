@@ -36,14 +36,14 @@ const CenterButton = () => {
     };
 
     return (
-        <div className='flex flex-col overflow-hidden rounded-md border border-border bg-background shadow-sm shadow-black/10'>
+        <div className='flex flex-col overflow-hidden squircle-lg border border-border bg-background shadow-md shadow-black/10'>
             <button
                 type='button'
                 onClick={handleCenter}
                 aria-label='Centrar mapa'
                 className={cn(
-                    'flex size-8 items-center justify-center transition-colors',
-                    'hover:bg-accent',
+                    'flex size-9 items-center justify-center text-foreground/70 transition-colors',
+                    'hover:bg-accent hover:text-accent-foreground',
                     'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset',
                 )}
             >
@@ -145,7 +145,7 @@ export const MapShell = () => {
                             <CurrentLocationMarker coords={currentLocation} />
                             <DirectionArrow
                                 coords={currentLocation}
-                                className='bg-blue-500 hover:bg-blue-400'
+                                className='bg-primary hover:bg-primary/85'
                                 label='Mi ubicación actual'
                                 offsets={{ left: panelLeft, bottom: panelBottom, top: routeTopOffset }}
                             />
@@ -159,7 +159,10 @@ export const MapShell = () => {
 
                     <MapControls position='top-right' showZoom showCompass />
 
-                    <div className='absolute right-2 bottom-2 z-10'>
+                    <div
+                        className='absolute right-2 z-10'
+                        style={{ bottom: `${panelBottom + 8}px` }}
+                    >
                         <CenterButton />
                     </div>
                 </Map>

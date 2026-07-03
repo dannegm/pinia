@@ -1,18 +1,43 @@
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { Star, FlagTriangleRight } from 'lucide-react';
+import { Star, FlagTriangleRight, MapPin, Clock, StickyNote } from 'lucide-react';
 import { MapMarker, MarkerContent, useMap } from '@/ui/map';
 import { Button } from '@/ui/button';
 import { Input } from '@/ui/input';
-import { Field, FieldGroup, FieldLabel } from '@/ui/field';
+import { Field, FieldGroup, FieldLabel, FieldSeparator } from '@/ui/field';
 import { Textarea } from '@/ui/textarea';
 import { NumberScrubber } from '@/ui/number-scrubber';
 import { DynamicIcon } from '@/ui/dynamic-icon';
-import { ToggleIconButton } from '@/ui/toggle-icon-button';
 import { PinDrop } from '@/components/pin-drop';
 import { CategorySelect } from '@/components/category-select';
 import { cn } from '@/helpers/utils';
+import { BRAND_COLOR, FAVORITE_COLOR } from '@/constants/map-defaults';
 import { categoriesQuery } from '@/queries/categories';
+
+const MarkerToggleRow = ({ active, onClick, color, label, description, children }) => (
+    <button
+        type='button'
+        onClick={onClick}
+        aria-pressed={active}
+        style={active ? { '--marker-color': color } : undefined}
+        className='flex w-full items-center gap-3 p-3 text-left transition-colors hover:bg-muted/40 active:scale-[0.99]'
+    >
+        <span
+            className={cn(
+                'flex-center size-9 shrink-0 rounded-full border transition-all duration-150 [&>svg]:size-4',
+                active
+                    ? 'border-(--marker-color) bg-(--marker-color) text-white'
+                    : 'border-border text-foreground/40',
+            )}
+        >
+            {children}
+        </span>
+        <span className='flex flex-col'>
+            <span className='text-sm font-medium text-foreground'>{label}</span>
+            <span className='text-xs text-foreground/60'>{description}</span>
+        </span>
+    </button>
+);
 
 export const PlaceForm = ({
     initialCoords,
@@ -74,106 +99,159 @@ export const PlaceForm = ({
                 </MapMarker>
             )}
 
-            <form onSubmit={handleSubmit} className='flex h-full flex-col gap-3'>
-                <FieldGroup>
-                    <Field>
-                        <FieldLabel htmlFor='place-name'>Nombre</FieldLabel>
-                        <Input
-                            id='place-name'
-                            value={name}
-                            onChange={e => setName(e.target.value)}
-                            placeholder='Tiendita de la esquina'
-                        />
-                    </Field>
+            <form onSubmit={handleSubmit} className='flex flex-1 min-h-0 flex-col'>
+                <div className='flex-1 min-h-0 overflow-y-auto p-4'>
+                    <FieldGroup>
+                        <Field>
+                            <FieldLabel htmlFor='place-name'>Nombre</FieldLabel>
+                            <div className='flex items-center gap-2'>
+                                <div
+                                    className={cn(
+                                        'flex-center size-9 shrink-0 rounded-full transition-colors [&>svg]:size-4',
+                                        selectedCategory
+                                            ? 'text-white bg-(--place-color)'
+                                            : 'bg-muted text-foreground/40',
+                                    )}
+                                    style={
+                                        selectedCategory
+                                            ? { '--place-color': selectedCategory.color }
+                                            : undefined
+                                    }
+                                >
+                                    {selectedCategory?.icon ? (
+                                        <DynamicIcon icon={selectedCategory.icon} />
+                                    ) : (
+                                        <MapPin />
+                                    )}
+                                </div>
+                                <Input
+                                    id='place-name'
+                                    value={name}
+                                    onChange={e => setName(e.target.value)}
+                                    placeholder='Tiendita de la esquina'
+                                    className='flex-1'
+                                />
+                            </div>
+                        </Field>
 
-                    <Field>
-                        <FieldLabel>Categoría</FieldLabel>
-                        <CategorySelect value={categoryId} onChange={setCategoryId} />
-                        {categories.length === 0 && (
-                            <p className='text-xs text-foreground/70'>Crea una categoría primero.</p>
-                        )}
-                    </Field>
+                        <Field>
+                            <FieldLabel>Categoría</FieldLabel>
+                            <CategorySelect value={categoryId} onChange={setCategoryId} />
+                            {categories.length === 0 && (
+                                <p className='text-xs text-foreground/70'>Crea una categoría primero.</p>
+                            )}
+                        </Field>
 
-                    <Field>
-                        <FieldLabel>Marcadores</FieldLabel>
-                        <div className='flex gap-1.5'>
-                            <ToggleIconButton
-                                active={isFavorite}
-                                onClick={() => setIsFavorite(v => !v)}
-                                label='Favorito'
-                                activeClassName='border-amber-500 bg-amber-500/10 text-amber-500'
-                            >
-                                <Star className={cn(isFavorite && 'fill-current')} />
-                            </ToggleIconButton>
-                            <ToggleIconButton
-                                active={isBeacon}
-                                onClick={() => setIsBeacon(v => !v)}
-                                label='Beacon'
-                                activeClassName='border-red-500 bg-red-500/10 text-red-500'
-                            >
-                                <FlagTriangleRight />
-                            </ToggleIconButton>
-                        </div>
-                    </Field>
+                        <Field>
+                            <FieldLabel>Marcadores</FieldLabel>
+                            <div className='flex flex-col divide-y divide-border/70 overflow-hidden squircle-lg border border-border/70'>
+                                <MarkerToggleRow
+                                    active={isFavorite}
+                                    onClick={() => setIsFavorite(v => !v)}
+                                    color={FAVORITE_COLOR}
+                                    label='Favorito'
+                                    description='Se agrega a accesos rápidos.'
+                                >
+                                    <Star className={cn(isFavorite && 'fill-current')} />
+                                </MarkerToggleRow>
+                                <MarkerToggleRow
+                                    active={isBeacon}
+                                    onClick={() => setIsBeacon(v => !v)}
+                                    color={selectedCategory?.color ?? BRAND_COLOR}
+                                    label='Beacon'
+                                    description='Le pone flecha en el mapa cuando está fuera de vista.'
+                                >
+                                    <FlagTriangleRight className={cn(isBeacon && 'fill-current')} />
+                                </MarkerToggleRow>
+                            </div>
+                        </Field>
 
-                    <Field>
-                        <FieldLabel htmlFor='place-address'>Dirección</FieldLabel>
-                        <Textarea
-                            id='place-address'
-                            value={address}
-                            onChange={e => setAddress(e.target.value)}
-                            placeholder='Opcional'
-                            rows={2}
-                        />
-                    </Field>
+                        <FieldSeparator>Detalles</FieldSeparator>
 
-                    <Field>
-                        <FieldLabel htmlFor='place-hours'>Horario</FieldLabel>
-                        <Textarea
-                            id='place-hours'
-                            value={hours}
-                            onChange={e => setHours(e.target.value)}
-                            placeholder='Lun-Vie 4-6pm (opcional)'
-                            rows={2}
-                        />
-                    </Field>
+                        <Field>
+                            <FieldLabel htmlFor='place-address'>
+                                <MapPin className='size-3.5 text-foreground/40' />
+                                Dirección
+                            </FieldLabel>
+                            <Textarea
+                                id='place-address'
+                                value={address}
+                                onChange={e => setAddress(e.target.value)}
+                                placeholder='Opcional'
+                                rows={2}
+                            />
+                        </Field>
 
-                    <Field>
-                        <FieldLabel htmlFor='place-notes'>Notas</FieldLabel>
-                        <Textarea
-                            id='place-notes'
-                            value={notes}
-                            onChange={e => setNotes(e.target.value)}
-                            placeholder='Opcional'
-                            rows={3}
-                        />
-                    </Field>
+                        <Field>
+                            <FieldLabel htmlFor='place-hours'>
+                                <Clock className='size-3.5 text-foreground/40' />
+                                Horario
+                            </FieldLabel>
+                            <Textarea
+                                id='place-hours'
+                                value={hours}
+                                onChange={e => setHours(e.target.value)}
+                                placeholder='Lun-Vie 4-6pm (opcional)'
+                                rows={2}
+                            />
+                        </Field>
 
-                    <Field orientation='horizontal'>
-                        <FieldLabel htmlFor='place-lat'>Lat</FieldLabel>
-                        <NumberScrubber
-                            id='place-lat'
-                            value={coords.lat}
-                            min={-90}
-                            max={90}
-                            step={0.0001}
-                            onChange={lat => setCoords(c => ({ ...c, lat }))}
-                        />
-                    </Field>
-                    <Field orientation='horizontal'>
-                        <FieldLabel htmlFor='place-lng'>Lng</FieldLabel>
-                        <NumberScrubber
-                            id='place-lng'
-                            value={coords.lng}
-                            min={-180}
-                            max={180}
-                            step={0.0001}
-                            onChange={lng => setCoords(c => ({ ...c, lng }))}
-                        />
-                    </Field>
-                </FieldGroup>
+                        <Field>
+                            <FieldLabel htmlFor='place-notes'>
+                                <StickyNote className='size-3.5 text-foreground/40' />
+                                Notas
+                            </FieldLabel>
+                            <Textarea
+                                id='place-notes'
+                                value={notes}
+                                onChange={e => setNotes(e.target.value)}
+                                placeholder='Opcional'
+                                rows={3}
+                            />
+                        </Field>
 
-                <div className='mt-auto flex flex-col gap-2'>
+                        <FieldSeparator>Coordenadas</FieldSeparator>
+
+                        <Field>
+                            <div className='grid grid-cols-2 gap-2'>
+                                <div className='flex flex-col gap-1'>
+                                    <FieldLabel
+                                        htmlFor='place-lat'
+                                        className='text-xs font-normal text-foreground/50'
+                                    >
+                                        Lat
+                                    </FieldLabel>
+                                    <NumberScrubber
+                                        id='place-lat'
+                                        value={coords.lat}
+                                        min={-90}
+                                        max={90}
+                                        step={0.0001}
+                                        onChange={lat => setCoords(c => ({ ...c, lat }))}
+                                    />
+                                </div>
+                                <div className='flex flex-col gap-1'>
+                                    <FieldLabel
+                                        htmlFor='place-lng'
+                                        className='text-xs font-normal text-foreground/50'
+                                    >
+                                        Lng
+                                    </FieldLabel>
+                                    <NumberScrubber
+                                        id='place-lng'
+                                        value={coords.lng}
+                                        min={-180}
+                                        max={180}
+                                        step={0.0001}
+                                        onChange={lng => setCoords(c => ({ ...c, lng }))}
+                                    />
+                                </div>
+                            </div>
+                        </Field>
+                    </FieldGroup>
+                </div>
+
+                <div className='flex shrink-0 flex-col gap-2 border-t border-border/70 p-4 pt-3'>
                     {secondaryAction}
                     <Button type='submit' disabled={pending || categories.length === 0} className='h-10 w-full'>
                         {submitLabel}

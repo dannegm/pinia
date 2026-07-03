@@ -10,7 +10,7 @@ create extension if not exists pgcrypto;
 -- Tablas
 
 create table if not exists guasave.categories (
-  id uuid primary key default gen_random_uuid(),
+  id text primary key, -- client-generated nanoid(8)
   name text not null,
   icon jsonb not null,
   color text not null,
@@ -18,9 +18,9 @@ create table if not exists guasave.categories (
 );
 
 create table if not exists guasave.places (
-  id uuid primary key default gen_random_uuid(),
+  id text primary key, -- client-generated nanoid(8)
   name text not null,
-  category_id uuid references guasave.categories(id),
+  category_id text references guasave.categories(id) on delete cascade,
   address text,
   lat double precision not null,
   lng double precision not null,
@@ -34,7 +34,7 @@ create table if not exists guasave.places (
 
 create table if not exists guasave.system_places (
   key text primary key,
-  place_id uuid references guasave.places(id)
+  place_id text references guasave.places(id) on delete cascade
 );
 
 -- Índices

@@ -1,3 +1,4 @@
+import { nanoid } from 'nanoid';
 import { supabase } from '@/helpers/supabase';
 
 export const placesQuery = (opts = {}) => ({
@@ -18,6 +19,7 @@ export const createPlaceMutation = (opts = {}) => ({
         const { data, error } = await supabase()
             .from('places')
             .insert({
+                id: nanoid(8),
                 name,
                 category_id: categoryId,
                 address,

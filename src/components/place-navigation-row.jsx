@@ -10,7 +10,7 @@ import { cn } from '@/helpers/utils';
 
 const navButtonClass = disabled =>
     cn(
-        'flex-center size-8 rounded-md border border-border text-foreground/70 transition-colors hover:bg-accent [&>svg]:size-4',
+        'flex-center size-8 rounded-md border border-border text-foreground/70 transition-colors hover:bg-accent hover:text-accent-foreground [&>svg]:size-4',
         disabled && 'pointer-events-none opacity-50',
     );
 

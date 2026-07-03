@@ -1,3 +1,4 @@
+import { nanoid } from 'nanoid';
 import { supabase } from '@/helpers/supabase';
 
 export const categoriesQuery = (opts = {}) => ({
@@ -14,7 +15,7 @@ export const createCategoryMutation = (opts = {}) => ({
     mutationFn: async ({ name, icon, color }) => {
         const { data, error } = await supabase()
             .from('categories')
-            .insert({ name, icon, color })
+            .insert({ id: nanoid(8), name, icon, color })
             .select()
             .single();
         if (error) throw error;

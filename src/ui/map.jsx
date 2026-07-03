@@ -550,7 +550,7 @@ function MarkerPopup({
 
   return createPortal(<div
     className={cn(
-      "bg-popover text-popover-foreground relative max-w-62 rounded-md border p-3 shadow-md",
+      "bg-popover text-popover-foreground relative max-w-64 squircle-xl border border-border/60 p-3.5 shadow-lg shadow-black/10",
       "animate-in fade-in-0 zoom-in-95 duration-200 ease-out",
       className
     )}>
@@ -654,7 +654,7 @@ function ControlGroup({
 }) {
   return (
     <div
-      className="border-border bg-background [&>button:not(:last-child)]:border-border flex flex-col overflow-hidden rounded-md border shadow-sm [&>button:not(:last-child)]:border-b">
+      className="border-border bg-background [&>button:not(:last-child)]:border-border flex flex-col overflow-hidden squircle-lg border shadow-md shadow-black/10 [&>button:not(:last-child)]:border-b">
       {children}
     </div>
   );
@@ -672,9 +672,9 @@ function ControlButton({
       aria-label={label}
       type="button"
       className={cn(
-        "flex size-8 items-center justify-center transition-all",
-        "first:rounded-t-md last:rounded-b-md",
-        "hover:bg-accent dark:hover:bg-accent/40",
+        "flex size-9 items-center justify-center text-foreground/70 transition-all",
+        "first:rounded-t-lg last:rounded-b-lg",
+        "hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/40",
         "focus-visible:ring-ring focus-visible:ring-2 focus-visible:outline-none focus-visible:ring-inset",
         "disabled:pointer-events-none disabled:opacity-50"
       )}
@@ -895,7 +895,7 @@ function MapPopup({
 
   return createPortal(<div
     className={cn(
-      "bg-popover text-popover-foreground relative max-w-62 rounded-md border p-3 shadow-md",
+      "bg-popover text-popover-foreground relative max-w-64 squircle-xl border border-border/60 p-3.5 shadow-lg shadow-black/10",
       "animate-in fade-in-0 zoom-in-95 duration-200 ease-out",
       className
     )}>

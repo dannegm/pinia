@@ -2,7 +2,6 @@ import { createRootRoute, createRoute, createRouter, Outlet } from '@tanstack/re
 import { Providers } from '@/providers/providers';
 import { MapShell } from '@/components/map-shell';
 import { HomePage } from '@/pages/home';
-import { SearchPage } from '@/pages/search';
 import { PlacesPage } from '@/pages/places';
 import { AddPlacePage } from '@/pages/places-new';
 import { CategoriesPage } from '@/pages/categories';
@@ -22,7 +21,6 @@ const rootRoute = createRootRoute({
 const shellRoute = createRoute({ getParentRoute: () => rootRoute, id: 'shell', component: MapShell });
 
 const homeRoute = createRoute({ getParentRoute: () => shellRoute, path: '/', component: HomePage });
-const searchRoute = createRoute({ getParentRoute: () => shellRoute, path: '/search', component: SearchPage });
 const placesRoute = createRoute({ getParentRoute: () => shellRoute, path: '/places', component: PlacesPage });
 const addPlaceRoute = createRoute({
     getParentRoute: () => shellRoute,
@@ -58,7 +56,6 @@ const settingsRoute = createRoute({
 const routeTree = rootRoute.addChildren([
     shellRoute.addChildren([
         homeRoute,
-        searchRoute,
         placesRoute,
         addPlaceRoute,
         editPlaceRoute,

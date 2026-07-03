@@ -13,7 +13,7 @@ export const CurrentLocationMarker = ({ coords, flyToZoom = 14 }) => {
             }
         >
             <MarkerContent>
-                <div className='flex-center size-6 rounded-full border-2 border-white bg-blue-500 text-white shadow-md shadow-black/50'>
+                <div className='flex-center size-6 rounded-full border-2 border-white bg-primary text-primary-foreground shadow-md shadow-black/50'>
                     <PersonStanding className='size-3.5' />
                 </div>
             </MarkerContent>

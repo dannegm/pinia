@@ -4,7 +4,7 @@ import { useNavigate, useParams } from '@tanstack/react-router';
 import { PlaceForm } from '@/components/place-form';
 import { PanelHeader } from '@/components/panel-header';
 import { Alert, AlertDescription } from '@/ui/alert';
-import { ConfirmDeleteButton } from '@/ui/confirm-delete-button';
+import { DeletePlaceButton } from '@/components/delete-place-button';
 import { placesQuery, updatePlaceMutation, deletePlaceMutation } from '@/queries/places';
 
 export const EditPlacePage = () => {
@@ -30,28 +30,25 @@ export const EditPlacePage = () => {
         deletePlaceMutation({
             onSuccess: () => {
                 queryClient.invalidateQueries({ queryKey: ['places'] });
+                queryClient.invalidateQueries({ queryKey: ['system-places'] });
                 goBack();
             },
-            onError: err => {
-                setDeleteError(
-                    err.code === '23503'
-                        ? 'No se puede eliminar: este lugar está asignado como "casa" en Ajustes.'
-                        : 'No se pudo eliminar el lugar.',
-                );
-            },
+            onError: () => setDeleteError('No se pudo eliminar el lugar.'),
         }),
     );
 
     if (!place) return null;
 
     return (
-        <div className='flex h-full flex-col gap-3'>
+        <div className='flex h-full min-h-0 flex-col'>
             <PanelHeader title='Editar lugar' onBack={goBack} />
 
             {deleteError && (
-                <Alert variant='destructive'>
-                    <AlertDescription>{deleteError}</AlertDescription>
-                </Alert>
+                <div className='shrink-0 px-4 pt-3'>
+                    <Alert variant='destructive'>
+                        <AlertDescription>{deleteError}</AlertDescription>
+                    </Alert>
+                </div>
             )}
 
             <PlaceForm
@@ -78,8 +75,8 @@ export const EditPlacePage = () => {
                 submitLabel='Guardar cambios'
                 pending={mutation.isPending}
                 secondaryAction={
-                    <ConfirmDeleteButton
-                        itemLabel={`"${place.name}"`}
+                    <DeletePlaceButton
+                        place={place}
                         onConfirm={() => deleteMutation.mutate(placeId)}
                         label='Eliminar'
                         className='h-10 w-full'

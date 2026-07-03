@@ -5,12 +5,13 @@ import { useMap, MapRoute } from '@/ui/map';
 import { usePanelOffset } from '@/hooks/use-panel-offset';
 import { routeQuery } from '@/queries/route';
 import { PlacePointSelect } from '@/components/place-point-select';
+import { BRAND_COLOR } from '@/constants/map-defaults';
 import { cn } from '@/helpers/utils';
 
 export const ROUTE_PANEL_HEIGHT = 48;
 
 const actionButtonClass = cn(
-    'flex-center size-8 rounded-md border border-border text-foreground/70 transition-colors hover:bg-accent [&>svg]:size-4',
+    'flex-center size-8 shrink-0 rounded-md text-foreground/70 transition-colors hover:bg-accent hover:text-accent-foreground [&>svg]:size-4',
 );
 
 const buildGoogleMapsUrl = (origin, destination) => {
@@ -64,10 +65,10 @@ export const RoutePanel = ({ route, onChange, onClose }) => {
 
     return (
         <>
-            {routeCoordinates && <MapRoute coordinates={routeCoordinates} color='#4285f4' width={4} />}
+            {routeCoordinates && <MapRoute coordinates={routeCoordinates} color={BRAND_COLOR} width={4} />}
 
             <div className='absolute top-2 z-20 flex flex-col gap-1' style={{ left: `${offsetLeft}px` }}>
-                <div className='flex max-w-[calc(100dvw-1rem)] items-center gap-1.5 overflow-x-auto rounded-lg border border-border bg-background p-1.5 shadow-lg shadow-black/20'>
+                <div className='flex max-w-[calc(100dvw-1rem)] items-center gap-1.5 overflow-x-auto squircle-lg border border-border bg-background p-1.5 shadow-md shadow-black/10'>
                     <PlacePointSelect
                         value={origin}
                         onChange={next => onChange({ origin: next, destination })}
@@ -89,7 +90,7 @@ export const RoutePanel = ({ route, onChange, onClose }) => {
                         onClick={handleInvert}
                         title='Invertir ruta'
                         aria-label='Invertir ruta'
-                        className={cn(actionButtonClass, 'shrink-0')}
+                        className={actionButtonClass}
                     >
                         <ArrowLeftRight />
                     </button>
@@ -101,7 +102,7 @@ export const RoutePanel = ({ route, onChange, onClose }) => {
                         onClick={() => window.open(buildGoogleMapsUrl(origin, destination), '_blank')}
                         title='Abrir en Google Maps'
                         aria-label='Abrir en Google Maps'
-                        className={cn(actionButtonClass, 'shrink-0')}
+                        className={actionButtonClass}
                     >
                         <MapIcon />
                     </button>
@@ -111,7 +112,7 @@ export const RoutePanel = ({ route, onChange, onClose }) => {
                         onClick={() => window.open(buildUberUrl(origin, destination), '_blank')}
                         title='Pedir Uber'
                         aria-label='Pedir Uber'
-                        className={cn(actionButtonClass, 'shrink-0')}
+                        className={actionButtonClass}
                     >
                         <Car />
                     </button>
@@ -121,7 +122,7 @@ export const RoutePanel = ({ route, onChange, onClose }) => {
                         onClick={onClose}
                         title='Quitar ruta'
                         aria-label='Quitar ruta'
-                        className={cn(actionButtonClass, 'shrink-0')}
+                        className={actionButtonClass}
                     >
                         <X />
                     </button>

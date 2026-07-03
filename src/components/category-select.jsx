@@ -43,7 +43,7 @@ export const CategorySelect = ({ value, onChange, placeholder = 'Elige una categ
                 render={
                     <button
                         type='button'
-                        className='flex h-8 w-full items-center gap-1.5 rounded-md border border-border px-2 text-left text-sm text-foreground/90 transition-colors hover:bg-accent'
+                        className='flex h-8 w-full items-center gap-1.5 rounded-lg border border-border px-2 text-left text-sm text-foreground/90 transition-colors hover:bg-accent'
                     />
                 }
             >

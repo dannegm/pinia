@@ -2,16 +2,16 @@ import { useMemo, useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useQueryState } from 'nuqs';
 import Fuse from 'fuse.js';
-import { Plus, Pencil, Search, X } from 'lucide-react';
+import { Plus, Pencil, Search, X, MapPinOff } from 'lucide-react';
 import { useNavigate } from '@tanstack/react-router';
 import { Button } from '@/ui/button';
 import { Alert, AlertDescription } from '@/ui/alert';
-import { ConfirmDeleteButton } from '@/ui/confirm-delete-button';
+import { DeletePlaceButton } from '@/components/delete-place-button';
 import { DynamicIcon } from '@/ui/dynamic-icon';
 import { Tooltip, TooltipTrigger, TooltipContent } from '@/ui/tooltip';
 import { InputGroup, InputGroupAddon, InputGroupButton, InputGroupInput } from '@/ui/input-group';
 import { useMap } from '@/ui/map';
-import { CategoryFilterChips, useCategoryFilter } from '@/components/category-filter-chips';
+import { CategoryFilterSelect, useCategoryFilter } from '@/components/category-filter-select';
 import { PanelHeader } from '@/components/panel-header';
 import { placesQuery, deletePlaceMutation } from '@/queries/places';
 
@@ -52,14 +52,9 @@ export const PlacesPage = () => {
             onSuccess: () => {
                 setError(null);
                 queryClient.invalidateQueries({ queryKey: ['places'] });
+                queryClient.invalidateQueries({ queryKey: ['system-places'] });
             },
-            onError: err => {
-                setError(
-                    err.code === '23503'
-                        ? 'No se puede eliminar: este lugar está asignado como "casa" en Ajustes.'
-                        : 'No se pudo eliminar el lugar.',
-                );
-            },
+            onError: () => setError('No se pudo eliminar el lugar.'),
         }),
     );
 
@@ -73,60 +68,63 @@ export const PlacesPage = () => {
               : `${filteredPlaces.length} ${plural} guardado${filteredPlaces.length === 1 ? '' : 's'}.`;
 
     return (
-        <div className='flex h-full flex-col gap-3'>
-            <div>
-                <PanelHeader title='Lugares' />
-                <p className='text-sm text-foreground/70'>{summary}</p>
+        <div className='flex h-full min-h-0 flex-col'>
+            <PanelHeader title='Lugares' description={summary} />
+
+            <div className='flex shrink-0 flex-col gap-3 p-4 pb-3'>
+                <InputGroup>
+                    <InputGroupAddon>
+                        <Search />
+                    </InputGroupAddon>
+                    <InputGroupInput
+                        value={query}
+                        onChange={e => setQuery(e.target.value)}
+                        placeholder='Filtrar lugares'
+                    />
+                    {query && (
+                        <InputGroupAddon align='inline-end'>
+                            <InputGroupButton
+                                type='button'
+                                size='icon-xs'
+                                aria-label='Limpiar búsqueda'
+                                onClick={() => setQuery('')}
+                            >
+                                <X />
+                            </InputGroupButton>
+                        </InputGroupAddon>
+                    )}
+                </InputGroup>
+
+                <CategoryFilterSelect
+                    selected={selectedCategoryIds}
+                    onToggle={toggleCategory}
+                    onClear={() => setSelectedCategoryIds([])}
+                />
+
+                {error && (
+                    <Alert variant='destructive'>
+                        <AlertDescription>{error}</AlertDescription>
+                    </Alert>
+                )}
             </div>
 
-            <InputGroup>
-                <InputGroupAddon>
-                    <Search />
-                </InputGroupAddon>
-                <InputGroupInput
-                    value={query}
-                    onChange={e => setQuery(e.target.value)}
-                    placeholder='Filtrar lugares'
-                />
-                {query && (
-                    <InputGroupAddon align='inline-end'>
-                        <InputGroupButton
-                            type='button'
-                            size='icon-xs'
-                            aria-label='Limpiar búsqueda'
-                            onClick={() => setQuery('')}
-                        >
-                            <X />
-                        </InputGroupButton>
-                    </InputGroupAddon>
-                )}
-            </InputGroup>
-
-            <CategoryFilterChips selected={selectedCategoryIds} onToggle={toggleCategory} />
-
-            {error && (
-                <Alert variant='destructive'>
-                    <AlertDescription>{error}</AlertDescription>
-                </Alert>
-            )}
-
-            <div className='flex-1 overflow-y-auto'>
+            <div className='flex-1 min-h-0 overflow-y-auto p-4 pt-0'>
                 <div className='flex flex-col gap-2'>
                     {filteredPlaces.map(place => (
                         <div
                             key={place.id}
-                            className='flex items-center gap-2 rounded-md border border-border p-2'
+                            className='flex items-center gap-2 squircle-lg border border-border/70 bg-card p-2.5 shadow-sm shadow-black/5 transition-colors hover:border-border hover:bg-muted/40'
                         >
                             <button
                                 type='button'
                                 onClick={() =>
                                     map.flyTo({ center: [place.lng, place.lat], zoom: 16, duration: 800 })
                                 }
-                                className='flex flex-1 items-center gap-2 text-left'
+                                className='flex flex-1 items-center gap-2.5 text-left'
                             >
                                 {place.category?.icon && (
                                     <div
-                                        className='flex-center size-6 shrink-0 rounded-full text-white [&>svg]:size-3.5 bg-(--place-color)'
+                                        className='flex-center size-7 shrink-0 rounded-full text-white ring-4 ring-(--place-color)/10 [&>svg]:size-3.5 bg-(--place-color)'
                                         style={{ '--place-color': place.category.color }}
                                     >
                                         <DynamicIcon icon={place.category.icon} />
@@ -149,24 +147,34 @@ export const PlacesPage = () => {
                                 onClick={() =>
                                     navigate({ to: '/places/$placeId/edit', params: { placeId: place.id } })
                                 }
-                                className='flex-center size-8 shrink-0 rounded-md text-foreground/70 transition-colors hover:bg-accent [&>svg]:size-4'
+                                className='flex-center size-8 shrink-0 rounded-md text-foreground/70 transition-colors hover:bg-accent hover:text-accent-foreground [&>svg]:size-4'
                             >
                                 <Pencil />
                             </button>
-                            <ConfirmDeleteButton
-                                itemLabel={`"${place.name}"`}
-                                onConfirm={() => deleteMutation.mutate(place.id)}
-                            />
+                            <DeletePlaceButton place={place} onConfirm={() => deleteMutation.mutate(place.id)} />
                         </div>
                     ))}
 
+                    {places.length === 0 && (
+                        <div className='flex flex-col items-center gap-2 py-10 text-center'>
+                            <MapPinOff className='size-6 text-foreground/40' />
+                            <p className='text-sm text-foreground/70'>Aún no guardas ningún lugar.</p>
+                            <p className='text-xs text-foreground/50'>
+                                Agrégalos desde aquí o con clic derecho en el mapa.
+                            </p>
+                        </div>
+                    )}
+
                     {places.length > 0 && filteredPlaces.length === 0 && (
-                        <p className='text-sm text-foreground/70'>Ningún lugar coincide con este filtro.</p>
+                        <div className='flex flex-col items-center gap-2 py-10 text-center'>
+                            <MapPinOff className='size-6 text-foreground/40' />
+                            <p className='text-sm text-foreground/70'>Ningún lugar coincide con este filtro.</p>
+                        </div>
                     )}
                 </div>
             </div>
 
-            <div className='sticky bottom-0'>
+            <div className='shrink-0 border-t border-border/70 p-4 pt-3'>
                 <Button className='h-10 w-full' onClick={() => navigate({ to: '/places/new' })}>
                     <Plus />
                     Agregar lugar

@@ -4,7 +4,7 @@ import { useNavigate, useParams } from '@tanstack/react-router';
 import { CategoryForm } from '@/components/category-form';
 import { PanelHeader } from '@/components/panel-header';
 import { Alert, AlertDescription } from '@/ui/alert';
-import { ConfirmDeleteButton } from '@/ui/confirm-delete-button';
+import { DeleteCategoryButton } from '@/components/delete-category-button';
 import { categoriesQuery, updateCategoryMutation, deleteCategoryMutation } from '@/queries/categories';
 
 export const EditCategoryPage = () => {
@@ -30,28 +30,26 @@ export const EditCategoryPage = () => {
         deleteCategoryMutation({
             onSuccess: () => {
                 queryClient.invalidateQueries({ queryKey: ['categories'] });
+                queryClient.invalidateQueries({ queryKey: ['places'] });
+                queryClient.invalidateQueries({ queryKey: ['system-places'] });
                 goBack();
             },
-            onError: err => {
-                setDeleteError(
-                    err.code === '23503'
-                        ? 'No se puede eliminar: hay lugares usando esta categoría.'
-                        : 'No se pudo eliminar la categoría.',
-                );
-            },
+            onError: () => setDeleteError('No se pudo eliminar la categoría.'),
         }),
     );
 
     if (!category) return null;
 
     return (
-        <div className='flex h-full flex-col gap-3'>
+        <div className='flex h-full min-h-0 flex-col'>
             <PanelHeader title='Editar categoría' onBack={goBack} />
 
             {deleteError && (
-                <Alert variant='destructive'>
-                    <AlertDescription>{deleteError}</AlertDescription>
-                </Alert>
+                <div className='shrink-0 px-4 pt-3'>
+                    <Alert variant='destructive'>
+                        <AlertDescription>{deleteError}</AlertDescription>
+                    </Alert>
+                </div>
             )}
 
             <CategoryForm
@@ -60,8 +58,8 @@ export const EditCategoryPage = () => {
                 submitLabel='Guardar cambios'
                 pending={mutation.isPending}
                 secondaryAction={
-                    <ConfirmDeleteButton
-                        itemLabel={`"${category.name}"`}
+                    <DeleteCategoryButton
+                        category={category}
                         onConfirm={() => deleteMutation.mutate(categoryId)}
                         label='Eliminar'
                         className='h-10 w-full'

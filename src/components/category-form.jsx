@@ -1,17 +1,19 @@
 import { useState } from 'react';
+import { Palette } from 'lucide-react';
 import { Button } from '@/ui/button';
 import { Input } from '@/ui/input';
 import { Field, FieldGroup, FieldLabel } from '@/ui/field';
 import { ColorPicker } from '@/ui/color-picker';
 import { IconPicker } from '@/ui/icon-picker';
 import { DynamicIcon } from '@/ui/dynamic-icon';
+import { BRAND_COLOR } from '@/constants/map-defaults';
 
 const DEFAULT_ICON = { library: 'lucide', name: 'MapPin' };
 
 export const CategoryForm = ({ initialValues, onSubmit, submitLabel, pending, secondaryAction }) => {
     const [name, setName] = useState(initialValues?.name ?? '');
     const [icon, setIcon] = useState(initialValues?.icon ?? DEFAULT_ICON);
-    const [color, setColor] = useState(initialValues?.color ?? '#6366f1');
+    const [color, setColor] = useState(initialValues?.color ?? BRAND_COLOR);
 
     const handleSubmit = e => {
         e.preventDefault();
@@ -20,51 +22,47 @@ export const CategoryForm = ({ initialValues, onSubmit, submitLabel, pending, se
     };
 
     return (
-        <form onSubmit={handleSubmit} className='flex h-full flex-col gap-3'>
-            <FieldGroup>
-                <Field>
-                    <FieldLabel htmlFor='category-name'>Nombre</FieldLabel>
-                    <Input
-                        id='category-name'
-                        value={name}
-                        onChange={e => setName(e.target.value)}
-                        placeholder='Restaurantes'
-                    />
-                </Field>
+        <form onSubmit={handleSubmit} className='flex flex-1 min-h-0 flex-col'>
+            <div className='flex-1 min-h-0 overflow-y-auto p-4'>
+                <div className='flex flex-col items-center gap-2 pb-2'>
+                    <div className='relative'>
+                        <IconPicker value={icon} onChange={setIcon}>
+                            <button
+                                type='button'
+                                aria-label='Elegir ícono'
+                                className='flex-center size-20 shrink-0 rounded-full text-white shadow-md shadow-black/15 ring-8 ring-(--category-color)/15 transition-transform hover:scale-105 active:scale-95 [&>svg]:size-8 bg-(--category-color)'
+                                style={{ '--category-color': color }}
+                            >
+                                <DynamicIcon icon={icon} />
+                            </button>
+                        </IconPicker>
+                        <ColorPicker value={color} onChange={setColor}>
+                            <button
+                                type='button'
+                                aria-label='Elegir color'
+                                className='flex-center absolute -right-1 -bottom-1 size-8 rounded-full border-2 border-background bg-card text-foreground/70 shadow-sm shadow-black/10 transition-colors hover:text-foreground [&>svg]:size-3.5'
+                            >
+                                <Palette />
+                            </button>
+                        </ColorPicker>
+                    </div>
+                    <p className='text-xs text-foreground/50'>Así se verá en el mapa</p>
+                </div>
 
-                <Field orientation='horizontal'>
-                    <FieldLabel>Ícono</FieldLabel>
-                    <span className='spacer' />
-                    <span className='text-xs text-foreground/70'>
-                        {icon.library}/{icon.name}
-                    </span>
-                    <IconPicker value={icon} onChange={setIcon}>
-                        <button
-                            type='button'
-                            aria-label='Elegir ícono'
-                            className='flex-center size-8 shrink-0 rounded-md border border-border [&>svg]:size-4'
-                        >
-                            <DynamicIcon icon={icon} />
-                        </button>
-                    </IconPicker>
-                </Field>
-
-                <Field orientation='horizontal'>
-                    <FieldLabel>Color</FieldLabel>
-                    <span className='spacer' />
-                    <span className='text-xs text-foreground/70 uppercase'>{color}</span>
-                    <ColorPicker value={color} onChange={setColor}>
-                        <button
-                            type='button'
-                            aria-label='Elegir color'
-                            className='size-8 shrink-0 rounded-md border border-border bg-(--category-color)'
-                            style={{ '--category-color': color }}
+                <FieldGroup>
+                    <Field>
+                        <FieldLabel htmlFor='category-name'>Nombre</FieldLabel>
+                        <Input
+                            id='category-name'
+                            value={name}
+                            onChange={e => setName(e.target.value)}
+                            placeholder='Restaurantes'
                         />
-                    </ColorPicker>
-                </Field>
-            </FieldGroup>
+                    </Field>
+                </FieldGroup>
+            </div>
 
-            <div className='mt-auto flex flex-col gap-2'>
+            <div className='flex shrink-0 flex-col gap-2 border-t border-border/70 p-4 pt-3'>
                 {secondaryAction}
                 <Button type='submit' disabled={pending} className='h-10 w-full'>
                     {submitLabel}

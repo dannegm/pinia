@@ -67,7 +67,7 @@ export const NumberScrubber = forwardRef(
         }, [value]);
 
         return (
-            <div className='group relative w-fit'>
+            <div className='group relative w-full'>
                 <Input
                     ref={ref}
                     type='number'
