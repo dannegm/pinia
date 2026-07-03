@@ -44,13 +44,13 @@ Known, already-agreed exception: the off-screen "beacon" direction-arrow indicat
 
 Core:
 - Full-viewport map; search, filters, the place list, and controls all float over it as overlay UI — no side-by-side panels.
-- Places list: bottom drawer on mobile, persistent sidebar on desktop — same underlying list/search/filter component, different container per breakpoint. Selecting a place does `flyTo`/centers the map on it.
+- UI panels (search, places, categories, settings) follow a confirmed VSCode-style pattern, implemented as real TanStack Router sub-routes (not URL query state): the map lives in a persistent layout, `src/components/map-shell.jsx`, rendered by a pathless `shellRoute` in `src/router.jsx`, and never remounts as panels change. `/`, `/search`, `/places`, `/places/new`, `/categories`, `/categories/new`, and `/settings` are all children of `shellRoute`; each panel's content is a normal page component in `src/pages/*.jsx`. `src/components/panel-nav.jsx` is the icon rail — full-height on the left edge on desktop (`sm:w-14`), a bottom nav bar on mobile — clicking an icon navigates to its route, clicking the active one navigates back to `/` (closed state). `src/components/panel-container.jsx` renders a single `<Outlet/>` for the active panel: a persistent left sidebar (`w-1/4`, positioned right after the rail) on desktop, or a non-modal `Drawer` (bottom sheet, swipe-to-dismiss wired to the same "navigate to `/`" as the rail toggle) on mobile. It picks exactly ONE of these two containers via `src/hooks/use-media-query.js` (`useMediaQuery('(min-width: 640px)')`) — never both — because rendering `<Outlet/>` twice would mount the panel's route component twice simultaneously. The map's logical center compensates for both the always-visible rail and the open panel's actual measured width via MapLibre's native `padding` option (`map.easeTo({ padding: {...} })`, panel width measured live via `ResizeObserver`) — this keeps the visual "center" of the visible map area correct instead of the geometric center of the full container. nuqs is still used, but scoped to the search box's URL-synced query text on `/search`, not panel navigation.
 - Search by place name, category, and address; quick-access category filter chips.
 - Each place stores a free-text address AND lat/lng coordinates. Pins are placeable via drag-and-drop on the map (mapcn's `Markers` supports this natively via `draggable`/`onDrag`) or by typing coordinates directly.
-- Categories with an icon + color.
+- Categories have a color plus an icon stored as a single `icon jsonb not null` column on `guasave.categories`, shaped `{ library, name }` — `library` is `'lucide'` (renders via `lucide-react`'s `icons` map) or `'lucide-lab'` (renders via `lucide-react`'s generic `Icon` component with an `iconNode` from `@lucide/lab`). Supabase returns/accepts jsonb columns as plain JS objects already, so query code needs no manual (de)serialization. `src/ui/dynamic-icon.jsx` resolves either shape; always pass the whole `icon` object (`<DynamicIcon icon={category.icon} />`), never just a name string.
 - Hours: a single free-text field (e.g. "Lun-Vie 4-6pm"), always optional.
 - Geolocation: show the current position on the map + a "center on my location" control.
-- Map zoom bounds restricted roughly to the Guasave region (exact min/max not yet finalized).
+- Map zoom bounds: confirmed — min 9, max 18, default 14 (`MIN_ZOOM`/`MAX_ZOOM`/`DEFAULT_VIEWPORT` in `src/constants/map-defaults.js`). `maxBounds` (pan-limiting lat/lng box) is still open/undecided.
 - Marker clustering: deferred. mapcn's `Clusters` is a separate GeoJSON-based layer, not directly compatible with per-marker drag/popup interactivity — revisit only if plain markers become visually unmanageable.
 
 Place-specific:
@@ -85,8 +85,16 @@ System places:
   })
   ```
   Call sites use `useQuery(myQuery())`. Cross-tab sync triggers `queryClient.invalidateQueries(...)` rather than manually syncing local state across tabs.
+- The same factory pattern applies to mutations, co-located in the same `src/queries/*.js` file as the related query:
+  ```js
+  export const myMutation = (opts = {}) => ({
+      mutationFn: async input => { ... },
+      ...opts,
+  })
+  ```
+  Call sites use `useMutation(myMutation({ onSuccess: () => queryClient.invalidateQueries({ queryKey: [...] }) }))` — keeps the Supabase call/error-handling/response-shaping out of components, same as queries.
 - No obvious comments — code should read clearly on its own.
-- Providers tree lives in `src/providers/providers.jsx`, built with `createProviders` (`src/helpers/providers.js`, ported from `bins`): an array of `[Provider, props]` tuples, `reduceRight`-nested around `children`, so the first entry is outermost. Confirmed final order (outermost → innermost): `QueryProvider` → `BusProvider` → `DeviceProvider` → app content. No `IdentityProvider`/`SettingsProvider`/`ThemeProvider` — not needed for this project (no auth, settings is a plain module singleton with no Context, light-mode only). Router setup lives in a single `src/router.jsx` file (code-based routing, not a `src/routes/` folder) — its root route wraps `Providers` around `Outlet`.
+- Providers tree lives in `src/providers/providers.jsx`, built with `createProviders` (`src/helpers/providers.js`, ported from `bins`): an array of `[Provider, props]` tuples, `reduceRight`-nested around `children`, so the first entry is outermost. Confirmed final order (outermost → innermost): `QueryProvider` → `NuqsAdapter` (`nuqs/adapters/tanstack-router`) → `BusProvider` → `DeviceProvider` → app content. No `IdentityProvider`/`SettingsProvider`/`ThemeProvider` — not needed for this project (no auth, settings is a plain module singleton with no Context, light-mode only). Router setup lives in a single `src/router.jsx` file (code-based routing, not a `src/routes/` folder) — its root route wraps `Providers` around `Outlet`.
 - Every component needs both a mobile and a desktop treatment. Unprefixed Tailwind classes are the mobile styles; layer `sm:`/`lg:`/`xl:` on top for desktop — never the reverse.
 - Check `src/ui/` and the shadcn registry before writing custom UI; don't recreate an existing component. Ask before implementing something custom (same rule as the mapcn build-order rule above, generalized to all UI).
 - Extract conditional UI states (loading/empty/error) into their own named components with early returns — don't embed `{isLoading && <...>}` or ternaries inline in the main JSX. Use `match()` from `src/helpers/utils.js` (`.with(pattern, handler).otherwise(handler).run()`) to pick the rendered state instead of nested ternaries.
