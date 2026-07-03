@@ -14,21 +14,21 @@ QueryProvider → BusProvider → DeviceProvider → app content
 
 Daniel also shared the exact composition pattern used in `bins` for building/reordering this tree easily (`createProviders` + a root-route wrapper), which should be used verbatim.
 
-**Status as of this writing:** Step 1 (docs/memory correction) and Step 8 (initial Supabase migration) have been completed. Steps 2-7 (actual project scaffold) are still pending — resume with those in the next session.
+**Status as of this writing:** All steps (1-8) are complete. The scaffold builds, runs, and was verified in a headless browser (providers mount, `data-*` attributes present, Tailwind/font applied, no console errors). Outstanding before real feature work starts: Daniel needs to (a) create `.env` with `VITE_SUPABASE_URL`, `VITE_SUPABASE_PUBLISHABLE_KEY`, `VITE_NTFY_TOPIC`, and (b) run `migrations/001_create_initial_schema.sql` in the Supabase SQL editor. See Verification below for the manual checks to run once `.env` is in place.
 
 ## Step 1 — Correct existing docs/memory ✅ DONE
 
 - Update `CLAUDE.md` and `AGENTS.md` (kept in sync via the `sync-instructions` skill, group = `[CLAUDE.md, AGENTS.md]`): replace the old 5-provider tree with the confirmed 3-provider tree, and document the `createProviders` pattern below.
 - Update Claude's own memory (`user_react_app_conventions.md`, `project_guasave_map.md`) to match.
 
-## Step 2 — Project scaffold
+## Step 2 — Project scaffold ✅ DONE
 
 - `pnpm create vite@latest . -- --template react` (plain JS template, not `react-ts`) inside `/Users/danielgarcia/Desktop/Workspace/guasave`. Node 24, pnpm as the package manager (`.nvmrc`/`packageManager` field in `package.json` if useful).
 - Install core deps: `react-router` is NOT used — instead `@tanstack/react-router` + its Vite plugin, `@tanstack/react-query`, `nuqs` (+ `nuqs/adapters/tanstack-router`), `@supabase/supabase-js`, `maplibre-gl`, `clsx`, `tailwind-merge`, `color`, `lucide-react`, `lucide-lab`, `@microlink/react-json-view`.
 - Tailwind v4: `pnpm add tailwindcss @tailwindcss/vite`, configure via the Vite plugin (no `tailwind.config.js`, CSS-based `@theme` config in `index.css`).
 - shadcn/ui: initialize with base-ui as the primitives library (not Radix) — `npx shadcn@latest init` and confirm/point it at base-ui during setup; install `@mapcn/map` via `npx shadcn@latest add @mapcn/map`.
 
-## Step 3 — Folder structure
+## Step 3 — Folder structure ✅ DONE
 
 Create the confirmed folder convention under `src/`:
 - `src/components/` — feature/domain components
@@ -41,7 +41,7 @@ Create the confirmed folder convention under `src/`:
 - `src/queries/` — TanStack Query factory functions
 - `src/router.jsx` — **a single file at `src/` root** (not a `src/routes/` folder) that builds the whole TanStack Router route tree in code, referencing page components from `src/pages/`. This is Daniel's explicit correction: file-based routing (`bins`'s `src/routes/__root.jsx` + per-route files) is NOT the pattern here — Guasave uses one code-based `router.jsx` that assembles routes (including the root route wrapping `Providers`/`Outlet`) manually, importing pages from `src/pages/`.
 
-## Step 4 — Port reusable utilities from `bins`
+## Step 4 — Port reusable utilities from `bins` ✅ DONE
 
 Source project: `/Users/danielgarcia/Desktop/Workspace/bins`. Port each file below to the Guasave path shown, adjusting only what's noted (nothing else — keep logic/shape identical):
 
@@ -65,7 +65,7 @@ Source project: `/Users/danielgarcia/Desktop/Workspace/bins`. Port each file bel
 
 `QueryProvider` itself was never pasted — write a standard `QueryClientProvider` wrapper (`src/providers/query-provider.jsx`) following the same one-file-per-provider convention.
 
-## Step 5 — Port reusable UI components from `bins`
+## Step 5 — Port reusable UI components from `bins` ✅ DONE
 
 | Source (`bins`) | Destination (`guasave`) | Notes |
 |---|---|---|
@@ -78,7 +78,7 @@ Source project: `/Users/danielgarcia/Desktop/Workspace/bins`. Port each file bel
 
 These can be ported opportunistically (they're not needed until later features use them), but it's fine to bring them in now while everything else is being set up, since they're self-contained files with clear destinations.
 
-## Step 6 — Providers tree + router
+## Step 6 — Providers tree + router ✅ DONE
 
 Confirmed final providers tree — build in this exact order:
 
@@ -120,7 +120,7 @@ const routeTree = rootRoute.addChildren([homeRoute /* , more routes */]);
 export const router = createRouter({ routeTree });
 ```
 
-## Step 7 — `index.css`
+## Step 7 — `index.css` ✅ DONE
 
 Structure per Daniel's shared setup instructions:
 - Google Font import (Atkinson Hyperlegible) at the very top, before the Tailwind import

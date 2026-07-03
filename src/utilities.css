@@ -1,0 +1,42 @@
+@utility absolute-center {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+@utility all-unset {
+    all: unset;
+}
+
+@utility interpolate-size {
+    interpolate-size: allow-keywords;
+}
+
+@utility flex-center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+@utility z-max {
+    z-index: 999999;
+}
+
+@utility spacer {
+    flex-grow: 1;
+}
+
+@utility squircle-* {
+    --squircle-r: --value(--radius-*);
+    border-radius: calc(var(--squircle-r) / 2);
+
+    @supports (corner-shape: squircle) {
+        corner-shape: squircle;
+        border-radius: var(--squircle-r);
+    }
+}
+
+@utility image-* {
+    image-rendering: --value('auto', 'smooth', 'crisp-edges', 'pixelated');
+}
