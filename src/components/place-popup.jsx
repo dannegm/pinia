@@ -90,7 +90,12 @@ export const PlacePopup = ({ place, autoOpen }) => {
                 )}
 
                 <div className='flex flex-col gap-2 border-t border-border/60 pt-2.5'>
-                    <div className='flex gap-1.5'>
+                    <div className='flex flex-col gap-1.5'>
+                        <h3 className='text-sm font-semibold text-foreground'>Fijar ruta desde</h3>
+                        <PlaceNavigationRow place={place} />
+                    </div>
+
+                    <div className='flex gap-1.5 border-t border-border/60 pt-2.5'>
                         <Tooltip>
                             <TooltipTrigger
                                 render={
@@ -152,11 +157,6 @@ export const PlacePopup = ({ place, autoOpen }) => {
                             </TooltipTrigger>
                             <TooltipContent>Abrir en Google Maps</TooltipContent>
                         </Tooltip>
-                    </div>
-
-                    <div className='flex flex-col gap-1.5 border-t border-border/60 pt-2.5'>
-                        <h3 className='text-sm font-semibold text-foreground'>Fijar ruta desde</h3>
-                        <PlaceNavigationRow place={place} />
                     </div>
                 </div>
             </div>
