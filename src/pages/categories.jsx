@@ -88,14 +88,14 @@ export const CategoriesPage = () => {
             </div>
 
             <div className='flex-1 min-h-0 overflow-y-auto p-4 pt-0'>
-                <div className='flex flex-col gap-2'>
+                <div className='flex flex-col gap-1'>
                     {filteredCategories.map(category => (
                         <div
                             key={category.id}
-                            className='flex items-center gap-2.5 squircle-lg border border-border/70 bg-card p-2.5 shadow-sm shadow-black/5 transition-colors hover:border-border hover:bg-muted/40'
+                            className='flex items-center squircle-lg border border-border/70 bg-card p-2.5 shadow-sm shadow-black/5 transition-colors hover:border-border hover:bg-muted/40'
                         >
                             <div
-                                className='flex-center size-7 shrink-0 rounded-full text-white ring-4 ring-(--category-color)/10 [&>svg]:size-3.5 bg-(--category-color)'
+                                className='flex-center mr-2.5 size-7 shrink-0 rounded-full text-white ring-4 ring-(--category-color)/10 [&>svg]:size-3.5 bg-(--category-color)'
                                 style={{ '--category-color': category.color }}
                             >
                                 <DynamicIcon icon={category.icon} />
@@ -110,6 +110,7 @@ export const CategoriesPage = () => {
                                 </TooltipTrigger>
                                 <TooltipContent>{category.name}</TooltipContent>
                             </Tooltip>
+
                             <button
                                 type='button'
                                 aria-label={hiddenCategoryIds.includes(category.id) ? 'Mostrar en el mapa' : 'Ocultar del mapa'}

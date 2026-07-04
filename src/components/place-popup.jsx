@@ -1,10 +1,11 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { Star, FlagTriangleRight, MapPin, Clock, StickyNote } from 'lucide-react';
+import { Star, FlagTriangleRight, MapPin, Clock, NotebookText } from 'lucide-react';
 import { MarkerPopup } from '@/ui/map';
 import { ToggleIconButton } from '@/ui/toggle-icon-button';
 import { DynamicIcon } from '@/ui/dynamic-icon';
 import { updatePlaceMutation } from '@/queries/places';
 import { PlaceNavigationRow } from '@/components/place-navigation-row';
+import { NotesViewer } from '@/components/notes-viewer';
 import { BRAND_COLOR, FAVORITE_COLOR } from '@/constants/map-defaults';
 
 export const PlacePopup = ({ place }) => {
@@ -54,10 +55,10 @@ export const PlacePopup = ({ place }) => {
                             </p>
                         )}
                         {place.notes && (
-                            <p className='flex items-start gap-1.5'>
-                                <StickyNote className='mt-0.5 size-3.5 shrink-0 text-foreground/40' />
-                                <span>{place.notes}</span>
-                            </p>
+                            <div className='flex items-start gap-1.5'>
+                                <NotebookText className='mt-0.5 size-3.5 shrink-0 text-foreground/40' />
+                                <NotesViewer text={place.notes} />
+                            </div>
                         )}
                     </div>
                 )}

@@ -1,10 +1,11 @@
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { Star, FlagTriangleRight, MapPin, Clock, StickyNote } from 'lucide-react';
+import { Star, FlagTriangleRight, MapPin, Clock, NotebookText, Info } from 'lucide-react';
 import { MapMarker, MarkerContent, useMap } from '@/ui/map';
 import { Button } from '@/ui/button';
 import { Input } from '@/ui/input';
 import { Field, FieldGroup, FieldLabel, FieldSeparator } from '@/ui/field';
+import { Popover, PopoverContent, PopoverTrigger, PopoverHeader, PopoverTitle, PopoverDescription } from '@/ui/popover';
 import { Textarea } from '@/ui/textarea';
 import { NumberScrubber } from '@/ui/number-scrubber';
 import { DynamicIcon } from '@/ui/dynamic-icon';
@@ -197,10 +198,125 @@ export const PlaceForm = ({
                         </Field>
 
                         <Field>
-                            <FieldLabel htmlFor='place-notes'>
-                                <StickyNote className='size-3.5 text-foreground/40' />
-                                Notas
-                            </FieldLabel>
+                            <div className='flex items-center justify-between'>
+                                <FieldLabel htmlFor='place-notes'>
+                                    <NotebookText className='size-3.5 text-foreground/40' />
+                                    Notas
+                                </FieldLabel>
+                                <Popover>
+                                    <PopoverTrigger
+                                        render={
+                                            <button
+                                                type='button'
+                                                aria-label='Ver formato de notas'
+                                                className='flex-center size-5 shrink-0 rounded-full text-foreground/40 transition-colors hover:bg-accent hover:text-accent-foreground [&>svg]:size-3.5'
+                                            />
+                                        }
+                                    >
+                                        <Info />
+                                    </PopoverTrigger>
+                                    <PopoverContent className='w-80' side='right' align='center'>
+                                        <PopoverHeader>
+                                            <PopoverTitle>Formato de notas</PopoverTitle>
+                                            <PopoverDescription>
+                                                Se aplica automáticamente al mostrar el lugar.
+                                            </PopoverDescription>
+                                        </PopoverHeader>
+
+                                        <div className='flex flex-col gap-2.5'>
+                                            <div>
+                                                <p className='mb-1 text-sm font-medium text-foreground/90'>Texto</p>
+                                                <ul className='flex flex-col gap-1 text-sm text-foreground/70'>
+                                                    <li>
+                                                        <code className='rounded bg-muted px-1 py-0.5 text-foreground/90'>
+                                                            **negrita**
+                                                        </code>
+                                                    </li>
+                                                    <li>
+                                                        <code className='rounded bg-muted px-1 py-0.5 text-foreground/90'>
+                                                            *cursiva*
+                                                        </code>
+                                                    </li>
+                                                    <li>
+                                                        <code className='rounded bg-muted px-1 py-0.5 text-foreground/90'>
+                                                            - item
+                                                        </code>{' '}
+                                                        para listas
+                                                    </li>
+                                                </ul>
+                                            </div>
+
+                                            <div>
+                                                <p className='mb-1 text-sm font-medium text-foreground/90'>
+                                                    Etiquetas
+                                                </p>
+                                                <ul className='flex flex-col gap-1 text-sm text-foreground/70'>
+                                                    <li>
+                                                        <code className='rounded bg-muted px-1 py-0.5 text-foreground/90'>
+                                                            #tag
+                                                        </code>
+                                                    </li>
+                                                    <li>
+                                                        <code className='rounded bg-muted px-1 py-0.5 text-foreground/90'>
+                                                            !comando
+                                                        </code>
+                                                    </li>
+                                                </ul>
+                                            </div>
+
+                                            <div>
+                                                <p className='mb-1 text-sm font-medium text-foreground/90'>
+                                                    Badges (en su propia línea)
+                                                </p>
+                                                <ul className='grid grid-cols-2 gap-x-3 gap-y-1 text-sm text-foreground/70'>
+                                                    <li>
+                                                        <code className='rounded bg-muted px-1 py-0.5 text-foreground/90'>
+                                                            tel:
+                                                        </code>{' '}
+                                                        Teléfono
+                                                    </li>
+                                                    <li>
+                                                        <code className='rounded bg-muted px-1 py-0.5 text-foreground/90'>
+                                                            wa:
+                                                        </code>{' '}
+                                                        WhatsApp
+                                                    </li>
+                                                    <li>
+                                                        <code className='rounded bg-muted px-1 py-0.5 text-foreground/90'>
+                                                            ig:
+                                                        </code>{' '}
+                                                        Instagram
+                                                    </li>
+                                                    <li>
+                                                        <code className='rounded bg-muted px-1 py-0.5 text-foreground/90'>
+                                                            x: / tw:
+                                                        </code>{' '}
+                                                        X
+                                                    </li>
+                                                    <li>
+                                                        <code className='rounded bg-muted px-1 py-0.5 text-foreground/90'>
+                                                            fb:
+                                                        </code>{' '}
+                                                        Facebook
+                                                    </li>
+                                                    <li>
+                                                        <code className='rounded bg-muted px-1 py-0.5 text-foreground/90'>
+                                                            tg:
+                                                        </code>{' '}
+                                                        Telegram
+                                                    </li>
+                                                    <li>
+                                                        <code className='rounded bg-muted px-1 py-0.5 text-foreground/90'>
+                                                            url:
+                                                        </code>{' '}
+                                                        Enlace
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </PopoverContent>
+                                </Popover>
+                            </div>
                             <Textarea
                                 id='place-notes'
                                 value={notes}

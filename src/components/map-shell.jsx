@@ -20,6 +20,7 @@ import { usePanelOffset } from '@/hooks/use-panel-offset';
 import { CurrentLocationMarker } from '@/components/current-location-marker';
 import { DirectionArrow } from '@/components/direction-arrow';
 import { PlacesLayer } from '@/components/places-layer';
+import { PointNemoMarker } from '@/components/point-nemo-marker';
 import { PanelContainer } from '@/components/panel-container';
 import { RoutePanel, ROUTE_PANEL_HEIGHT } from '@/components/route-panel';
 import { placesQuery } from '@/queries/places';
@@ -153,6 +154,7 @@ export const MapShell = () => {
                     )}
 
                     <PlacesLayer topOffset={routeTopOffset} />
+                    <PointNemoMarker />
                     <PanelContainer />
 
                     {route && <RoutePanel route={route} onChange={setRoute} onClose={() => setRoute(null)} />}

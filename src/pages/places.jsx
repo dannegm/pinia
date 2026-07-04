@@ -109,11 +109,11 @@ export const PlacesPage = () => {
             </div>
 
             <div className='flex-1 min-h-0 overflow-y-auto p-4 pt-0'>
-                <div className='flex flex-col gap-2'>
+                <div className='flex flex-col gap-1'>
                     {filteredPlaces.map(place => (
                         <div
                             key={place.id}
-                            className='flex items-center gap-2 squircle-lg border border-border/70 bg-card p-2.5 shadow-sm shadow-black/5 transition-colors hover:border-border hover:bg-muted/40'
+                            className='flex items-center squircle-lg border border-border/70 bg-card p-2.5 shadow-sm shadow-black/5 transition-colors hover:border-border hover:bg-muted/40'
                         >
                             <button
                                 type='button'
@@ -141,6 +141,7 @@ export const PlacesPage = () => {
                                     <TooltipContent>{place.name}</TooltipContent>
                                 </Tooltip>
                             </button>
+
                             <button
                                 type='button'
                                 aria-label='Editar'

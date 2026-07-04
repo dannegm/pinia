@@ -9,6 +9,7 @@ import { AddCategoryPage } from '@/pages/categories-new';
 import { EditCategoryPage } from '@/pages/categories-edit';
 import { EditPlacePage } from '@/pages/places-edit';
 import { SettingsPage } from '@/pages/settings';
+import { NotFoundPage } from '@/pages/not-found';
 
 const rootRoute = createRootRoute({
     component: () => (
@@ -18,7 +19,12 @@ const rootRoute = createRootRoute({
     ),
 });
 
-const shellRoute = createRoute({ getParentRoute: () => rootRoute, id: 'shell', component: MapShell });
+const shellRoute = createRoute({
+    getParentRoute: () => rootRoute,
+    id: 'shell',
+    component: MapShell,
+    notFoundComponent: NotFoundPage,
+});
 
 const homeRoute = createRoute({ getParentRoute: () => shellRoute, path: '/', component: HomePage });
 const placesRoute = createRoute({ getParentRoute: () => shellRoute, path: '/places', component: PlacesPage });
@@ -52,6 +58,7 @@ const settingsRoute = createRoute({
     path: '/settings',
     component: SettingsPage,
 });
+const catchAllRoute = createRoute({ getParentRoute: () => shellRoute, path: '$', component: NotFoundPage });
 
 const routeTree = rootRoute.addChildren([
     shellRoute.addChildren([
@@ -63,6 +70,7 @@ const routeTree = rootRoute.addChildren([
         addCategoryRoute,
         editCategoryRoute,
         settingsRoute,
+        catchAllRoute,
     ]),
 ]);
 

@@ -59,7 +59,7 @@
        routes before this pass). Category colors are user-chosen and
        arbitrary, so this chrome palette stays low-chroma on purpose — it
        should never compete with a pin. */
-    --background: #fafafa;
+    --background: #f0ffff;
     --foreground: #1c1c1c;
     --card: #ffffff;
     --card-foreground: #1c1c1c;

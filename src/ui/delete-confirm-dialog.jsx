@@ -19,42 +19,57 @@ import { cn } from '@/helpers/utils';
 // item's own name, so the person has to read it before the button unlocks.
 // `children` is for entity-specific context (affected records, warnings)
 // rendered between the base warning and the confirm input.
-export const DeleteConfirmDialog = ({ title, confirmWord, onConfirm, label, className, children }) => {
-    const [open, setOpen] = useState(false);
+export const DeleteConfirmDialog = ({
+    title,
+    confirmWord,
+    onConfirm,
+    label,
+    className,
+    children,
+    trigger = true,
+    open: openProp,
+    onOpenChange: onOpenChangeProp,
+}) => {
+    const [openState, setOpenState] = useState(false);
     const [typed, setTyped] = useState('');
+    const isControlled = openProp !== undefined;
+    const open = isControlled ? openProp : openState;
     const canConfirm = typed.trim() === confirmWord;
 
     const handleOpenChange = next => {
-        setOpen(next);
+        if (isControlled) onOpenChangeProp?.(next);
+        else setOpenState(next);
         if (!next) setTyped('');
     };
 
     const handleConfirm = () => {
         onConfirm();
-        setOpen(false);
+        handleOpenChange(false);
     };
 
     return (
         <AlertDialog open={open} onOpenChange={handleOpenChange}>
-            <AlertDialogTrigger
-                render={
-                    label ? (
-                        <Button type='button' variant='destructive' aria-label='Eliminar' className={className} />
-                    ) : (
-                        <button
-                            type='button'
-                            aria-label='Eliminar'
-                            className={cn(
-                                'flex-center size-8 shrink-0 rounded-md text-destructive transition-colors hover:bg-destructive/10 [&>svg]:size-4',
-                                className,
-                            )}
-                        />
-                    )
-                }
-            >
-                <Trash2 />
-                {label}
-            </AlertDialogTrigger>
+            {trigger && (
+                <AlertDialogTrigger
+                    render={
+                        label ? (
+                            <Button type='button' variant='destructive' aria-label='Eliminar' className={className} />
+                        ) : (
+                            <button
+                                type='button'
+                                aria-label='Eliminar'
+                                className={cn(
+                                    'flex-center size-8 shrink-0 rounded-md text-destructive transition-colors hover:bg-destructive/10 [&>svg]:size-4',
+                                    className,
+                                )}
+                            />
+                        )
+                    }
+                >
+                    <Trash2 />
+                    {label}
+                </AlertDialogTrigger>
+            )}
             <AlertDialogContent>
                 <AlertDialogHeader>
                     <AlertDialogTitle>{title}</AlertDialogTitle>

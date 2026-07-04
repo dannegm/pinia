@@ -4,7 +4,7 @@ import { DeleteConfirmDialog } from '@/ui/delete-confirm-dialog';
 import { systemPlacesQuery } from '@/queries/system-places';
 import { SYSTEM_PLACE_LABELS } from '@/constants/system-places';
 
-export const DeletePlaceButton = ({ place, onConfirm, label, className }) => {
+export const DeletePlaceButton = ({ place, onConfirm, label, className, trigger, open, onOpenChange }) => {
     const { data: systemPlaces = [] } = useQuery(systemPlacesQuery());
     const systemEntry = systemPlaces.find(systemPlace => systemPlace.place_id === place.id);
 
@@ -15,6 +15,9 @@ export const DeletePlaceButton = ({ place, onConfirm, label, className }) => {
             onConfirm={onConfirm}
             label={label}
             className={className}
+            trigger={trigger}
+            open={open}
+            onOpenChange={onOpenChange}
         >
             {systemEntry && (
                 <div className='flex items-start gap-2 rounded-lg border border-amber-500/30 bg-amber-500/5 p-3 text-sm text-amber-700'>
