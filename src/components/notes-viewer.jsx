@@ -1,11 +1,20 @@
+import { useNavigate } from '@tanstack/react-router';
 import { parseNotes, parseNoteBlocks } from '@/helpers/notes';
 import { NoteBadge } from '@/components/note-badge';
 
-const InlineSegment = ({ segment }) => {
+const InlineSegment = ({ segment, onTagClick }) => {
     if (segment.type === 'bold') return <strong className='font-semibold text-foreground'>{segment.value}</strong>;
     if (segment.type === 'italic') return <em>{segment.value}</em>;
     if (segment.type === 'tag') {
-        return <span className='rounded-md bg-primary/10 px-1 py-0.5 text-primary'>#{segment.value}</span>;
+        return (
+            <button
+                type='button'
+                onClick={() => onTagClick(segment.value)}
+                className='rounded-md bg-primary/10 px-1 py-0.5 text-primary hover:bg-primary/20'
+            >
+                #{segment.value}
+            </button>
+        );
     }
     if (segment.type === 'command') {
         return <span className='rounded-md bg-accent px-1 py-0.5 text-accent-foreground'>!{segment.value}</span>;
@@ -14,6 +23,9 @@ const InlineSegment = ({ segment }) => {
 };
 
 export const NotesViewer = ({ text }) => {
+    const navigate = useNavigate();
+    const handleTagClick = tag => navigate({ to: '/places', search: { q: `#${tag}` } });
+
     if (!text?.trim()) return null;
 
     const { badges, body } = parseNotes(text);
@@ -40,7 +52,7 @@ export const NotesViewer = ({ text }) => {
                                     {block.items.map((segments, j) => (
                                         <li key={j}>
                                             {segments.map((segment, k) => (
-                                                <InlineSegment key={k} segment={segment} />
+                                                <InlineSegment key={k} segment={segment} onTagClick={handleTagClick} />
                                             ))}
                                         </li>
                                     ))}
@@ -51,7 +63,7 @@ export const NotesViewer = ({ text }) => {
                         return (
                             <p key={i}>
                                 {block.segments.map((segment, k) => (
-                                    <InlineSegment key={k} segment={segment} />
+                                    <InlineSegment key={k} segment={segment} onTagClick={handleTagClick} />
                                 ))}
                             </p>
                         );

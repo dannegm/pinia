@@ -13,6 +13,7 @@ import { InputGroup, InputGroupAddon, InputGroupButton, InputGroupInput } from '
 import { PanelHeader } from '@/components/panel-header';
 import { useHiddenCategories } from '@/hooks/use-hidden-categories';
 import { categoriesQuery, deleteCategoryMutation } from '@/queries/categories';
+import { cn } from '@/helpers/utils';
 
 export const CategoriesPage = () => {
     const navigate = useNavigate();
@@ -92,7 +93,10 @@ export const CategoriesPage = () => {
                     {filteredCategories.map(category => (
                         <div
                             key={category.id}
-                            className='flex items-center squircle-lg border border-border/70 bg-card p-2.5 shadow-sm shadow-black/5 transition-colors hover:border-border hover:bg-muted/40'
+                            className={cn(
+                                'flex items-center squircle-lg border border-border/70 bg-card p-2.5 shadow-sm shadow-black/5 transition-colors hover:border-border hover:bg-muted/40',
+                                { 'opacity-50': hiddenCategoryIds.includes(category.id) },
+                            )}
                         >
                             <div
                                 className='flex-center mr-2.5 size-7 shrink-0 rounded-full text-white ring-4 ring-(--category-color)/10 [&>svg]:size-3.5 bg-(--category-color)'

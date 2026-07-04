@@ -14,6 +14,7 @@ import { useMap } from '@/ui/map';
 import { CategoryFilterSelect, useCategoryFilter } from '@/components/category-filter-select';
 import { PanelHeader } from '@/components/panel-header';
 import { placesQuery, deletePlaceMutation } from '@/queries/places';
+import { useHiddenCategories } from '@/hooks/use-hidden-categories';
 
 export const PlacesPage = () => {
     const navigate = useNavigate();
@@ -22,7 +23,9 @@ export const PlacesPage = () => {
     const [error, setError] = useState(null);
     const [query, setQuery] = useQueryState('q', { defaultValue: '' });
     const [selectedCategoryIds, setSelectedCategoryIds] = useCategoryFilter();
-    const { data: places = [] } = useQuery(placesQuery());
+    const [hiddenCategoryIds] = useHiddenCategories();
+    const { data: allPlaces = [] } = useQuery(placesQuery());
+    const places = allPlaces.filter(place => !hiddenCategoryIds.includes(place.category_id));
 
     const categoryFilteredPlaces =
         selectedCategoryIds.length === 0
@@ -32,7 +35,7 @@ export const PlacesPage = () => {
     const fuse = useMemo(
         () =>
             new Fuse(categoryFilteredPlaces, {
-                keys: ['name', 'address', 'category.name'],
+                keys: ['name', 'address', 'category.name', 'notes'],
                 threshold: 0.3,
             }),
         [categoryFilteredPlaces],
