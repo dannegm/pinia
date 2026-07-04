@@ -95,7 +95,9 @@ export const CategoriesPage = () => {
                             key={category.id}
                             className={cn(
                                 'flex items-center squircle-lg border border-border/70 bg-card p-2.5 shadow-sm shadow-black/5 transition-colors hover:border-border hover:bg-muted/40',
-                                { 'opacity-50': hiddenCategoryIds.includes(category.id) },
+                                {
+                                    'bg-muted opacity-50': hiddenCategoryIds.includes(category.id),
+                                },
                             )}
                         >
                             <div
