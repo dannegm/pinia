@@ -124,7 +124,7 @@ export const PlacesPage = () => {
         <div className='flex h-full min-h-0 flex-col'>
             <PanelHeader title='Lugares' description={summary} />
 
-            <div className='flex shrink-0 flex-col gap-3 p-4 pb-3'>
+            <div className='flex shrink-0 flex-col gap-1 sm:gap-3 p-4 pb-3'>
                 <InputGroup>
                     <InputGroupAddon>
                         <Search />

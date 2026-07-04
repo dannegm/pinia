@@ -54,7 +54,7 @@ export const PanelContainer = ({ routeTopOffset = 0 }) => {
             style={{ '--dock-y': `${dockDrag.y}px` }}
         >
             <MobilePanelSheet open={isOpen} onClose={close} onDragChange={(y, dragging) => setDockDrag({ y, dragging })}>
-                {isOpen && <Outlet />}
+                <Outlet />
             </MobilePanelSheet>
 
             <nav className='flex items-center justify-around p-1'>
