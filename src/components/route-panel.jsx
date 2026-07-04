@@ -12,6 +12,10 @@ import { cn } from '@/helpers/utils';
 export const ROUTE_PANEL_HEIGHT = 48;
 export const ROUTE_PANEL_HEIGHT_MOBILE = 88;
 
+const PANEL_GAP = 8;
+const ZOOM_CONTROLS_WIDTH = 36;
+const ZOOM_CONTROLS_MARGIN = 8;
+
 const actionButtonClass = cn(
     'flex-center size-8 shrink-0 rounded-md text-foreground/70 transition-colors hover:bg-accent hover:text-accent-foreground [&>svg]:size-4',
 );
@@ -41,6 +45,7 @@ export const RoutePanel = ({ route, onChange, onClose }) => {
     const { map } = useMap();
     const { isDesktop, left } = usePanelOffset();
     const offsetLeft = isDesktop ? left + 16 : 8;
+    const maxWidth = `calc(100dvw - ${offsetLeft}px - ${PANEL_GAP}px - ${ZOOM_CONTROLS_WIDTH}px - ${ZOOM_CONTROLS_MARGIN}px)`;
     const [copied, setCopied] = useState(false);
 
     const { origin, destination } = route;
@@ -80,7 +85,10 @@ export const RoutePanel = ({ route, onChange, onClose }) => {
             {routeCoordinates && <MapRoute coordinates={routeCoordinates} color={BRAND_COLOR} width={4} />}
 
             <div className='absolute top-2 z-20 flex flex-col gap-1' style={{ left: `${offsetLeft}px` }}>
-                <div className='flex max-w-[calc(100dvw-1rem)] flex-col gap-1.5 squircle-lg border border-border bg-background p-1.5 shadow-md shadow-black/10 sm:flex-row sm:items-center'>
+                <div
+                    className='flex flex-col gap-1.5 squircle-lg border border-border bg-background p-1.5 shadow-md shadow-black/10 sm:flex-row sm:items-center'
+                    style={{ maxWidth }}
+                >
                     <div className='flex items-center gap-1.5 overflow-x-auto'>
                         <PlacePointSelect
                             value={origin}
