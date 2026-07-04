@@ -11,7 +11,7 @@ import {
     ContextMenuItem,
     ContextMenuSeparator,
 } from '@/ui/context-menu';
-import { DEFAULT_VIEWPORT, MIN_ZOOM, MAX_ZOOM } from '@/constants/map-defaults';
+import { DEFAULT_VIEWPORT, MIN_ZOOM, MAX_ZOOM, BRAND_COLOR } from '@/constants/map-defaults';
 import { cn } from '@/helpers/utils';
 import { useSettings } from '@/hooks/use-settings';
 import { useGeolocation } from '@/hooks/use-geolocation';
@@ -27,6 +27,19 @@ import { placesQuery } from '@/queries/places';
 import { systemPlaceQuery } from '@/queries/system-places';
 
 const placeToPoint = place => ({ lat: place.lat, lng: place.lng, label: place.name, placeId: place.id });
+
+const CURRENT_LOCATION_LABEL = 'Mi ubicación actual';
+
+const findRoutePointPlace = (point, places) =>
+    point?.placeId ? places?.find(place => place.id === point.placeId) : undefined;
+
+const shouldShowRouteBeacon = (point, places) => {
+    if (!point) return false;
+    if (!point.placeId && point.label === CURRENT_LOCATION_LABEL) return false;
+    return !findRoutePointPlace(point, places)?.is_beacon;
+};
+
+const getRouteBeaconColor = (point, places) => findRoutePointPlace(point, places)?.category?.color ?? BRAND_COLOR;
 
 const CenterButton = () => {
     const { map } = useMap();
@@ -155,6 +168,25 @@ export const MapShell = () => {
 
                     <PlacesLayer topOffset={routeTopOffset} />
                     <PointNemoMarker />
+
+                    {route && shouldShowRouteBeacon(route.origin, places) && (
+                        <DirectionArrow
+                            coords={{ lat: route.origin.lat, lng: route.origin.lng }}
+                            color={getRouteBeaconColor(route.origin, places)}
+                            flyToZoom={16}
+                            label={route.origin.label}
+                            offsets={{ left: panelLeft, bottom: panelBottom, top: routeTopOffset }}
+                        />
+                    )}
+                    {route && shouldShowRouteBeacon(route.destination, places) && (
+                        <DirectionArrow
+                            coords={{ lat: route.destination.lat, lng: route.destination.lng }}
+                            color={getRouteBeaconColor(route.destination, places)}
+                            flyToZoom={16}
+                            label={route.destination.label}
+                            offsets={{ left: panelLeft, bottom: panelBottom, top: routeTopOffset }}
+                        />
+                    )}
                     <PanelContainer routeTopOffset={routeTopOffset} />
 
                     {route && <RoutePanel route={route} onChange={setRoute} onClose={() => setRoute(null)} />}
