@@ -160,6 +160,8 @@ export const PlacesPage = () => {
                     )}
                 </InputGroup>
 
+                <div className='flex flex-row gap-2 items-center sm:items-stretch sm:flex-col'>
+
                 <CategoryFilterSelect
                     selected={selectedCategoryIds}
                     onToggle={toggleCategory}
@@ -212,6 +214,8 @@ export const PlacesPage = () => {
                             {sortDir === 'asc' ? 'Ascendente' : 'Descendente'}
                         </TooltipContent>
                     </Tooltip>
+                </div>
+
                 </div>
 
                 {error && (
