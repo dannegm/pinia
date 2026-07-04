@@ -2,7 +2,7 @@
 name: google-to-maplibre-style
 description: >
   Converts a Google Maps JS style JSON (featureType/elementType/stylers) into
-  edits on Guasave's MapLibre map style, using a documented mapping table and
+  edits on Pinia's MapLibre map style, using a documented mapping table and
   real HSL math instead of ad-hoc guessing. Auto-trigger whenever the owner
   pastes a Google Maps style JSON array (objects with featureType/stylers
   keys) and wants it applied to the map, or asks to adjust the map's visual
@@ -12,7 +12,7 @@ description: >
 
 # /google-to-maplibre-style
 
-Guasave's map uses MapLibre GL (via mapcn), not Google Maps JS — the two have
+Pinia's map uses MapLibre GL (via mapcn), not Google Maps JS — the two have
 incompatible style formats. Google's `featureType`/`elementType`/`stylers`
 JSON cannot be pasted in directly; it has to be translated. This skill does
 that translation mechanically, based on `mapping.cjs` (the featureType →

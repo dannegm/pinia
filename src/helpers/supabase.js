@@ -8,7 +8,7 @@ let _client = null;
 export const supabase = () => {
     if (_client) return _client;
     _client = createClient(SUPABASE_URL, SUPABASE_KEY, {
-        db: { schema: 'guasave' },
+        db: { schema: 'pinia' },
     });
     return _client;
 };

@@ -1,16 +1,30 @@
 import { useRef, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { RotateCcw, Download, Upload } from 'lucide-react';
+import { RotateCcw, Download, Upload, MapPin, Home, DatabaseBackup, CheckCircle2, AlertCircle } from 'lucide-react';
 import { useMap } from '@/ui/map';
 import { useSettings } from '@/hooks/use-settings';
 import { Button } from '@/ui/button';
-import { Field, FieldGroup, FieldLabel, FieldDescription } from '@/ui/field';
+import { Alert, AlertDescription } from '@/ui/alert';
 import { PanelHeader } from '@/components/panel-header';
 import { PlaceSelect } from '@/components/place-select';
 import { DEFAULT_VIEWPORT } from '@/constants/map-defaults';
 import { systemPlaceQuery, setSystemPlaceMutation } from '@/queries/system-places';
 import { exportDataMutation, importDataMutation } from '@/queries/backup';
-import { cn } from '@/helpers/utils';
+
+const SettingSection = ({ icon: Icon, title, description, children }) => (
+    <section className='flex flex-col gap-3 squircle-lg border border-border/70 bg-card p-3.5 shadow-sm shadow-black/5'>
+        <div className='flex items-start gap-2.5'>
+            <div className='flex-center size-8 shrink-0 rounded-full bg-primary/10 text-primary [&>svg]:size-4'>
+                <Icon />
+            </div>
+            <div className='flex flex-col gap-0.5 pt-0.5'>
+                <h3 className='text-sm font-semibold text-foreground'>{title}</h3>
+                {description && <p className='text-sm text-foreground/70'>{description}</p>}
+            </div>
+        </div>
+        {children}
+    </section>
+);
 
 const MapCenterSetting = () => {
     const { map } = useMap();
@@ -24,13 +38,16 @@ const MapCenterSetting = () => {
     };
 
     return (
-        <Field>
-            <FieldLabel>Centro del mapa</FieldLabel>
-            <FieldDescription>
+        <SettingSection
+            icon={MapPin}
+            title='Centro del mapa'
+            description='El punto donde se abre el mapa al cargar la app.'
+        >
+            <div className='rounded-md bg-muted/50 px-2.5 py-2 font-mono text-sm text-foreground/80'>
                 {center[1].toFixed(4)}, {center[0].toFixed(4)}
-            </FieldDescription>
+            </div>
             <div className='flex gap-1.5'>
-                <Button type='button' variant='outline' onClick={useCurrentCenter}>
+                <Button type='button' variant='outline' onClick={useCurrentCenter} className='flex-1'>
                     Usar centro actual
                 </Button>
                 <Button
@@ -45,7 +62,7 @@ const MapCenterSetting = () => {
                     <RotateCcw />
                 </Button>
             </div>
-        </Field>
+        </SettingSection>
     );
 };
 
@@ -60,14 +77,12 @@ const HomePlaceSetting = () => {
     );
 
     return (
-        <Field>
-            <FieldLabel>Casa</FieldLabel>
-            <FieldDescription>Se usa como origen para "desde casa" al pedir rutas.</FieldDescription>
+        <SettingSection icon={Home} title='Casa' description='Se usa como origen para "desde casa" al pedir rutas.'>
             <PlaceSelect
                 value={casa?.place_id ?? null}
                 onChange={placeId => mutation.mutate({ key: 'casa', placeId })}
             />
-        </Field>
+        </SettingSection>
     );
 };
 
@@ -83,7 +98,7 @@ const BackupSetting = () => {
                 const url = URL.createObjectURL(blob);
                 const link = document.createElement('a');
                 link.href = url;
-                link.download = `guasave-backup-${data.exported_at.slice(0, 10)}.json`;
+                link.download = `pinia-backup-${data.exported_at.slice(0, 10)}.json`;
                 link.click();
                 URL.revokeObjectURL(url);
                 setStatus({ type: 'success', message: 'Datos exportados.' });
@@ -122,29 +137,31 @@ const BackupSetting = () => {
     };
 
     return (
-        <Field>
-            <FieldLabel>Respaldo</FieldLabel>
-            <FieldDescription>
-                Exporta todos tus lugares y categorías a un archivo, o restaura desde uno.
-            </FieldDescription>
+        <SettingSection
+            icon={DatabaseBackup}
+            title='Respaldo'
+            description='Exporta todos tus lugares y categorías a un archivo, o restaura desde uno.'
+        >
             <div className='flex gap-1.5'>
                 <Button
                     type='button'
                     variant='outline'
                     onClick={() => exportMutation.mutate()}
                     disabled={exportMutation.isPending}
+                    className='flex-1'
                 >
                     <Download />
-                    Exportar datos
+                    Exportar
                 </Button>
                 <Button
                     type='button'
                     variant='outline'
                     onClick={() => $fileInput.current?.click()}
                     disabled={importMutation.isPending}
+                    className='flex-1'
                 >
                     <Upload />
-                    Importar datos
+                    Importar
                 </Button>
                 <input
                     ref={$fileInput}
@@ -155,29 +172,25 @@ const BackupSetting = () => {
                 />
             </div>
             {status && (
-                <p
-                    className={cn('text-xs', {
-                        'text-destructive': status.type === 'error',
-                        'text-foreground/60': status.type !== 'error',
-                    })}
-                >
-                    {status.message}
-                </p>
+                <Alert variant={status.type === 'error' ? 'destructive' : 'default'}>
+                    {status.type === 'error' ? <AlertCircle /> : <CheckCircle2 />}
+                    <AlertDescription>{status.message}</AlertDescription>
+                </Alert>
             )}
-        </Field>
+        </SettingSection>
     );
 };
 
 export const SettingsPage = () => {
     return (
         <div className='flex h-full min-h-0 flex-col'>
-            <PanelHeader title='Ajustes' />
+            <PanelHeader title='Ajustes' description='Personaliza cómo se comporta tu mapa.' />
             <div className='flex-1 min-h-0 overflow-y-auto p-4'>
-                <FieldGroup>
+                <div className='flex flex-col gap-3'>
                     <MapCenterSetting />
                     <HomePlaceSetting />
                     <BackupSetting />
-                </FieldGroup>
+                </div>
             </div>
         </div>
     );

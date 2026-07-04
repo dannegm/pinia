@@ -2,6 +2,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Star, FlagTriangleRight, MapPin, Clock, StickyNote } from 'lucide-react';
 import { MarkerPopup } from '@/ui/map';
 import { ToggleIconButton } from '@/ui/toggle-icon-button';
+import { DynamicIcon } from '@/ui/dynamic-icon';
 import { updatePlaceMutation } from '@/queries/places';
 import { PlaceNavigationRow } from '@/components/place-navigation-row';
 import { BRAND_COLOR, FAVORITE_COLOR } from '@/constants/map-defaults';
@@ -19,43 +20,27 @@ export const PlacePopup = ({ place }) => {
     const toggleBeacon = () => mutation.mutate({ id: place.id, is_beacon: !place.is_beacon });
 
     return (
-        <MarkerPopup closeButton>
-            <div className='flex flex-col gap-2.5'>
-                <div className='flex items-start justify-between gap-2'>
-                    <div>
-                        <p className='pr-6 text-sm font-semibold text-foreground'>{place.name}</p>
+        <MarkerPopup closeButton offset={20} className='w-80 max-w-none'>
+            <div className='flex flex-col gap-3'>
+                <div className='flex min-w-0 items-start gap-2.5 pr-6'>
+                    {place.category?.icon && (
+                        <div
+                            className='flex-center size-8 shrink-0 rounded-full text-white ring-4 ring-(--category-color)/10 [&>svg]:size-4 bg-(--category-color)'
+                            style={{ '--category-color': place.category.color }}
+                        >
+                            <DynamicIcon icon={place.category.icon} />
+                        </div>
+                    )}
+                    <div className='min-w-0'>
+                        <p className='truncate text-sm font-semibold text-foreground'>{place.name}</p>
                         {place.category?.name && (
-                            <p className='flex items-center gap-1.5 text-xs text-foreground/70'>
-                                <span
-                                    className='size-2 shrink-0 rounded-full bg-(--category-color)'
-                                    style={{ '--category-color': place.category.color }}
-                                />
-                                {place.category.name}
-                            </p>
+                            <p className='truncate text-sm text-foreground/70'>{place.category.name}</p>
                         )}
-                    </div>
-                    <div className='flex shrink-0 gap-1'>
-                        <ToggleIconButton
-                            active={place.is_favorite}
-                            onClick={toggleFavorite}
-                            label='Favorito'
-                            activeColor={FAVORITE_COLOR}
-                        >
-                            <Star />
-                        </ToggleIconButton>
-                        <ToggleIconButton
-                            active={place.is_beacon}
-                            onClick={toggleBeacon}
-                            label='Beacon'
-                            activeColor={place.category?.color ?? BRAND_COLOR}
-                        >
-                            <FlagTriangleRight />
-                        </ToggleIconButton>
                     </div>
                 </div>
 
                 {(place.address || place.hours || place.notes) && (
-                    <div className='flex flex-col gap-1 text-xs text-foreground/70'>
+                    <div className='flex flex-col gap-1.5 border-t border-border/60 pt-2.5 text-sm text-foreground/70'>
                         {place.address && (
                             <p className='flex items-start gap-1.5'>
                                 <MapPin className='mt-0.5 size-3.5 shrink-0 text-foreground/40' />
@@ -77,7 +62,33 @@ export const PlacePopup = ({ place }) => {
                     </div>
                 )}
 
-                <PlaceNavigationRow place={place} />
+                <div className='flex flex-col gap-2 border-t border-border/60 pt-2.5'>
+                    <div className='flex gap-1.5'>
+                        <ToggleIconButton
+                            active={place.is_favorite}
+                            onClick={toggleFavorite}
+                            label='Favorito'
+                            text='Favorito'
+                            activeColor={FAVORITE_COLOR}
+                        >
+                            <Star />
+                        </ToggleIconButton>
+                        <ToggleIconButton
+                            active={place.is_beacon}
+                            onClick={toggleBeacon}
+                            label='Beacon'
+                            text='Beacon'
+                            activeColor={place.category?.color ?? BRAND_COLOR}
+                        >
+                            <FlagTriangleRight />
+                        </ToggleIconButton>
+                    </div>
+
+                    <div className='flex flex-col gap-1.5 border-t border-border/60 pt-2.5'>
+                        <h3 className='text-sm font-semibold text-foreground'>Fijar ruta desde</h3>
+                        <PlaceNavigationRow place={place} />
+                    </div>
+                </div>
             </div>
         </MarkerPopup>
     );

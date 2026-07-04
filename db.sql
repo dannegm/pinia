@@ -1,15 +1,15 @@
--- db.sql — canonical schema for Guasave (Supabase / PostgreSQL, schema `guasave`)
+-- db.sql — canonical schema for Pinia (Supabase / PostgreSQL, schema `pinia`)
 -- This file is the single source of truth for recreating the database from scratch.
 -- It is NOT a migration history — it always reflects the current desired state.
 -- Changes go through /migrate (creates migrations/NNN_*.sql AND updates this file).
 
-create schema if not exists guasave;
+create schema if not exists pinia;
 
 create extension if not exists pgcrypto;
 
 -- Tablas
 
-create table if not exists guasave.categories (
+create table if not exists pinia.categories (
   id text primary key, -- client-generated nanoid(8)
   name text not null,
   icon jsonb not null,
@@ -17,10 +17,10 @@ create table if not exists guasave.categories (
   created_at timestamptz not null default now()
 );
 
-create table if not exists guasave.places (
+create table if not exists pinia.places (
   id text primary key, -- client-generated nanoid(8)
   name text not null,
-  category_id text references guasave.categories(id) on delete cascade,
+  category_id text references pinia.categories(id) on delete cascade,
   address text,
   lat double precision not null,
   lng double precision not null,
@@ -32,36 +32,36 @@ create table if not exists guasave.places (
   updated_at timestamptz not null default now()
 );
 
-create table if not exists guasave.system_places (
+create table if not exists pinia.system_places (
   key text primary key,
-  place_id text references guasave.places(id) on delete cascade
+  place_id text references pinia.places(id) on delete cascade
 );
 
 -- Índices
 
-create index if not exists idx_places_category_id on guasave.places (category_id);
+create index if not exists idx_places_category_id on pinia.places (category_id);
 
 -- Row Level Security
 
-alter table guasave.categories enable row level security;
+alter table pinia.categories enable row level security;
 create policy "categories: permitir todo"
-  on guasave.categories for all using (true) with check (true);
+  on pinia.categories for all using (true) with check (true);
 
-alter table guasave.places enable row level security;
+alter table pinia.places enable row level security;
 create policy "places: permitir todo"
-  on guasave.places for all using (true) with check (true);
+  on pinia.places for all using (true) with check (true);
 
-alter table guasave.system_places enable row level security;
+alter table pinia.system_places enable row level security;
 create policy "system_places: permitir todo"
-  on guasave.system_places for all using (true) with check (true);
+  on pinia.system_places for all using (true) with check (true);
 
 -- Grants (sin auth: anon y authenticated tienen acceso completo)
 
-grant usage on schema guasave to anon, authenticated, service_role;
-grant select, insert, update, delete on all tables in schema guasave to anon, authenticated;
-grant usage, select on all sequences in schema guasave to anon, authenticated;
+grant usage on schema pinia to anon, authenticated, service_role;
+grant select, insert, update, delete on all tables in schema pinia to anon, authenticated;
+grant usage, select on all sequences in schema pinia to anon, authenticated;
 
-alter default privileges in schema guasave
+alter default privileges in schema pinia
   grant select, insert, update, delete on tables to anon, authenticated;
-alter default privileges in schema guasave
+alter default privileges in schema pinia
   grant usage, select on sequences to anon, authenticated;

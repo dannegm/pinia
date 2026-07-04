@@ -1,4 +1,4 @@
-const STORAGE_KEY = 'guasave:cache';
+const STORAGE_KEY = 'pinia:cache';
 
 const getAll = () => {
     try {

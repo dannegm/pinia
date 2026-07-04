@@ -1,7 +1,7 @@
 import { defaultSettings } from '@/constants/default-settings';
 import { getByPath, setByPath } from '@/helpers/objects';
 
-const STORAGE_KEY = 'guasave:settings';
+const STORAGE_KEY = 'pinia:settings';
 const CHANNEL = 'settings';
 const listeners = [];
 

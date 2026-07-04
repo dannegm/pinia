@@ -6,7 +6,7 @@ description: >
   Invoke as: /migrate <description of what changes>
 ---
 
-You are creating a database migration for the Guasave project (Supabase / PostgreSQL, schema `guasave`).
+You are creating a database migration for the Pinia project (Supabase / PostgreSQL, schema `pinia`).
 
 ## Step 0 — Understand the change
 
@@ -50,23 +50,23 @@ Create `migrations/{NNN}_{slug}.sql`.
 
 **Add column:**
 ```sql
-alter table guasave.{table}
+alter table pinia.{table}
   add column if not exists {col} {type} {constraints};
 ```
 
 **Add index:**
 ```sql
-create index if not exists idx_{table}_{col} on guasave.{table} ({col});
+create index if not exists idx_{table}_{col} on pinia.{table} ({col});
 ```
 
 **New table:**
 ```sql
-create table if not exists guasave.{table} (
+create table if not exists pinia.{table} (
   ...
 );
-alter table guasave.{table} enable row level security;
+alter table pinia.{table} enable row level security;
 create policy "{table}: permitir todo"
-  on guasave.{table} for all using (true) with check (true);
+  on pinia.{table} for all using (true) with check (true);
 ```
 
 **Grant for new table** (append after the table definition):

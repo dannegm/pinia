@@ -1,18 +1,41 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { Navigation, Home, Star } from 'lucide-react';
+import { Navigation, Home, Star, Search } from 'lucide-react';
 import { useGeolocation } from '@/hooks/use-geolocation';
 import { Popover, PopoverContent, PopoverTrigger } from '@/ui/popover';
+import { InputGroup, InputGroupAddon, InputGroupInput } from '@/ui/input-group';
+import { ScrollArea } from '@/ui/scroll-area';
+import { PlaceOption } from '@/components/place-select';
 import { placesQuery } from '@/queries/places';
 import { systemPlaceQuery } from '@/queries/system-places';
 import { useEvents } from '@/providers/bus-provider';
 import { cn } from '@/helpers/utils';
 
-const navButtonClass = disabled =>
+const VISIBLE_FAVORITES = 5;
+
+const originButtonClass = disabled =>
     cn(
-        'flex-center size-8 rounded-md border border-border text-foreground/70 transition-colors hover:bg-accent hover:text-accent-foreground [&>svg]:size-4',
+        'flex-center h-8 flex-1 gap-1.5 rounded-md border border-border px-1.5 text-sm font-medium text-foreground/70 transition-colors hover:bg-accent hover:text-accent-foreground [&>svg]:size-4 [&>svg]:shrink-0',
         disabled && 'pointer-events-none opacity-50',
     );
+
+const FavoritesList = ({ favorites, onSelect }) => (
+    <div className='flex flex-col gap-0.5 p-0.5'>
+        {favorites.map(favorite => (
+            <button
+                key={favorite.id}
+                type='button'
+                onClick={() =>
+                    onSelect({ lat: favorite.lat, lng: favorite.lng, label: favorite.name, placeId: favorite.id })
+                }
+                className='flex items-center gap-1.5 rounded-md px-2 py-1.5 text-left text-sm text-foreground/90 hover:bg-accent'
+            >
+                <PlaceOption place={favorite} />
+            </button>
+        ))}
+        {favorites.length === 0 && <p className='p-4 text-center text-sm text-foreground/70'>Sin resultados.</p>}
+    </div>
+);
 
 export const PlaceNavigationRow = ({ place }) => {
     const { emit } = useEvents();
@@ -21,12 +44,24 @@ export const PlaceNavigationRow = ({ place }) => {
     const { data: places = [] } = useQuery(placesQuery());
     const favorites = places.filter(p => p.is_favorite && p.id !== place.id);
     const [favoritesOpen, setFavoritesOpen] = useState(false);
+    const [query, setQuery] = useState('');
+    const showFilter = favorites.length > VISIBLE_FAVORITES;
+
+    const filteredFavorites = useMemo(() => {
+        if (!showFilter) return favorites;
+        const q = query.trim().toLowerCase();
+        return q ? favorites.filter(favorite => favorite.name.toLowerCase().includes(q)) : favorites;
+    }, [favorites, query, showFilter]);
 
     const destination = { lat: place.lat, lng: place.lng, label: place.name, placeId: place.id };
-    const setRoute = origin => emit('route:set', { origin, destination });
+    const setRoute = origin => {
+        emit('route:set', { origin, destination });
+        setFavoritesOpen(false);
+        setQuery('');
+    };
 
     return (
-        <div className='flex items-center gap-1 border-t border-border pt-2'>
+        <div className='flex gap-1.5'>
             <button
                 type='button'
                 onClick={() =>
@@ -34,11 +69,10 @@ export const PlaceNavigationRow = ({ place }) => {
                     setRoute({ lat: currentLocation.lat, lng: currentLocation.lng, label: 'Mi ubicación actual' })
                 }
                 disabled={!currentLocation}
-                title='Desde mi ubicación actual'
-                aria-label='Desde mi ubicación actual'
-                className={navButtonClass(!currentLocation)}
+                className={originButtonClass(!currentLocation)}
             >
                 <Navigation />
+                Ubicación
             </button>
 
             <button
@@ -53,11 +87,10 @@ export const PlaceNavigationRow = ({ place }) => {
                     })
                 }
                 disabled={!casa?.place}
-                title='Desde casa'
-                aria-label='Desde casa'
-                className={navButtonClass(!casa?.place)}
+                className={originButtonClass(!casa?.place)}
             >
                 <Home />
+                Casa
             </button>
 
             <Popover open={favoritesOpen} onOpenChange={setFavoritesOpen}>
@@ -65,36 +98,35 @@ export const PlaceNavigationRow = ({ place }) => {
                     render={
                         <button
                             type='button'
-                            aria-label='Desde algún favorito'
-                            title='Desde algún favorito'
                             disabled={favorites.length === 0}
-                            className={navButtonClass(favorites.length === 0)}
+                            className={originButtonClass(favorites.length === 0)}
                         />
                     }
                 >
                     <Star />
+                    Favorito
                 </PopoverTrigger>
-                <PopoverContent className='w-56 p-1'>
-                    <div className='flex flex-col'>
-                        {favorites.map(favorite => (
-                            <button
-                                key={favorite.id}
-                                type='button'
-                                onClick={() => {
-                                    setFavoritesOpen(false);
-                                    setRoute({
-                                        lat: favorite.lat,
-                                        lng: favorite.lng,
-                                        label: favorite.name,
-                                        placeId: favorite.id,
-                                    });
-                                }}
-                                className='rounded-md px-2 py-1.5 text-left text-sm text-foreground/90 hover:bg-accent'
-                            >
-                                {favorite.name}
-                            </button>
-                        ))}
-                    </div>
+                <PopoverContent className='w-64 gap-2 p-2' align='end'>
+                    {showFilter && (
+                        <InputGroup>
+                            <InputGroupAddon>
+                                <Search />
+                            </InputGroupAddon>
+                            <InputGroupInput
+                                value={query}
+                                onChange={e => setQuery(e.target.value)}
+                                placeholder='Filtrar favoritos'
+                            />
+                        </InputGroup>
+                    )}
+
+                    {showFilter ? (
+                        <ScrollArea className='max-h-44'>
+                            <FavoritesList favorites={filteredFavorites} onSelect={setRoute} />
+                        </ScrollArea>
+                    ) : (
+                        <FavoritesList favorites={filteredFavorites} onSelect={setRoute} />
+                    )}
                 </PopoverContent>
             </Popover>
         </div>
