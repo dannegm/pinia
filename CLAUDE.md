@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project
 
-Pinia is a personal, mobile-first web map for cataloging places of interest around Guasave, Sinaloa (malls, tienditas, restaurants, bus stops, houses, etc.). The owner calls it his "mapa de supervivencia" for himself and his girlfriend — a day-to-day reference tool, not a generic places directory.
+Pinia is a personal, mobile-first web map for cataloging places of interest around town (malls, tienditas, restaurants, bus stops, houses, etc.). The owner calls it his "mapa de supervivencia" for himself and his girlfriend — a day-to-day reference tool, not a generic places directory.
 
 **Status: pre-scaffold.** As of this writing the repository only contains planning artifacts (`.agents/skills`, `.claude/skills`, this file) — no `package.json`, source tree, or Supabase schema exists yet. There are no build/lint/test/dev commands to document until scaffolding begins; update this file once they exist.
 
