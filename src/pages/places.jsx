@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useQueryState } from 'nuqs';
 import Fuse from 'fuse.js';
@@ -16,18 +16,26 @@ import { CategoryFilterSelect, useCategoryFilter, useFavoritesFilter } from '@/c
 import { PanelHeader } from '@/components/panel-header';
 import { placesQuery, deletePlaceMutation } from '@/queries/places';
 import { useHiddenCategories } from '@/hooks/use-hidden-categories';
+import { useGeolocation } from '@/hooks/use-geolocation';
+import { useStableLocation } from '@/hooks/use-stable-location';
+import { haversineDistance } from '@/helpers/geo';
 
 const SORT_OPTIONS = [
     { value: 'name', label: 'Alfabéticamente' },
     { value: 'created_at', label: 'Fecha de creación' },
     { value: 'category', label: 'Por categoría' },
-    { value: 'distance', label: 'Distancia desde mi ubicación', disabled: true },
+    { value: 'distance', label: 'Distancia desde mi ubicación' },
 ];
 
 const SORT_COMPARATORS = {
     name: (a, b) => a.name.localeCompare(b.name),
     created_at: (a, b) => new Date(a.created_at) - new Date(b.created_at),
     category: (a, b) => (a.category?.name ?? '').localeCompare(b.category?.name ?? ''),
+    distance: (a, b) => {
+        const distA = a.distance ?? Infinity;
+        const distB = b.distance ?? Infinity;
+        return distA === distB ? 0 : distA - distB;
+    },
 };
 
 export const PlacesPage = () => {
@@ -41,8 +49,23 @@ export const PlacesPage = () => {
     const [sortBy, setSortBy] = useQueryState('sort', { defaultValue: 'created_at' });
     const [sortDir, setSortDir] = useQueryState('dir', { defaultValue: 'desc' });
     const [hiddenCategoryIds] = useHiddenCategories();
+    const rawLocation = useGeolocation();
+    const stableLocation = useStableLocation(rawLocation);
+    const hasLocation = Boolean(rawLocation);
     const { data: allPlaces = [] } = useQuery(placesQuery());
-    const places = allPlaces.filter(place => !hiddenCategoryIds.includes(place.category_id));
+
+    const places = useMemo(() => {
+        const visible = allPlaces.filter(place => !hiddenCategoryIds.includes(place.category_id));
+        if (!stableLocation) return visible;
+        return visible.map(place => ({
+            ...place,
+            distance: haversineDistance(stableLocation, { lat: place.lat, lng: place.lng }),
+        }));
+    }, [allPlaces, hiddenCategoryIds, stableLocation]);
+
+    useEffect(() => {
+        if (sortBy === 'distance' && !hasLocation) setSortBy('created_at');
+    }, [sortBy, hasLocation, setSortBy]);
 
     const categoryFilteredPlaces =
         selectedCategoryIds.length === 0
@@ -143,7 +166,11 @@ export const PlacesPage = () => {
                         </SelectTrigger>
                         <SelectContent>
                             {SORT_OPTIONS.map(option => (
-                                <SelectItem key={option.value} value={option.value} disabled={option.disabled}>
+                                <SelectItem
+                                    key={option.value}
+                                    value={option.value}
+                                    disabled={option.value === 'distance' && !hasLocation}
+                                >
                                     {option.label}
                                 </SelectItem>
                             ))}
