@@ -162,7 +162,9 @@ export const PlacesPage = () => {
                 <div className='flex gap-1.5'>
                     <Select value={sortBy} onValueChange={setSortBy}>
                         <SelectTrigger className='h-8 w-full flex-1 text-sm'>
-                            <SelectValue placeholder='Ordenar por' />
+                            <SelectValue placeholder='Ordenar por'>
+                                {value => SORT_OPTIONS.find(option => option.value === value)?.label}
+                            </SelectValue>
                         </SelectTrigger>
                         <SelectContent>
                             {SORT_OPTIONS.map(option => (
