@@ -1,15 +1,20 @@
+import { useEffect, useRef, useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { Star, FlagTriangleRight, MapPin, Clock, NotebookText } from 'lucide-react';
-import { MarkerPopup } from '@/ui/map';
+import { Star, FlagTriangleRight, MapPin, Clock, NotebookText, Share2 } from 'lucide-react';
+import { MarkerPopup, useMarkerContext } from '@/ui/map';
 import { ToggleIconButton } from '@/ui/toggle-icon-button';
 import { DynamicIcon } from '@/ui/dynamic-icon';
+import { CheckIcon } from '@/ui/icons';
 import { updatePlaceMutation } from '@/queries/places';
 import { PlaceNavigationRow } from '@/components/place-navigation-row';
 import { NotesViewer } from '@/components/notes-viewer';
 import { BRAND_COLOR, FAVORITE_COLOR } from '@/constants/map-defaults';
 
-export const PlacePopup = ({ place }) => {
+export const PlacePopup = ({ place, autoOpen }) => {
     const queryClient = useQueryClient();
+    const { marker } = useMarkerContext();
+    const [copied, setCopied] = useState(false);
+    const $autoOpened = useRef(false);
 
     const mutation = useMutation(
         updatePlaceMutation({
@@ -19,6 +24,19 @@ export const PlacePopup = ({ place }) => {
 
     const toggleFavorite = () => mutation.mutate({ id: place.id, is_favorite: !place.is_favorite });
     const toggleBeacon = () => mutation.mutate({ id: place.id, is_beacon: !place.is_beacon });
+
+    useEffect(() => {
+        if (!autoOpen || $autoOpened.current) return;
+        $autoOpened.current = true;
+        marker.togglePopup();
+    }, [autoOpen, marker]);
+
+    const handleShare = async () => {
+        const url = `${window.location.origin}/?place=${place.id}`;
+        await navigator.clipboard.writeText(url);
+        setCopied(true);
+        setTimeout(() => setCopied(false), 1500);
+    };
 
     return (
         <MarkerPopup closeButton offset={20} className='w-80 max-w-none'>
@@ -82,6 +100,15 @@ export const PlacePopup = ({ place }) => {
                             activeColor={place.category?.color ?? BRAND_COLOR}
                         >
                             <FlagTriangleRight />
+                        </ToggleIconButton>
+                        <ToggleIconButton
+                            compact
+                            active={copied}
+                            onClick={handleShare}
+                            label='Compartir'
+                            activeColor='#16a34a'
+                        >
+                            {copied ? <CheckIcon /> : <Share2 />}
                         </ToggleIconButton>
                     </div>
 

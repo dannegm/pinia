@@ -1,10 +1,11 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { ArrowRight, ArrowLeftRight, Map as MapIcon, Car, X } from 'lucide-react';
+import { ArrowRight, ArrowLeftRight, Map as MapIcon, Car, Share2, X } from 'lucide-react';
 import { useMap, MapRoute } from '@/ui/map';
 import { usePanelOffset } from '@/hooks/use-panel-offset';
 import { routeQuery } from '@/queries/route';
 import { PlacePointSelect } from '@/components/place-point-select';
+import { CheckIcon } from '@/ui/icons';
 import { BRAND_COLOR } from '@/constants/map-defaults';
 import { cn } from '@/helpers/utils';
 
@@ -39,8 +40,18 @@ export const RoutePanel = ({ route, onChange, onClose }) => {
     const { map } = useMap();
     const { isDesktop, left } = usePanelOffset();
     const offsetLeft = isDesktop ? left + 16 : 8;
+    const [copied, setCopied] = useState(false);
 
     const { origin, destination } = route;
+    const canShare = Boolean(origin.placeId && destination.placeId);
+
+    const handleShare = async () => {
+        if (!canShare) return;
+        const url = `${window.location.origin}/?route=${origin.placeId}:${destination.placeId}`;
+        await navigator.clipboard.writeText(url);
+        setCopied(true);
+        setTimeout(() => setCopied(false), 1500);
+    };
 
     const {
         data: routeCoordinates,
@@ -115,6 +126,17 @@ export const RoutePanel = ({ route, onChange, onClose }) => {
                         className={actionButtonClass}
                     >
                         <Car />
+                    </button>
+
+                    <button
+                        type='button'
+                        onClick={handleShare}
+                        disabled={!canShare}
+                        title={canShare ? 'Compartir ruta' : 'Ambos puntos deben ser lugares guardados'}
+                        aria-label='Compartir ruta'
+                        className={cn(actionButtonClass, !canShare && 'pointer-events-none opacity-50')}
+                    >
+                        {copied ? <CheckIcon /> : <Share2 />}
                     </button>
 
                     <button

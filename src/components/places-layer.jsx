@@ -1,6 +1,8 @@
+import { useEffect, useRef } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useParams, useLocation } from '@tanstack/react-router';
-import { MapMarker, MarkerContent, MarkerTooltip } from '@/ui/map';
+import { useQueryState } from 'nuqs';
+import { MapMarker, MarkerContent, MarkerTooltip, useMap } from '@/ui/map';
 import { DynamicIcon } from '@/ui/dynamic-icon';
 import { DirectionArrow } from '@/components/direction-arrow';
 import { PlacePopup } from '@/components/place-popup';
@@ -10,14 +12,28 @@ import { usePanelOffset } from '@/hooks/use-panel-offset';
 import { useHiddenCategories } from '@/hooks/use-hidden-categories';
 
 export const PlacesLayer = ({ topOffset = 0 }) => {
-    const { data: allPlaces = [] } = useQuery(placesQuery());
+    const { map, isLoaded } = useMap();
+    const { data: allPlaces = [], isSuccess: placesLoaded } = useQuery(placesQuery());
     const { left: panelLeft, bottom: panelBottom } = usePanelOffset();
     const { placeId: editingPlaceId } = useParams({ strict: false });
     const { pathname } = useLocation();
     const isPickingPosition = Boolean(editingPlaceId) || pathname === '/places/new';
     const [hiddenCategoryIds] = useHiddenCategories();
+    const [focusedPlaceId] = useQueryState('place', { defaultValue: '' });
+    const $hydratedPlace = useRef(false);
 
     const places = allPlaces.filter(place => !hiddenCategoryIds.includes(place.category_id));
+
+    useEffect(() => {
+        if ($hydratedPlace.current || !placesLoaded || !isLoaded) return;
+        $hydratedPlace.current = true;
+        if (!focusedPlaceId) return;
+
+        const place = allPlaces.find(p => p.id === focusedPlaceId);
+        if (!place) return;
+
+        map.flyTo({ center: [place.lng, place.lat], zoom: 16, duration: 800 });
+    }, [placesLoaded, isLoaded, allPlaces, focusedPlaceId, map]);
 
     return (
         <>
@@ -45,7 +61,7 @@ export const PlacesLayer = ({ topOffset = 0 }) => {
                             )}
                         </MarkerContent>
                         <MarkerTooltip>{place.name}</MarkerTooltip>
-                        <PlacePopup place={place} />
+                        <PlacePopup place={place} autoOpen={place.id === focusedPlaceId} />
                     </MapMarker>
                 ))}
 
