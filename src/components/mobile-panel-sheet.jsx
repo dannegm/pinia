@@ -43,6 +43,7 @@ export const MobilePanelSheet = ({ open, onClose, onDragChange, children }) => {
             event.currentTarget.setPointerCapture(event.pointerId);
         }
 
+        event.preventDefault();
         setDragY(Math.max(0, delta));
     };
 
