@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useQueryState } from 'nuqs';
 import Fuse from 'fuse.js';
-import { Plus, Pencil, Search, X, MapPinOff } from 'lucide-react';
+import { Plus, Pencil, Search, X, MapPinOff, ArrowUpNarrowWide, ArrowDownNarrowWide } from 'lucide-react';
 import { useNavigate } from '@tanstack/react-router';
 import { Button } from '@/ui/button';
 import { Alert, AlertDescription } from '@/ui/alert';
@@ -10,11 +10,25 @@ import { DeletePlaceButton } from '@/components/delete-place-button';
 import { DynamicIcon } from '@/ui/dynamic-icon';
 import { Tooltip, TooltipTrigger, TooltipContent } from '@/ui/tooltip';
 import { InputGroup, InputGroupAddon, InputGroupButton, InputGroupInput } from '@/ui/input-group';
+import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@/ui/select';
 import { useMap } from '@/ui/map';
-import { CategoryFilterSelect, useCategoryFilter } from '@/components/category-filter-select';
+import { CategoryFilterSelect, useCategoryFilter, useFavoritesFilter } from '@/components/category-filter-select';
 import { PanelHeader } from '@/components/panel-header';
 import { placesQuery, deletePlaceMutation } from '@/queries/places';
 import { useHiddenCategories } from '@/hooks/use-hidden-categories';
+
+const SORT_OPTIONS = [
+    { value: 'name', label: 'Alfabéticamente' },
+    { value: 'created_at', label: 'Fecha de creación' },
+    { value: 'category', label: 'Por categoría' },
+    { value: 'distance', label: 'Distancia desde mi ubicación', disabled: true },
+];
+
+const SORT_COMPARATORS = {
+    name: (a, b) => a.name.localeCompare(b.name),
+    created_at: (a, b) => new Date(a.created_at) - new Date(b.created_at),
+    category: (a, b) => (a.category?.name ?? '').localeCompare(b.category?.name ?? ''),
+};
 
 export const PlacesPage = () => {
     const navigate = useNavigate();
@@ -23,6 +37,9 @@ export const PlacesPage = () => {
     const [error, setError] = useState(null);
     const [query, setQuery] = useQueryState('q', { defaultValue: '' });
     const [selectedCategoryIds, setSelectedCategoryIds] = useCategoryFilter();
+    const [favoritesOnly, setFavoritesOnly] = useFavoritesFilter();
+    const [sortBy, setSortBy] = useQueryState('sort', { defaultValue: 'created_at' });
+    const [sortDir, setSortDir] = useQueryState('dir', { defaultValue: 'desc' });
     const [hiddenCategoryIds] = useHiddenCategories();
     const { data: allPlaces = [] } = useQuery(placesQuery());
     const places = allPlaces.filter(place => !hiddenCategoryIds.includes(place.category_id));
@@ -32,18 +49,28 @@ export const PlacesPage = () => {
             ? places
             : places.filter(place => selectedCategoryIds.includes(place.category_id));
 
+    const favoritesFilteredPlaces = favoritesOnly
+        ? categoryFilteredPlaces.filter(place => place.is_favorite)
+        : categoryFilteredPlaces;
+
     const fuse = useMemo(
         () =>
-            new Fuse(categoryFilteredPlaces, {
+            new Fuse(favoritesFilteredPlaces, {
                 keys: ['name', 'address', 'category.name', 'notes'],
                 threshold: 0.3,
             }),
-        [categoryFilteredPlaces],
+        [favoritesFilteredPlaces],
     );
 
     const filteredPlaces = query.trim()
         ? fuse.search(query.trim()).map(result => result.item)
-        : categoryFilteredPlaces;
+        : favoritesFilteredPlaces;
+
+    const sortedPlaces = useMemo(() => {
+        const comparator = SORT_COMPARATORS[sortBy] ?? SORT_COMPARATORS.created_at;
+        const sorted = [...filteredPlaces].sort(comparator);
+        return sortDir === 'desc' ? sorted.reverse() : sorted;
+    }, [filteredPlaces, sortBy, sortDir]);
 
     const toggleCategory = id =>
         setSelectedCategoryIds(current =>
@@ -61,7 +88,7 @@ export const PlacesPage = () => {
         }),
     );
 
-    const hasFilter = selectedCategoryIds.length > 0 || Boolean(query.trim());
+    const hasFilter = selectedCategoryIds.length > 0 || favoritesOnly || Boolean(query.trim());
     const plural = filteredPlaces.length === 1 ? 'lugar' : 'lugares';
     const summary =
         places.length === 0
@@ -101,8 +128,44 @@ export const PlacesPage = () => {
                 <CategoryFilterSelect
                     selected={selectedCategoryIds}
                     onToggle={toggleCategory}
-                    onClear={() => setSelectedCategoryIds([])}
+                    onClear={() => {
+                        setSelectedCategoryIds([]);
+                        setFavoritesOnly(false);
+                    }}
+                    favoritesOnly={favoritesOnly}
+                    onToggleFavorites={() => setFavoritesOnly(current => !current)}
                 />
+
+                <div className='flex gap-1.5'>
+                    <Select value={sortBy} onValueChange={setSortBy}>
+                        <SelectTrigger className='h-8 w-full flex-1 text-sm'>
+                            <SelectValue placeholder='Ordenar por' />
+                        </SelectTrigger>
+                        <SelectContent>
+                            {SORT_OPTIONS.map(option => (
+                                <SelectItem key={option.value} value={option.value} disabled={option.disabled}>
+                                    {option.label}
+                                </SelectItem>
+                            ))}
+                        </SelectContent>
+                    </Select>
+
+                    <Tooltip>
+                        <TooltipTrigger
+                            render={
+                                <button
+                                    type='button'
+                                    onClick={() => setSortDir(dir => (dir === 'asc' ? 'desc' : 'asc'))}
+                                    aria-label={sortDir === 'asc' ? 'Ascendente' : 'Descendente'}
+                                    className='flex-center size-8 shrink-0 rounded-lg border border-border text-foreground/70 transition-colors hover:bg-accent hover:text-accent-foreground [&>svg]:size-4'
+                                />
+                            }
+                        >
+                            {sortDir === 'asc' ? <ArrowUpNarrowWide /> : <ArrowDownNarrowWide />}
+                        </TooltipTrigger>
+                        <TooltipContent>{sortDir === 'asc' ? 'Ascendente' : 'Descendente'}</TooltipContent>
+                    </Tooltip>
+                </div>
 
                 {error && (
                     <Alert variant='destructive'>
@@ -113,7 +176,7 @@ export const PlacesPage = () => {
 
             <div className='flex-1 min-h-0 overflow-y-auto p-4 pt-0'>
                 <div className='flex flex-col gap-1'>
-                    {filteredPlaces.map(place => (
+                    {sortedPlaces.map(place => (
                         <div
                             key={place.id}
                             className='flex items-center squircle-lg border border-border/70 bg-card p-2.5 shadow-sm shadow-black/5 transition-colors hover:border-border hover:bg-muted/40'
