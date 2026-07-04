@@ -1,7 +1,7 @@
 import { ChevronLeft } from 'lucide-react';
 
 export const PanelHeader = ({ title, description, onBack, action }) => (
-    <div className='flex shrink-0 flex-col gap-1 border-b border-border/70 p-4 pb-3'>
+    <div className='flex shrink-0 flex-col gap-1 border-b border-border/70 px-4 pb-3 pt-0 sm:pt-4'>
         <div className='flex items-center gap-1'>
             {onBack && (
                 <button
