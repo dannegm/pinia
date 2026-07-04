@@ -367,7 +367,7 @@ export const PlaceForm = ({
                     </FieldGroup>
                 </div>
 
-                <div className='flex shrink-0 flex-col gap-2 border-t border-border/70 p-4 pt-3'>
+                <div className='flex shrink-0 flex-col gap-2 border-t border-border/70 px-4 py-2 sm:py-3'>
                     {secondaryAction}
                     <Button type='submit' disabled={pending || categories.length === 0} className='h-10 w-full'>
                         {submitLabel}
