@@ -19,7 +19,7 @@ export const PlaceOption = ({ place, label = place.name }) => (
         <span className='flex-center shrink-0 text-foreground/70 [&>svg]:size-4'>
             {place.category?.icon && <DynamicIcon icon={place.category.icon} />}
         </span>
-        {label}
+        <span className='line-clamp-1 min-w-0 flex-1 break-all'>{label}</span>
     </>
 );
 

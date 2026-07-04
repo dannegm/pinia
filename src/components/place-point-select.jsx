@@ -24,7 +24,7 @@ const CurrentLocationOption = () => (
         <span className='flex-center shrink-0 text-foreground/70 [&>svg]:size-4'>
             <PersonStanding />
         </span>
-        Mi ubicación actual
+        <span className='line-clamp-1 min-w-0 flex-1 break-all'>Mi ubicación actual</span>
     </>
 );
 
@@ -66,7 +66,9 @@ export const PlacePointSelect = ({ value, onChange, placeholder, className }) =>
                 ) : isSelectedCurrentLocation ? (
                     <CurrentLocationOption />
                 ) : (
-                    <span className='truncate text-foreground/50'>{value?.label ?? placeholder}</span>
+                    <span className='line-clamp-1 min-w-0 flex-1 break-all text-foreground/50'>
+                        {value?.label ?? placeholder}
+                    </span>
                 )}
             </PopoverTrigger>
             <PopoverContent className='w-64 gap-2 p-2' align='start'>

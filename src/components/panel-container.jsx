@@ -7,15 +7,15 @@ import { PanelNavButtons } from '@/components/panel-nav-buttons';
 import { PanelLogo } from '@/components/panel-logo';
 import { MobilePanelSheet } from '@/components/mobile-panel-sheet';
 
-export const PanelContainer = () => {
+export const PanelContainer = ({ routeTopOffset = 0 }) => {
     const { map } = useMap();
     const navigate = useNavigate();
     const { isDesktop, isOpen, left, bottom } = usePanelOffset();
     const [dockDrag, setDockDrag] = useState({ y: 0, dragging: false });
 
     useEffect(() => {
-        map.easeTo({ padding: { left, bottom }, duration: 200 });
-    }, [map, left, bottom]);
+        map.easeTo({ padding: { left, bottom, top: routeTopOffset }, duration: 200 });
+    }, [map, left, bottom, routeTopOffset]);
 
     const close = () => navigate({ to: '/' });
 

@@ -49,7 +49,7 @@ export const CategoryFilterSelect = ({ selected, onToggle, onClear }) => {
                 {selectedCategories.length === 0 ? (
                     <span className='text-foreground/50'>Filtrar por categoría</span>
                 ) : (
-                    <span className='min-w-0 flex-1 truncate'>
+                    <span className='line-clamp-1 min-w-0 flex-1 break-all'>
                         {selectedCategories.map(category => category.name).join(', ')}
                     </span>
                 )}
@@ -90,7 +90,7 @@ export const CategoryFilterSelect = ({ selected, onToggle, onClear }) => {
                                     <span className='flex-center shrink-0 text-foreground/70 [&>svg]:size-4'>
                                         <DynamicIcon icon={category.icon} />
                                     </span>
-                                    <span className='min-w-0 flex-1 truncate'>{category.name}</span>
+                                    <span className='line-clamp-1 min-w-0 flex-1 break-all'>{category.name}</span>
                                     {active && <Check className='size-4 shrink-0 text-primary' />}
                                 </button>
                             );

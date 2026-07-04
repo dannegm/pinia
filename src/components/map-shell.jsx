@@ -155,7 +155,7 @@ export const MapShell = () => {
 
                     <PlacesLayer topOffset={routeTopOffset} />
                     <PointNemoMarker />
-                    <PanelContainer />
+                    <PanelContainer routeTopOffset={routeTopOffset} />
 
                     {route && <RoutePanel route={route} onChange={setRoute} onClose={() => setRoute(null)} />}
 

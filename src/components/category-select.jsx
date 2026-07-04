@@ -16,7 +16,7 @@ const CategoryOption = ({ category }) => (
         <span className='flex-center shrink-0 text-foreground/70 [&>svg]:size-4'>
             <DynamicIcon icon={category.icon} />
         </span>
-        {category.name}
+        <span className='line-clamp-1 min-w-0 flex-1 break-all'>{category.name}</span>
     </>
 );
 
