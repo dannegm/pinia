@@ -14,23 +14,36 @@ import { cn } from '@/helpers/utils';
 export const useCategoryFilter = () =>
     useQueryState('categories', parseAsArrayOf(parseAsString).withDefault([]));
 
-export const useFavoritesFilter = () => useQueryState('favorites', parseAsBoolean.withDefault(false));
+export const useFavoritesFilter = () =>
+    useQueryState('favorites', parseAsBoolean.withDefault(false));
 
-export const CategoryFilterSelect = ({ selected, onToggle, onClear, favoritesOnly, onToggleFavorites }) => {
+export const CategoryFilterSelect = ({
+    className,
+    selected,
+    onToggle,
+    onClear,
+    favoritesOnly,
+    onToggleFavorites,
+}) => {
     const [open, setOpen] = useState(false);
     const [query, setQuery] = useState('');
     const { data: categories = [] } = useQuery(categoriesQuery());
 
     const results = useMemo(() => {
         const q = query.trim().toLowerCase();
-        return q ? categories.filter(category => category.name.toLowerCase().includes(q)) : categories;
+        return q
+            ? categories.filter(category => category.name.toLowerCase().includes(q))
+            : categories;
     }, [categories, query]);
 
     if (categories.length === 0) return null;
 
     const selectedCategories = categories.filter(category => selected.includes(category.id));
     const activeCount = selected.length + (favoritesOnly ? 1 : 0);
-    const activeLabels = [...(favoritesOnly ? ['Favoritos'] : []), ...selectedCategories.map(c => c.name)];
+    const activeLabels = [
+        ...(favoritesOnly ? ['Favoritos'] : []),
+        ...selectedCategories.map(c => c.name),
+    ];
 
     return (
         <Popover open={open} onOpenChange={setOpen}>
@@ -39,22 +52,30 @@ export const CategoryFilterSelect = ({ selected, onToggle, onClear, favoritesOnl
                     <button
                         type='button'
                         className={cn(
-                            'flex h-8 w-full items-center gap-1.5 rounded-lg border px-2 text-left text-sm text-foreground/90 transition-colors',
+                            'flex h-8 w-full min-w-0 items-center gap-1.5 rounded-lg border px-2 text-left text-sm text-foreground/90 transition-colors',
                             {
                                 'border-primary/40 bg-primary/5': activeCount > 0,
-                                'border-border hover:bg-accent hover:text-accent-foreground': activeCount === 0,
+                                'border-border hover:bg-accent hover:text-accent-foreground':
+                                    activeCount === 0,
                             },
+                            className,
                         )}
                     />
                 }
             >
                 <ListFilter
-                    className={cn('size-4 shrink-0 text-foreground/50', { 'text-primary': activeCount > 0 })}
+                    className={cn('size-4 shrink-0 text-foreground/50', {
+                        'text-primary': activeCount > 0,
+                    })}
                 />
                 {activeLabels.length === 0 ? (
-                    <span className='text-foreground/50'>Filtrar por categoría</span>
+                    <span className='line-clamp-1 min-w-0 flex-1 break-all text-foreground/50'>
+                        Filtrar por categoría
+                    </span>
                 ) : (
-                    <span className='line-clamp-1 min-w-0 flex-1 break-all'>{activeLabels.join(', ')}</span>
+                    <span className='line-clamp-1 min-w-0 flex-1 break-all'>
+                        {activeLabels.join(', ')}
+                    </span>
                 )}
                 {activeCount > 0 && (
                     <span className='flex-center size-5 shrink-0 rounded-full bg-primary text-xs font-medium text-primary-foreground'>
@@ -108,19 +129,29 @@ export const CategoryFilterSelect = ({ selected, onToggle, onClear, favoritesOnl
                                     <span className='flex-center shrink-0 text-foreground/70 [&>svg]:size-4'>
                                         <DynamicIcon icon={category.icon} />
                                     </span>
-                                    <span className='line-clamp-1 min-w-0 flex-1 break-all'>{category.name}</span>
+                                    <span className='line-clamp-1 min-w-0 flex-1 break-all'>
+                                        {category.name}
+                                    </span>
                                     {active && <Check className='size-4 shrink-0 text-primary' />}
                                 </button>
                             );
                         })}
                         {results.length === 0 && (
-                            <p className='p-4 text-center text-sm text-foreground/70'>Sin resultados.</p>
+                            <p className='p-4 text-center text-sm text-foreground/70'>
+                                Sin resultados.
+                            </p>
                         )}
                     </div>
                 </ScrollArea>
 
                 {activeCount > 0 && (
-                    <Button type='button' variant='ghost' size='sm' onClick={onClear} className='w-full'>
+                    <Button
+                        type='button'
+                        variant='ghost'
+                        size='sm'
+                        onClick={onClear}
+                        className='w-full'
+                    >
                         Limpiar filtro
                     </Button>
                 )}

@@ -161,61 +161,66 @@ export const PlacesPage = () => {
                 </InputGroup>
 
                 <div className='flex flex-row gap-2 items-center sm:items-stretch sm:flex-col'>
+                    <CategoryFilterSelect
+                        className='min-w-0 flex-1 shrink'
+                        selected={selectedCategoryIds}
+                        onToggle={toggleCategory}
+                        onClear={() => {
+                            setSelectedCategoryIds([]);
+                            setFavoritesOnly(false);
+                        }}
+                        favoritesOnly={favoritesOnly}
+                        onToggleFavorites={() => setFavoritesOnly(current => !current)}
+                    />
 
-                <CategoryFilterSelect
-                    selected={selectedCategoryIds}
-                    onToggle={toggleCategory}
-                    onClear={() => {
-                        setSelectedCategoryIds([]);
-                        setFavoritesOnly(false);
-                    }}
-                    favoritesOnly={favoritesOnly}
-                    onToggleFavorites={() => setFavoritesOnly(current => !current)}
-                />
-
-                <div className='flex gap-1.5'>
-                    <Select value={sortBy} onValueChange={setSortBy}>
-                        <SelectTrigger className='h-8 w-full flex-1 text-sm'>
-                            <SelectValue placeholder='Ordenar por'>
-                                {value =>
-                                    SORT_OPTIONS.find(option => option.value === value)?.label
-                                }
-                            </SelectValue>
-                        </SelectTrigger>
-                        <SelectContent>
-                            {SORT_OPTIONS.map(option => (
-                                <SelectItem
-                                    key={option.value}
-                                    value={option.value}
-                                    disabled={option.value === 'distance' && !hasLocation}
-                                >
-                                    {option.label}
-                                </SelectItem>
-                            ))}
-                        </SelectContent>
-                    </Select>
-
-                    <Tooltip>
-                        <TooltipTrigger
-                            render={
-                                <button
-                                    type='button'
-                                    onClick={() =>
-                                        setSortDir(dir => (dir === 'asc' ? 'desc' : 'asc'))
+                    <div className='flex min-w-0 flex-1 shrink gap-1.5'>
+                        <Select value={sortBy} onValueChange={setSortBy}>
+                            <SelectTrigger className='h-8 w-full min-w-0 flex-1 text-sm'>
+                                <SelectValue placeholder='Ordenar por' className='line-clamp-1 min-w-0 break-all'>
+                                    {value =>
+                                        SORT_OPTIONS.find(option => option.value === value)?.label
                                     }
-                                    aria-label={sortDir === 'asc' ? 'Ascendente' : 'Descendente'}
-                                    className='flex-center size-8 shrink-0 rounded-lg border border-border text-foreground/70 transition-colors hover:bg-accent hover:text-accent-foreground [&>svg]:size-4'
-                                />
-                            }
-                        >
-                            {sortDir === 'asc' ? <ArrowUpNarrowWide /> : <ArrowDownNarrowWide />}
-                        </TooltipTrigger>
-                        <TooltipContent>
-                            {sortDir === 'asc' ? 'Ascendente' : 'Descendente'}
-                        </TooltipContent>
-                    </Tooltip>
-                </div>
+                                </SelectValue>
+                            </SelectTrigger>
+                            <SelectContent>
+                                {SORT_OPTIONS.map(option => (
+                                    <SelectItem
+                                        key={option.value}
+                                        value={option.value}
+                                        disabled={option.value === 'distance' && !hasLocation}
+                                    >
+                                        {option.label}
+                                    </SelectItem>
+                                ))}
+                            </SelectContent>
+                        </Select>
 
+                        <Tooltip>
+                            <TooltipTrigger
+                                render={
+                                    <button
+                                        type='button'
+                                        onClick={() =>
+                                            setSortDir(dir => (dir === 'asc' ? 'desc' : 'asc'))
+                                        }
+                                        aria-label={
+                                            sortDir === 'asc' ? 'Ascendente' : 'Descendente'
+                                        }
+                                        className='flex-center size-8 shrink-0 rounded-lg border border-border text-foreground/70 transition-colors hover:bg-accent hover:text-accent-foreground [&>svg]:size-4'
+                                    />
+                                }
+                            >
+                                {sortDir === 'asc' ? (
+                                    <ArrowUpNarrowWide />
+                                ) : (
+                                    <ArrowDownNarrowWide />
+                                )}
+                            </TooltipTrigger>
+                            <TooltipContent>
+                                {sortDir === 'asc' ? 'Ascendente' : 'Descendente'}
+                            </TooltipContent>
+                        </Tooltip>
+                    </div>
                 </div>
 
                 {error && (
