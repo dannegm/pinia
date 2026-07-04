@@ -23,24 +23,24 @@ export const DirectionArrow = ({ coords, color, className, flyToZoom = 14, label
         if (!isLoaded || !map || !coords) return;
 
         const update = () => {
-            if (map.getBounds().contains([coords.lng, coords.lat])) {
-                setArrow(null);
-                return;
-            }
-
             const { width, height } = map.getContainer().getBoundingClientRect();
             const projected = map.project([coords.lng, coords.lat]);
-
-            const cx = width / 2;
-            const cy = height / 2;
-            const dx = projected.x - cx;
-            const dy = projected.y - cy;
 
             const pad = 40;
             const minX = pad + left;
             const maxX = width - pad - right;
             const minY = pad + top;
             const maxY = height - pad - bottom;
+
+            if (projected.x >= minX && projected.x <= maxX && projected.y >= minY && projected.y <= maxY) {
+                setArrow(null);
+                return;
+            }
+
+            const cx = width / 2;
+            const cy = height / 2;
+            const dx = projected.x - cx;
+            const dy = projected.y - cy;
 
             const scaleX = dx > 0 ? (maxX - cx) / dx : dx < 0 ? (minX - cx) / dx : Infinity;
             const scaleY = dy > 0 ? (maxY - cy) / dy : dy < 0 ? (minY - cy) / dy : Infinity;
