@@ -10,6 +10,7 @@ import { BRAND_COLOR } from '@/constants/map-defaults';
 import { cn } from '@/helpers/utils';
 
 export const ROUTE_PANEL_HEIGHT = 48;
+export const ROUTE_PANEL_HEIGHT_MOBILE = 88;
 
 const actionButtonClass = cn(
     'flex-center size-8 shrink-0 rounded-md text-foreground/70 transition-colors hover:bg-accent hover:text-accent-foreground [&>svg]:size-4',
@@ -79,75 +80,81 @@ export const RoutePanel = ({ route, onChange, onClose }) => {
             {routeCoordinates && <MapRoute coordinates={routeCoordinates} color={BRAND_COLOR} width={4} />}
 
             <div className='absolute top-2 z-20 flex flex-col gap-1' style={{ left: `${offsetLeft}px` }}>
-                <div className='flex max-w-[calc(100dvw-1rem)] items-center gap-1.5 overflow-x-auto squircle-lg border border-border bg-background p-1.5 shadow-md shadow-black/10'>
-                    <PlacePointSelect
-                        value={origin}
-                        onChange={next => onChange({ origin: next, destination })}
-                        placeholder='Origen'
-                        className='w-28 shrink-0 sm:w-36'
-                    />
+                <div className='flex max-w-[calc(100dvw-1rem)] flex-col gap-1.5 squircle-lg border border-border bg-background p-1.5 shadow-md shadow-black/10 sm:flex-row sm:items-center'>
+                    <div className='flex items-center gap-1.5 overflow-x-auto'>
+                        <PlacePointSelect
+                            value={origin}
+                            onChange={next => onChange({ origin: next, destination })}
+                            placeholder='Origen'
+                            className='w-28 shrink-0 sm:w-36'
+                        />
 
-                    <ArrowRight className='size-4 shrink-0 text-foreground/50' />
+                        <ArrowRight className='size-4 shrink-0 text-foreground/50' />
 
-                    <PlacePointSelect
-                        value={destination}
-                        onChange={next => onChange({ origin, destination: next })}
-                        placeholder='Destino'
-                        className='w-28 shrink-0 sm:w-36'
-                    />
+                        <PlacePointSelect
+                            value={destination}
+                            onChange={next => onChange({ origin, destination: next })}
+                            placeholder='Destino'
+                            className='w-28 shrink-0 sm:w-36'
+                        />
 
-                    <button
-                        type='button'
-                        onClick={handleInvert}
-                        title='Invertir ruta'
-                        aria-label='Invertir ruta'
-                        className={actionButtonClass}
-                    >
-                        <ArrowLeftRight />
-                    </button>
+                        <button
+                            type='button'
+                            onClick={handleInvert}
+                            title='Invertir ruta'
+                            aria-label='Invertir ruta'
+                            className={actionButtonClass}
+                        >
+                            <ArrowLeftRight />
+                        </button>
+                    </div>
 
-                    <div className='h-6 w-px shrink-0 bg-border' />
+                    <div className='hidden h-6 w-px shrink-0 bg-border sm:block' />
 
-                    <button
-                        type='button'
-                        onClick={() => window.open(buildGoogleMapsUrl(origin, destination), '_blank')}
-                        title='Abrir en Google Maps'
-                        aria-label='Abrir en Google Maps'
-                        className={actionButtonClass}
-                    >
-                        <MapIcon />
-                    </button>
+                    <div className='flex items-center justify-between gap-1.5 sm:justify-start'>
+                        <div className='flex items-center gap-1.5'>
+                            <button
+                                type='button'
+                                onClick={() => window.open(buildGoogleMapsUrl(origin, destination), '_blank')}
+                                title='Abrir en Google Maps'
+                                aria-label='Abrir en Google Maps'
+                                className={actionButtonClass}
+                            >
+                                <MapIcon />
+                            </button>
 
-                    <button
-                        type='button'
-                        onClick={() => window.open(buildUberUrl(origin, destination), '_blank')}
-                        title='Pedir Uber'
-                        aria-label='Pedir Uber'
-                        className={actionButtonClass}
-                    >
-                        <Car />
-                    </button>
+                            <button
+                                type='button'
+                                onClick={() => window.open(buildUberUrl(origin, destination), '_blank')}
+                                title='Pedir Uber'
+                                aria-label='Pedir Uber'
+                                className={actionButtonClass}
+                            >
+                                <Car />
+                            </button>
 
-                    <button
-                        type='button'
-                        onClick={handleShare}
-                        disabled={!canShare}
-                        title={canShare ? 'Compartir ruta' : 'Ambos puntos deben ser lugares guardados'}
-                        aria-label='Compartir ruta'
-                        className={cn(actionButtonClass, !canShare && 'pointer-events-none opacity-50')}
-                    >
-                        {copied ? <CheckIcon /> : <Share2 />}
-                    </button>
+                            <button
+                                type='button'
+                                onClick={handleShare}
+                                disabled={!canShare}
+                                title={canShare ? 'Compartir ruta' : 'Ambos puntos deben ser lugares guardados'}
+                                aria-label='Compartir ruta'
+                                className={cn(actionButtonClass, !canShare && 'pointer-events-none opacity-50')}
+                            >
+                                {copied ? <CheckIcon /> : <Share2 />}
+                            </button>
+                        </div>
 
-                    <button
-                        type='button'
-                        onClick={onClose}
-                        title='Quitar ruta'
-                        aria-label='Quitar ruta'
-                        className={actionButtonClass}
-                    >
-                        <X />
-                    </button>
+                        <button
+                            type='button'
+                            onClick={onClose}
+                            title='Quitar ruta'
+                            aria-label='Quitar ruta'
+                            className={actionButtonClass}
+                        >
+                            <X />
+                        </button>
+                    </div>
                 </div>
 
                 {isFetching && <p className='px-1 text-xs text-foreground/70'>Calculando ruta…</p>}

@@ -22,7 +22,7 @@ import { DirectionArrow } from '@/components/direction-arrow';
 import { PlacesLayer } from '@/components/places-layer';
 import { PointNemoMarker } from '@/components/point-nemo-marker';
 import { PanelContainer } from '@/components/panel-container';
-import { RoutePanel, ROUTE_PANEL_HEIGHT } from '@/components/route-panel';
+import { RoutePanel, ROUTE_PANEL_HEIGHT, ROUTE_PANEL_HEIGHT_MOBILE } from '@/components/route-panel';
 import { placesQuery } from '@/queries/places';
 import { systemPlaceQuery } from '@/queries/system-places';
 
@@ -65,8 +65,8 @@ export const MapShell = () => {
     const $hydratedRoute = useRef(false);
     const $map = useRef(null);
     const [rightClickCoords, setRightClickCoords] = useState(null);
-    const { left: panelLeft, bottom: panelBottom } = usePanelOffset();
-    const routeTopOffset = route ? ROUTE_PANEL_HEIGHT : 0;
+    const { left: panelLeft, bottom: panelBottom, isDesktop } = usePanelOffset();
+    const routeTopOffset = route ? (isDesktop ? ROUTE_PANEL_HEIGHT : ROUTE_PANEL_HEIGHT_MOBILE) : 0;
 
     const handleContextMenu = e => {
         if (e.target.closest('.maplibregl-marker')) {

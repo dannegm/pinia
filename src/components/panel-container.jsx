@@ -23,7 +23,7 @@ export const PanelContainer = () => {
         return (
             <div
                 onContextMenu={e => e.stopPropagation()}
-                className='absolute top-2 bottom-2 left-2 z-20 flex overflow-hidden squircle-xl border border-border bg-background shadow-lg shadow-black/10'
+                className='absolute top-2 bottom-2 left-2 z-30 flex overflow-hidden squircle-xl border border-border bg-background shadow-lg shadow-black/10'
             >
                 <div className='flex w-14 shrink-0 flex-col items-center gap-1 border-r border-border/70 p-2'>
                     <PanelLogo className='my-2 size-8 shrink-0 squircle-lg object-cover' onClick={close} />
@@ -48,7 +48,7 @@ export const PanelContainer = () => {
         <div
             onContextMenu={e => e.stopPropagation()}
             className={cn(
-                'absolute inset-x-0 bottom-0 z-20 flex flex-col overflow-hidden rounded-t-xl border border-border bg-background pb-[env(safe-area-inset-bottom)] shadow-lg shadow-black/10 translate-y-(--dock-y)',
+                'absolute inset-x-0 bottom-0 z-30 flex flex-col overflow-hidden rounded-t-xl border border-border bg-background pb-[env(safe-area-inset-bottom)] shadow-lg shadow-black/10 translate-y-(--dock-y)',
                 !dockDrag.dragging && 'transition-transform duration-200 ease-out',
             )}
             style={{ '--dock-y': `${dockDrag.y}px` }}
