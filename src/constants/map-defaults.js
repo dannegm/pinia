@@ -14,3 +14,5 @@ export const BRAND_COLOR = '#2563eb';
 // Favorite marker color (amber-500) — shared by the toggle in the place form
 // and the map popup so "favorito" always renders the same color.
 export const FAVORITE_COLOR = '#f59e0b';
+
+export const MAP_STYLE_URL = `https://api.maptiler.com/maps/streets-v2/style.json?key=${import.meta.env.VITE_MAPTILER_KEY}`;

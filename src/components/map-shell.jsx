@@ -11,7 +11,7 @@ import {
     ContextMenuItem,
     ContextMenuSeparator,
 } from '@/ui/context-menu';
-import { DEFAULT_VIEWPORT, MIN_ZOOM, MAX_ZOOM, BRAND_COLOR } from '@/constants/map-defaults';
+import { DEFAULT_VIEWPORT, MIN_ZOOM, MAX_ZOOM, BRAND_COLOR, MAP_STYLE_URL } from '@/constants/map-defaults';
 import { cn } from '@/helpers/utils';
 import { useSettings } from '@/hooks/use-settings';
 import { useGeolocation } from '@/hooks/use-geolocation';
@@ -149,6 +149,7 @@ export const MapShell = () => {
                 <Map
                     ref={$map}
                     theme='light'
+                    styles={{ light: MAP_STYLE_URL }}
                     viewport={{ center: savedCenter, zoom: DEFAULT_VIEWPORT.zoom }}
                     minZoom={MIN_ZOOM}
                     maxZoom={MAX_ZOOM}
