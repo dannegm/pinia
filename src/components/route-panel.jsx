@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { ArrowRight, ArrowLeftRight, Map as MapIcon, Car, Share2, X } from 'lucide-react';
+import { ArrowRight, ArrowLeftRight, Map as MapIcon, Car, Share2, X, Clock } from 'lucide-react';
 import { useMap, MapRoute } from '@/ui/map';
 import { usePanelOffset } from '@/hooks/use-panel-offset';
 import { routeQuery } from '@/queries/route';
@@ -19,6 +19,14 @@ const ZOOM_CONTROLS_MARGIN = 8;
 const actionButtonClass = cn(
     'flex-center size-8 shrink-0 rounded-md text-foreground/70 transition-colors hover:bg-accent hover:text-accent-foreground [&>svg]:size-4',
 );
+
+const formatDuration = seconds => {
+    const totalMinutes = Math.round(seconds / 60);
+    const hours = Math.floor(totalMinutes / 60);
+    const minutes = totalMinutes % 60;
+    if (hours === 0) return `${minutes} min`;
+    return `${hours} h ${minutes} min`;
+};
 
 const buildGoogleMapsUrl = (origin, destination) => {
     const url = new URL('https://www.google.com/maps/dir/');
@@ -60,10 +68,12 @@ export const RoutePanel = ({ route, onChange, onClose }) => {
     };
 
     const {
-        data: routeCoordinates,
+        data: routeResult,
         isFetching,
         isError,
     } = useQuery(routeQuery(origin, destination));
+
+    const routeCoordinates = routeResult?.coordinates;
 
     useEffect(() => {
         if (!routeCoordinates?.length) return;
@@ -119,39 +129,46 @@ export const RoutePanel = ({ route, onChange, onClose }) => {
 
                     <div className='hidden h-6 w-px shrink-0 bg-border sm:block' />
 
-                    <div className='flex items-center justify-between gap-1.5 sm:justify-start'>
-                        <div className='flex items-center gap-1.5'>
-                            <button
-                                type='button'
-                                onClick={() => window.open(buildGoogleMapsUrl(origin, destination), '_blank')}
-                                title='Abrir en Google Maps'
-                                aria-label='Abrir en Google Maps'
-                                className={actionButtonClass}
-                            >
-                                <MapIcon />
-                            </button>
+                    <div className='flex items-center gap-1.5'>
+                        {routeResult?.duration != null && (
+                            <div className='flex shrink-0 items-center gap-1 text-sm font-medium text-foreground/70 [&>svg]:size-3.5'>
+                                <Clock />
+                                {formatDuration(routeResult.duration)}
+                            </div>
+                        )}
 
-                            <button
-                                type='button'
-                                onClick={() => window.open(buildUberUrl(origin, destination), '_blank')}
-                                title='Pedir Uber'
-                                aria-label='Pedir Uber'
-                                className={actionButtonClass}
-                            >
-                                <Car />
-                            </button>
+                        <div className='spacer' />
 
-                            <button
-                                type='button'
-                                onClick={handleShare}
-                                disabled={!canShare}
-                                title={canShare ? 'Compartir ruta' : 'Ambos puntos deben ser lugares guardados'}
-                                aria-label='Compartir ruta'
-                                className={cn(actionButtonClass, !canShare && 'pointer-events-none opacity-50')}
-                            >
-                                {copied ? <CheckIcon /> : <Share2 />}
-                            </button>
-                        </div>
+                        <button
+                            type='button'
+                            onClick={() => window.open(buildGoogleMapsUrl(origin, destination), '_blank')}
+                            title='Abrir en Google Maps'
+                            aria-label='Abrir en Google Maps'
+                            className={actionButtonClass}
+                        >
+                            <MapIcon />
+                        </button>
+
+                        <button
+                            type='button'
+                            onClick={() => window.open(buildUberUrl(origin, destination), '_blank')}
+                            title='Pedir Uber'
+                            aria-label='Pedir Uber'
+                            className={actionButtonClass}
+                        >
+                            <Car />
+                        </button>
+
+                        <button
+                            type='button'
+                            onClick={handleShare}
+                            disabled={!canShare}
+                            title={canShare ? 'Compartir ruta' : 'Ambos puntos deben ser lugares guardados'}
+                            aria-label='Compartir ruta'
+                            className={cn(actionButtonClass, !canShare && 'pointer-events-none opacity-50')}
+                        >
+                            {copied ? <CheckIcon /> : <Share2 />}
+                        </button>
 
                         <button
                             type='button'

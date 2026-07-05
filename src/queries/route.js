@@ -11,7 +11,12 @@ export const routeQuery = (origin, destination, opts = {}) => ({
         const response = await fetch(`https://api.openrouteservice.org/v2/directions/driving-car?${params}`);
         if (!response.ok) throw new Error('No se pudo calcular la ruta');
         const data = await response.json();
-        return data.features[0].geometry.coordinates;
+        const [feature] = data.features;
+        return {
+            coordinates: feature.geometry.coordinates,
+            distance: feature.properties.summary.distance,
+            duration: feature.properties.summary.duration,
+        };
     },
     enabled: Boolean(origin && destination),
     ...opts,
