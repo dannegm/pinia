@@ -14,7 +14,15 @@ const TOOLTIP_POSITION_CLASSES = {
     'right:end': 'left-full ml-1.5 bottom-0',
 };
 
-export const DirectionArrow = ({ coords, color, className, flyToZoom = 16, label, offsets = {} }) => {
+export const DirectionArrow = ({
+    coords,
+    color,
+    className,
+    flyToZoom = 16,
+    label,
+    offsets = {},
+    priority = 10,
+}) => {
     const { map, isLoaded } = useMap();
     const [arrow, setArrow] = useState(null);
     const { top = 0, right = 0, bottom = 0, left = 0 } = offsets;
@@ -83,13 +91,14 @@ export const DirectionArrow = ({ coords, color, className, flyToZoom = 16, label
     return (
         <div
             className={cn(
-                'group flex-center absolute top-(--arrow-y) left-(--arrow-x) z-10 size-8 -translate-x-1/2 -translate-y-1/2 cursor-pointer rounded-full text-white shadow-lg shadow-black/50 transition-[filter] hover:brightness-110 [&>svg]:size-4',
+                'group flex-center absolute top-(--arrow-y) left-(--arrow-x) z-(--arrow-z) size-8 -translate-x-1/2 -translate-y-1/2 cursor-pointer rounded-full text-white shadow-lg shadow-black/50 transition-[filter] hover:brightness-110 [&>svg]:size-4',
                 color && 'bg-(--arrow-color)',
                 className,
             )}
             style={{
                 '--arrow-x': `${arrow.x}px`,
                 '--arrow-y': `${arrow.y}px`,
+                '--arrow-z': 101 - priority,
                 ...(color && { '--arrow-color': color }),
             }}
             onClick={() =>

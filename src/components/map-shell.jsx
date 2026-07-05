@@ -163,6 +163,7 @@ export const MapShell = () => {
                                 className='bg-primary hover:bg-primary/85'
                                 label='Mi ubicación actual'
                                 offsets={{ left: panelLeft, bottom: panelBottom, top: routeTopOffset }}
+                                priority={1}
                             />
                         </>
                     )}
