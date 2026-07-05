@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { Star, FlagTriangleRight, MapPin, Clock, NotebookText, Share2, Map as MapIcon } from 'lucide-react';
-import { MarkerPopup, useMarkerContext } from '@/ui/map';
+import { Star, FlagTriangleRight, MapPin, Clock, NotebookText, Share2, Map as MapIcon, Crosshair } from 'lucide-react';
+import { MarkerPopup, useMarkerContext, useMap } from '@/ui/map';
 import { ToggleIconButton } from '@/ui/toggle-icon-button';
 import { Tooltip, TooltipTrigger, TooltipContent } from '@/ui/tooltip';
 import { DynamicIcon } from '@/ui/dynamic-icon';
@@ -14,6 +14,7 @@ import { BRAND_COLOR, FAVORITE_COLOR } from '@/constants/map-defaults';
 export const PlacePopup = ({ place, autoOpen }) => {
     const queryClient = useQueryClient();
     const { marker } = useMarkerContext();
+    const { map } = useMap();
     const [copied, setCopied] = useState(false);
     const $autoOpened = useRef(false);
 
@@ -37,6 +38,10 @@ export const PlacePopup = ({ place, autoOpen }) => {
         await navigator.clipboard.writeText(url);
         setCopied(true);
         setTimeout(() => setCopied(false), 1500);
+    };
+
+    const handleCenter = () => {
+        map?.flyTo({ center: [place.lng, place.lat], zoom: 16, duration: 800 });
     };
 
     const handleOpenInMaps = () => {
@@ -145,6 +150,15 @@ export const PlacePopup = ({ place, autoOpen }) => {
                                 {copied ? <CheckIcon /> : <Share2 />}
                             </TooltipTrigger>
                             <TooltipContent>{copied ? 'Copiado' : 'Compartir'}</TooltipContent>
+                        </Tooltip>
+
+                        <Tooltip>
+                            <TooltipTrigger
+                                render={<ToggleIconButton compact onClick={handleCenter} label='Centrar' />}
+                            >
+                                <Crosshair />
+                            </TooltipTrigger>
+                            <TooltipContent>Centrar</TooltipContent>
                         </Tooltip>
 
                         <Tooltip>

@@ -46,7 +46,7 @@ const CenterButton = () => {
     const [center] = useSettings('mapCenter', DEFAULT_VIEWPORT.center);
 
     const handleCenter = () => {
-        map?.flyTo({ center, zoom: DEFAULT_VIEWPORT.zoom, duration: 500 });
+        map?.flyTo({ center, zoom: 16, duration: 500 });
     };
 
     return (
@@ -100,7 +100,7 @@ export const MapShell = () => {
 
     const handleCenterHere = () => {
         if (!rightClickCoords) return;
-        $map.current?.flyTo({ center: [rightClickCoords.lng, rightClickCoords.lat], duration: 500 });
+        $map.current?.flyTo({ center: [rightClickCoords.lng, rightClickCoords.lat], zoom: 16, duration: 500 });
     };
 
     const handleNavigateFromHome = () => {

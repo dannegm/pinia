@@ -1,7 +1,7 @@
 import { PersonStanding } from 'lucide-react';
 import { MapMarker, MarkerContent, useMap } from '@/ui/map';
 
-export const CurrentLocationMarker = ({ coords, flyToZoom = 14 }) => {
+export const CurrentLocationMarker = ({ coords, flyToZoom = 16 }) => {
     const { map } = useMap();
 
     return (

@@ -718,7 +718,7 @@ function MapControls({
         };
         map?.flyTo({
           center: [coords.longitude, coords.latitude],
-          zoom: 14,
+          zoom: 16,
           duration: 1500,
         });
         onLocate?.(coords);

@@ -14,7 +14,7 @@ const TOOLTIP_POSITION_CLASSES = {
     'right:end': 'left-full ml-1.5 bottom-0',
 };
 
-export const DirectionArrow = ({ coords, color, className, flyToZoom = 14, label, offsets = {} }) => {
+export const DirectionArrow = ({ coords, color, className, flyToZoom = 16, label, offsets = {} }) => {
     const { map, isLoaded } = useMap();
     const [arrow, setArrow] = useState(null);
     const { top = 0, right = 0, bottom = 0, left = 0 } = offsets;
