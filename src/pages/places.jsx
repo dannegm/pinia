@@ -159,7 +159,7 @@ export const PlacesPage = () => {
 
                 <div className='flex flex-row gap-2 items-center sm:items-stretch sm:flex-col'>
                     <CategoryFilterSelect
-                        className='min-w-0 flex-1 shrink'
+                        className='min-w-0 flex-1 shrink sm:flex-none'
                         selected={selectedCategoryIds}
                         onToggle={toggleCategory}
                         onClear={() => {
@@ -170,7 +170,7 @@ export const PlacesPage = () => {
                         onToggleFavorites={() => setFavoritesOnly(current => !current)}
                     />
 
-                    <div className='flex min-w-0 flex-1 shrink gap-1.5'>
+                    <div className='flex min-w-0 flex-1 shrink gap-1.5 sm:flex-none'>
                         <Select value={sortBy} onValueChange={setSortBy}>
                             <SelectTrigger className='h-8 w-full min-w-0 flex-1 text-sm'>
                                 <SelectValue placeholder='Ordenar por' className='line-clamp-1 min-w-0 break-all'>
