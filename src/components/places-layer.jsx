@@ -9,31 +9,27 @@ import { PlacePopup } from '@/components/place-popup';
 import { PlaceContextMenu } from '@/components/place-context-menu';
 import { placesQuery } from '@/queries/places';
 import { usePanelOffset } from '@/hooks/use-panel-offset';
-import { useHiddenCategories } from '@/hooks/use-hidden-categories';
 
 export const PlacesLayer = ({ topOffset = 0 }) => {
     const { map, isLoaded } = useMap();
-    const { data: allPlaces = [], isSuccess: placesLoaded } = useQuery(placesQuery());
+    const { data: places = [], isSuccess: placesLoaded } = useQuery(placesQuery());
     const { left: panelLeft, bottom: panelBottom } = usePanelOffset();
     const { placeId: editingPlaceId } = useParams({ strict: false });
     const { pathname } = useLocation();
     const isPickingPosition = Boolean(editingPlaceId) || pathname === '/places/new';
-    const [hiddenCategoryIds] = useHiddenCategories();
     const [focusedPlaceId] = useQueryState('place', { defaultValue: '' });
     const $hydratedPlace = useRef(false);
-
-    const places = allPlaces.filter(place => !hiddenCategoryIds.includes(place.category_id));
 
     useEffect(() => {
         if ($hydratedPlace.current || !placesLoaded || !isLoaded) return;
         $hydratedPlace.current = true;
         if (!focusedPlaceId) return;
 
-        const place = allPlaces.find(p => p.id === focusedPlaceId);
+        const place = places.find(p => p.id === focusedPlaceId);
         if (!place) return;
 
         map.flyTo({ center: [place.lng, place.lat], zoom: 16, duration: 800 });
-    }, [placesLoaded, isLoaded, allPlaces, focusedPlaceId, map]);
+    }, [placesLoaded, isLoaded, places, focusedPlaceId, map]);
 
     return (
         <>

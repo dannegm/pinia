@@ -27,7 +27,6 @@ import {
 } from '@/components/category-filter-select';
 import { PanelHeader } from '@/components/panel-header';
 import { placesQuery, deletePlaceMutation } from '@/queries/places';
-import { useHiddenCategories } from '@/hooks/use-hidden-categories';
 import { useGeolocation } from '@/hooks/use-geolocation';
 import { useStableLocation } from '@/hooks/use-stable-location';
 import { haversineDistance } from '@/helpers/geo';
@@ -60,20 +59,18 @@ export const PlacesPage = () => {
     const [favoritesOnly, setFavoritesOnly] = useFavoritesFilter();
     const [sortBy, setSortBy] = useQueryState('sort', { defaultValue: 'created_at' });
     const [sortDir, setSortDir] = useQueryState('dir', { defaultValue: 'desc' });
-    const [hiddenCategoryIds] = useHiddenCategories();
     const rawLocation = useGeolocation();
     const stableLocation = useStableLocation(rawLocation);
     const hasLocation = Boolean(rawLocation);
     const { data: allPlaces = [] } = useQuery(placesQuery());
 
     const places = useMemo(() => {
-        const visible = allPlaces.filter(place => !hiddenCategoryIds.includes(place.category_id));
-        if (!stableLocation) return visible;
-        return visible.map(place => ({
+        if (!stableLocation) return allPlaces;
+        return allPlaces.map(place => ({
             ...place,
             distance: haversineDistance(stableLocation, { lat: place.lat, lng: place.lng }),
         }));
-    }, [allPlaces, hiddenCategoryIds, stableLocation]);
+    }, [allPlaces, stableLocation]);
 
     useEffect(() => {
         if (sortBy === 'distance' && !hasLocation) setSortBy('created_at');

@@ -27,7 +27,8 @@ export const CategoryFilterSelect = ({
 }) => {
     const [open, setOpen] = useState(false);
     const [query, setQuery] = useState('');
-    const { data: categories = [] } = useQuery(categoriesQuery());
+    const { data: allCategories = [] } = useQuery(categoriesQuery());
+    const categories = useMemo(() => allCategories.filter(category => category.is_visible), [allCategories]);
 
     const results = useMemo(() => {
         const q = query.trim().toLowerCase();

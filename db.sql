@@ -14,6 +14,8 @@ create table if not exists pinia.categories (
   name text not null,
   icon jsonb not null,
   color text not null,
+  is_visible boolean not null default true,
+  is_secret boolean not null default false,
   created_at timestamptz not null default now()
 );
 

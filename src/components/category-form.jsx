@@ -2,7 +2,8 @@ import { useState } from 'react';
 import { Palette } from 'lucide-react';
 import { Button } from '@/ui/button';
 import { Input } from '@/ui/input';
-import { Field, FieldGroup, FieldLabel } from '@/ui/field';
+import { Switch } from '@/ui/switch';
+import { Field, FieldGroup, FieldLabel, FieldContent, FieldTitle, FieldDescription } from '@/ui/field';
 import { ColorPicker } from '@/ui/color-picker';
 import { IconPicker } from '@/ui/icon-picker';
 import { DynamicIcon } from '@/ui/dynamic-icon';
@@ -14,11 +15,12 @@ export const CategoryForm = ({ initialValues, onSubmit, submitLabel, pending, se
     const [name, setName] = useState(initialValues?.name ?? '');
     const [icon, setIcon] = useState(initialValues?.icon ?? DEFAULT_ICON);
     const [color, setColor] = useState(initialValues?.color ?? BRAND_COLOR);
+    const [isVisible, setIsVisible] = useState(initialValues?.is_visible ?? true);
 
     const handleSubmit = e => {
         e.preventDefault();
         if (!name.trim()) return;
-        onSubmit({ name: name.trim(), icon, color });
+        onSubmit({ name: name.trim(), icon, color, is_visible: isVisible });
     };
 
     return (
@@ -58,6 +60,16 @@ export const CategoryForm = ({ initialValues, onSubmit, submitLabel, pending, se
                             onChange={e => setName(e.target.value)}
                             placeholder='Restaurantes'
                         />
+                    </Field>
+
+                    <Field orientation='horizontal'>
+                        <FieldContent>
+                            <FieldTitle>Visible en el mapa</FieldTitle>
+                            <FieldDescription>
+                                Al desactivar, sus lugares se ocultan de la lista y el mapa.
+                            </FieldDescription>
+                        </FieldContent>
+                        <Switch checked={isVisible} onCheckedChange={setIsVisible} />
                     </Field>
                 </FieldGroup>
             </div>

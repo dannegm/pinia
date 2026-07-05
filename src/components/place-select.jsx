@@ -26,7 +26,7 @@ export const PlaceOption = ({ place, label = place.name }) => (
 export const PlaceSelect = ({ value, onChange, placeholder = 'Elige un lugar' }) => {
     const [open, setOpen] = useState(false);
     const [query, setQuery] = useState('');
-    const { data: places = [] } = useQuery(placesQuery());
+    const { data: places = [] } = useQuery(placesQuery({ includeHidden: true }));
     const selected = places.find(place => place.id === value);
 
     const results = useMemo(() => {

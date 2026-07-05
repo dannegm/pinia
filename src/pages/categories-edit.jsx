@@ -21,6 +21,7 @@ export const EditCategoryPage = () => {
         updateCategoryMutation({
             onSuccess: () => {
                 queryClient.invalidateQueries({ queryKey: ['categories'] });
+                queryClient.invalidateQueries({ queryKey: ['places'] });
                 goBack();
             },
         }),

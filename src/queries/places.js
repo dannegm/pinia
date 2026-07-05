@@ -1,13 +1,15 @@
 import { nanoid } from 'nanoid';
 import { supabase } from '@/helpers/supabase';
 
-export const placesQuery = (opts = {}) => ({
-    queryKey: ['places'],
+export const placesQuery = ({ includeHidden = false, ...opts } = {}) => ({
+    queryKey: includeHidden ? ['places', { includeHidden }] : ['places'],
     queryFn: async () => {
-        const { data, error } = await supabase()
+        let query = supabase()
             .from('places')
-            .select('*, category:categories(*)')
-            .order('created_at', { ascending: false });
+            .select('*, category:categories!inner(*)')
+            .eq('category.is_secret', false);
+        if (!includeHidden) query = query.eq('category.is_visible', true);
+        const { data, error } = await query.order('created_at', { ascending: false });
         if (error) throw error;
         return data;
     },

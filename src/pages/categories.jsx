@@ -11,8 +11,7 @@ import { DynamicIcon } from '@/ui/dynamic-icon';
 import { Tooltip, TooltipTrigger, TooltipContent } from '@/ui/tooltip';
 import { InputGroup, InputGroupAddon, InputGroupButton, InputGroupInput } from '@/ui/input-group';
 import { PanelHeader } from '@/components/panel-header';
-import { useHiddenCategories } from '@/hooks/use-hidden-categories';
-import { categoriesQuery, deleteCategoryMutation } from '@/queries/categories';
+import { categoriesQuery, updateCategoryMutation, deleteCategoryMutation } from '@/queries/categories';
 import { cn } from '@/helpers/utils';
 
 export const CategoriesPage = () => {
@@ -20,7 +19,6 @@ export const CategoriesPage = () => {
     const queryClient = useQueryClient();
     const [error, setError] = useState(null);
     const [query, setQuery] = useQueryState('q', { defaultValue: '' });
-    const [hiddenCategoryIds, toggleCategoryVisibility] = useHiddenCategories();
     const { data: categories = [] } = useQuery(categoriesQuery());
 
     const fuse = useMemo(
@@ -28,9 +26,18 @@ export const CategoriesPage = () => {
         [categories],
     );
 
-    const filteredCategories = query.trim()
-        ? fuse.search(query.trim()).map(result => result.item)
-        : categories;
+    const filteredCategories = (query.trim() ? fuse.search(query.trim()).map(result => result.item) : categories)
+        .slice()
+        .sort((a, b) => Number(b.is_visible) - Number(a.is_visible));
+
+    const toggleVisibilityMutation = useMutation(
+        updateCategoryMutation({
+            onSuccess: () => {
+                queryClient.invalidateQueries({ queryKey: ['categories'] });
+                queryClient.invalidateQueries({ queryKey: ['places'] });
+            },
+        }),
+    );
 
     const deleteMutation = useMutation(
         deleteCategoryMutation({
@@ -96,7 +103,7 @@ export const CategoriesPage = () => {
                             className={cn(
                                 'flex items-center squircle-lg border border-border/70 bg-card p-2.5 shadow-sm shadow-black/5 transition-colors hover:border-border hover:bg-muted/40',
                                 {
-                                    'bg-muted opacity-50': hiddenCategoryIds.includes(category.id),
+                                    'bg-muted opacity-50': !category.is_visible,
                                 },
                             )}
                         >
@@ -117,15 +124,26 @@ export const CategoriesPage = () => {
                                 <TooltipContent>{category.name}</TooltipContent>
                             </Tooltip>
 
-                            <button
-                                type='button'
-                                aria-label={hiddenCategoryIds.includes(category.id) ? 'Mostrar en el mapa' : 'Ocultar del mapa'}
-                                title={hiddenCategoryIds.includes(category.id) ? 'Mostrar en el mapa' : 'Ocultar del mapa'}
-                                onClick={() => toggleCategoryVisibility(category.id)}
-                                className='flex-center size-8 shrink-0 rounded-md text-foreground/70 transition-colors hover:bg-accent hover:text-accent-foreground [&>svg]:size-4'
-                            >
-                                {hiddenCategoryIds.includes(category.id) ? <EyeOff /> : <Eye />}
-                            </button>
+                            <Tooltip>
+                                <TooltipTrigger
+                                    render={
+                                        <button
+                                            type='button'
+                                            aria-label={category.is_visible ? 'Ocultar del mapa' : 'Mostrar en el mapa'}
+                                            onClick={() =>
+                                                toggleVisibilityMutation.mutate({
+                                                    id: category.id,
+                                                    is_visible: !category.is_visible,
+                                                })
+                                            }
+                                            className='flex-center size-8 shrink-0 rounded-md text-foreground/70 transition-colors hover:bg-accent hover:text-accent-foreground [&>svg]:size-4'
+                                        />
+                                    }
+                                >
+                                    {category.is_visible ? <Eye /> : <EyeOff />}
+                                </TooltipTrigger>
+                                <TooltipContent>{category.is_visible ? 'Ocultar del mapa' : 'Mostrar en el mapa'}</TooltipContent>
+                            </Tooltip>
                             <button
                                 type='button'
                                 aria-label='Editar'

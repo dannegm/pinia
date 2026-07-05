@@ -4,7 +4,11 @@ import { supabase } from '@/helpers/supabase';
 export const categoriesQuery = (opts = {}) => ({
     queryKey: ['categories'],
     queryFn: async () => {
-        const { data, error } = await supabase().from('categories').select('*').order('name');
+        const { data, error } = await supabase()
+            .from('categories')
+            .select('*')
+            .eq('is_secret', false)
+            .order('name');
         if (error) throw error;
         return data;
     },
@@ -12,10 +16,10 @@ export const categoriesQuery = (opts = {}) => ({
 });
 
 export const createCategoryMutation = (opts = {}) => ({
-    mutationFn: async ({ name, icon, color }) => {
+    mutationFn: async ({ name, icon, color, is_visible }) => {
         const { data, error } = await supabase()
             .from('categories')
-            .insert({ id: nanoid(8), name, icon, color })
+            .insert({ id: nanoid(8), name, icon, color, is_visible })
             .select()
             .single();
         if (error) throw error;
