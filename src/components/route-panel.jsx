@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { ArrowRight, ArrowLeftRight, Map as MapIcon, Car, Share2, X, Clock } from 'lucide-react';
+import { ArrowRight, ArrowLeftRight, Map as MapIcon, CarTaxiFront, Share2, X, Clock } from 'lucide-react';
 import { useMap, MapRoute } from '@/ui/map';
 import { usePanelOffset } from '@/hooks/use-panel-offset';
 import { routeQuery } from '@/queries/route';
 import { PlacePointSelect } from '@/components/place-point-select';
+import { Tooltip, TooltipTrigger, TooltipContent } from '@/ui/tooltip';
 import { CheckIcon } from '@/ui/icons';
 import { BRAND_COLOR } from '@/constants/map-defaults';
 import { cn } from '@/helpers/utils';
@@ -116,15 +117,21 @@ export const RoutePanel = ({ route, onChange, onClose }) => {
                             className='w-28 shrink-0 sm:w-36'
                         />
 
-                        <button
-                            type='button'
-                            onClick={handleInvert}
-                            title='Invertir ruta'
-                            aria-label='Invertir ruta'
-                            className={actionButtonClass}
-                        >
-                            <ArrowLeftRight />
-                        </button>
+                        <Tooltip>
+                            <TooltipTrigger
+                                render={
+                                    <button
+                                        type='button'
+                                        onClick={handleInvert}
+                                        aria-label='Invertir ruta'
+                                        className={actionButtonClass}
+                                    />
+                                }
+                            >
+                                <ArrowLeftRight />
+                            </TooltipTrigger>
+                            <TooltipContent>Invertir ruta</TooltipContent>
+                        </Tooltip>
                     </div>
 
                     <div className='hidden h-6 w-px shrink-0 bg-border sm:block' />
@@ -139,46 +146,72 @@ export const RoutePanel = ({ route, onChange, onClose }) => {
 
                         <div className='spacer' />
 
-                        <button
-                            type='button'
-                            onClick={() => window.open(buildGoogleMapsUrl(origin, destination), '_blank')}
-                            title='Abrir en Google Maps'
-                            aria-label='Abrir en Google Maps'
-                            className={actionButtonClass}
-                        >
-                            <MapIcon />
-                        </button>
+                        <Tooltip>
+                            <TooltipTrigger
+                                render={
+                                    <button
+                                        type='button'
+                                        onClick={() => window.open(buildUberUrl(origin, destination), '_blank')}
+                                        aria-label='Pedir Uber'
+                                        className={actionButtonClass}
+                                    />
+                                }
+                            >
+                                <CarTaxiFront />
+                            </TooltipTrigger>
+                            <TooltipContent>Pedir Uber</TooltipContent>
+                        </Tooltip>
 
-                        <button
-                            type='button'
-                            onClick={() => window.open(buildUberUrl(origin, destination), '_blank')}
-                            title='Pedir Uber'
-                            aria-label='Pedir Uber'
-                            className={actionButtonClass}
-                        >
-                            <Car />
-                        </button>
+                        <Tooltip>
+                            <TooltipTrigger
+                                render={
+                                    <button
+                                        type='button'
+                                        onClick={() => window.open(buildGoogleMapsUrl(origin, destination), '_blank')}
+                                        aria-label='Abrir en Google Maps'
+                                        className={actionButtonClass}
+                                    />
+                                }
+                            >
+                                <MapIcon />
+                            </TooltipTrigger>
+                            <TooltipContent>Abrir en Google Maps</TooltipContent>
+                        </Tooltip>
 
-                        <button
-                            type='button'
-                            onClick={handleShare}
-                            disabled={!canShare}
-                            title={canShare ? 'Compartir ruta' : 'Ambos puntos deben ser lugares guardados'}
-                            aria-label='Compartir ruta'
-                            className={cn(actionButtonClass, !canShare && 'pointer-events-none opacity-50')}
-                        >
-                            {copied ? <CheckIcon /> : <Share2 />}
-                        </button>
+                        <Tooltip>
+                            <TooltipTrigger
+                                render={
+                                    <button
+                                        type='button'
+                                        onClick={handleShare}
+                                        disabled={!canShare}
+                                        aria-label='Compartir ruta'
+                                        className={cn(actionButtonClass, !canShare && 'pointer-events-none opacity-50')}
+                                    />
+                                }
+                            >
+                                {copied ? <CheckIcon /> : <Share2 />}
+                            </TooltipTrigger>
+                            <TooltipContent>
+                                {canShare ? 'Compartir ruta' : 'Ambos puntos deben ser lugares guardados'}
+                            </TooltipContent>
+                        </Tooltip>
 
-                        <button
-                            type='button'
-                            onClick={onClose}
-                            title='Quitar ruta'
-                            aria-label='Quitar ruta'
-                            className={actionButtonClass}
-                        >
-                            <X />
-                        </button>
+                        <Tooltip>
+                            <TooltipTrigger
+                                render={
+                                    <button
+                                        type='button'
+                                        onClick={onClose}
+                                        aria-label='Quitar ruta'
+                                        className={actionButtonClass}
+                                    />
+                                }
+                            >
+                                <X />
+                            </TooltipTrigger>
+                            <TooltipContent>Quitar ruta</TooltipContent>
+                        </Tooltip>
                     </div>
                 </div>
 
