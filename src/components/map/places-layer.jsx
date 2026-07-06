@@ -9,7 +9,7 @@ import { PlaceClusterMarker } from '@/components/map/place-cluster-marker';
 import { PlacePopup } from '@/components/places/place-popup';
 import { PlaceContextMenu } from '@/components/places/place-context-menu';
 import { placesQuery } from '@/queries/places';
-import { FOCUS_ZOOM } from '@/constants/map-defaults';
+import { FOCUS_ZOOM, MAP_CONTROLS_OFFSET } from '@/constants/map-defaults';
 import { usePanelOffset } from '@/hooks/use-panel-offset';
 import { useClusteredPlaces } from '@/hooks/use-clustered-places';
 import { cn } from '@/helpers/utils';
@@ -95,7 +95,7 @@ export const PlacesLayer = ({ topOffset = 0, readOnly = false, pinnedIds = null 
                         coords={{ lat: place.lat, lng: place.lng }}
                         color={place.category?.color ?? '#6b7280'}
                         label={place.name}
-                        offsets={{ left: panelLeft, bottom: panelBottom, top: topOffset }}
+                        offsets={{ left: panelLeft, right: MAP_CONTROLS_OFFSET, bottom: panelBottom, top: topOffset }}
                     />
                 ))}
         </>

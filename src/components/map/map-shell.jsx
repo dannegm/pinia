@@ -19,6 +19,7 @@ import {
     BRAND_COLOR,
     MAP_STYLES,
     DEFAULT_MAP_STYLE_ID,
+    MAP_CONTROLS_OFFSET,
     parseAsZoom,
 } from '@/constants/map-defaults';
 import { useSettings } from '@/hooks/use-settings';
@@ -189,7 +190,7 @@ export const MapShell = () => {
                                 coords={currentLocation}
                                 className='bg-primary hover:bg-primary/85'
                                 label='Mi ubicación actual'
-                                offsets={{ left: panelLeft, bottom: panelBottom, top: routeTopOffset }}
+                                offsets={{ left: panelLeft, right: MAP_CONTROLS_OFFSET, bottom: panelBottom, top: routeTopOffset }}
                                 priority={1}
                             />
                         </>
@@ -205,7 +206,7 @@ export const MapShell = () => {
                             coords={{ lat: route.origin.lat, lng: route.origin.lng }}
                             color={getRouteBeaconColor(route.origin, places)}
                             label={route.origin.label}
-                            offsets={{ left: panelLeft, bottom: panelBottom, top: routeTopOffset }}
+                            offsets={{ left: panelLeft, right: MAP_CONTROLS_OFFSET, bottom: panelBottom, top: routeTopOffset }}
                         />
                     )}
                     {route && shouldShowRouteBeacon(route.destination, places) && (
@@ -213,7 +214,7 @@ export const MapShell = () => {
                             coords={{ lat: route.destination.lat, lng: route.destination.lng }}
                             color={getRouteBeaconColor(route.destination, places)}
                             label={route.destination.label}
-                            offsets={{ left: panelLeft, bottom: panelBottom, top: routeTopOffset }}
+                            offsets={{ left: panelLeft, right: MAP_CONTROLS_OFFSET, bottom: panelBottom, top: routeTopOffset }}
                         />
                     )}
                     <PanelContainer routeTopOffset={routeTopOffset} />

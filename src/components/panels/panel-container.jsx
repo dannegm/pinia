@@ -76,7 +76,7 @@ export const PanelContainer = ({ routeTopOffset = 0 }) => {
                 <Outlet />
             </MobilePanelSheet>
 
-            <nav className='flex items-center justify-around p-1'>
+            <nav className='relative flex items-center justify-around p-1 z-150'>
                 <PanelLogo className='my-2 size-8 shrink-0 squircle-lg object-cover' onClick={close} />
                 <PanelNavButtons className='contents' buttonClassName='size-10 squircle-lg' />
                 <CreatePlaceButton className='size-10' />

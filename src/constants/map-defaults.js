@@ -45,3 +45,9 @@ export const MAP_STYLES = [
 ];
 
 export const DEFAULT_MAP_STYLE_ID = 'streets';
+
+// Width of the floating top-right toolbar column (zoom/compass/style switcher
+// controls, see map-shell.jsx and embed-map-shell.jsx) plus its own `right-2`
+// inset. Beacons (DirectionArrow) offset by this so they don't render
+// underneath those controls.
+export const MAP_CONTROLS_OFFSET = 42;
