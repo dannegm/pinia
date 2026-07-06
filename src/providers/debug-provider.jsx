@@ -11,9 +11,9 @@ export const DebugProvider = ({ children }) => {
     return (
         <>
             {debug && (
-                <div className='absolute inset-0 z-120 bg-red-300/10'>
+                <div className='absolute inset-0 z-120 bg-red-300/10 pointer-events-none'>
                     <div className='absolute left-1/2 h-full w-0 border-l border-red-500 border-dashed' />
-                    <div className='absolute top-1/2 w-full h-0 border-t border-red-500 border-dashed' />
+                    <div className='absolute top-1/2 w-full h-0 border-t border-red-500 border-dashed -translate-y-7' />
                 </div>
             )}
             {children}

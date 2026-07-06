@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { useMap } from '@/ui/map';
 
-export const CenterPin = ({ onCoordsChange, children }) => {
+export const CenterPin = ({ onCoordsChange, anchor = 'center', children }) => {
     const { map, isLoaded } = useMap();
     const [padding, setPadding] = useState({ top: 0, right: 0, bottom: 0, left: 0 });
     const [isPanning, setIsPanning] = useState(false);
@@ -41,7 +41,13 @@ export const CenterPin = ({ onCoordsChange, children }) => {
                 left: `${padding.left}px`,
             }}
         >
-            <div className='flex-center h-full w-full'>{children(isPanning)}</div>
+            {anchor === 'bottom' ? (
+                <div className='absolute-center'>
+                    <div className='absolute bottom-0 left-1/2 -translate-x-1/2'>{children(isPanning)}</div>
+                </div>
+            ) : (
+                <div className='flex-center h-full w-full'>{children(isPanning)}</div>
+            )}
         </div>,
         map.getContainer(),
     );

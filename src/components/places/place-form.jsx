@@ -98,7 +98,7 @@ export const PlaceForm = ({
         <>
             {mode === 'create' ? (
                 isTouch ? (
-                    <CenterPin onCoordsChange={setCoords}>
+                    <CenterPin onCoordsChange={setCoords} anchor='bottom'>
                         {isPanning => <PinGlyph lifted={isPanning} />}
                     </CenterPin>
                 ) : (
