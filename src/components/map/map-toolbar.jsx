@@ -2,7 +2,7 @@ import { useEffect, useRef } from 'react';
 import { Plus, Minus, LocateFixed } from 'lucide-react';
 import { useMap } from '@/ui/map';
 import { useSettings } from '@/hooks/use-settings';
-import { DEFAULT_VIEWPORT } from '@/constants/map-defaults';
+import { DEFAULT_VIEWPORT, FOCUS_ZOOM } from '@/constants/map-defaults';
 import { Tooltip, TooltipTrigger, TooltipContent } from '@/ui/tooltip';
 import { CompassNeedleIcon } from '@/ui/icons';
 import { cn } from '@/helpers/utils';
@@ -97,7 +97,7 @@ export const CenterControl = () => {
     const { map } = useMap();
     const [center] = useSettings('mapCenter', DEFAULT_VIEWPORT.center);
 
-    const handleCenter = () => map?.flyTo({ center, zoom: 16, duration: 500 });
+    const handleCenter = () => map?.flyTo({ center, zoom: FOCUS_ZOOM, duration: 500 });
 
     return (
         <ToolbarGroup>

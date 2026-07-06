@@ -15,6 +15,7 @@ import {
     DEFAULT_VIEWPORT,
     MIN_ZOOM,
     MAX_ZOOM,
+    FOCUS_ZOOM,
     BRAND_COLOR,
     MAP_STYLES,
     DEFAULT_MAP_STYLE_ID,
@@ -117,7 +118,7 @@ export const MapShell = () => {
 
     const handleCenterHere = () => {
         if (!rightClickCoords) return;
-        $map.current?.flyTo({ center: [rightClickCoords.lng, rightClickCoords.lat], zoom: 16, duration: 500 });
+        $map.current?.flyTo({ center: [rightClickCoords.lng, rightClickCoords.lat], zoom: FOCUS_ZOOM, duration: 500 });
     };
 
     const handleNavigateFromHome = () => {
@@ -201,7 +202,6 @@ export const MapShell = () => {
                         <DirectionArrow
                             coords={{ lat: route.origin.lat, lng: route.origin.lng }}
                             color={getRouteBeaconColor(route.origin, places)}
-                            flyToZoom={16}
                             label={route.origin.label}
                             offsets={{ left: panelLeft, bottom: panelBottom, top: routeTopOffset }}
                         />
@@ -210,7 +210,6 @@ export const MapShell = () => {
                         <DirectionArrow
                             coords={{ lat: route.destination.lat, lng: route.destination.lng }}
                             color={getRouteBeaconColor(route.destination, places)}
-                            flyToZoom={16}
                             label={route.destination.label}
                             offsets={{ left: panelLeft, bottom: panelBottom, top: routeTopOffset }}
                         />

@@ -17,7 +17,7 @@ import { CenterPin } from '@/components/map/center-pin';
 import { CategorySelect } from '@/components/categories/category-select';
 import { cn } from '@/helpers/utils';
 import { useIsTouchDevice } from '@/hooks/use-is-touch-device';
-import { BRAND_COLOR, FAVORITE_COLOR } from '@/constants/map-defaults';
+import { BRAND_COLOR, FAVORITE_COLOR, FOCUS_ZOOM } from '@/constants/map-defaults';
 import { categoriesQuery } from '@/queries/categories';
 
 const MarkerToggleRow = ({ active, onClick, color, label, description, children }) => (
@@ -75,7 +75,7 @@ export const PlaceForm = ({
 
     useEffect(() => {
         if (mode !== 'edit' || !initialCoords) return;
-        map.flyTo({ center: [initialCoords.lng, initialCoords.lat], zoom: 16, duration: 800 });
+        map.flyTo({ center: [initialCoords.lng, initialCoords.lat], zoom: FOCUS_ZOOM, duration: 800 });
     }, []);
 
     const handleSubmit = e => {

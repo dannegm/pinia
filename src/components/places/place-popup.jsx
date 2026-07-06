@@ -9,7 +9,7 @@ import { CheckIcon } from '@/ui/icons';
 import { updatePlaceMutation } from '@/queries/places';
 import { PlaceNavigationRow } from '@/components/places/place-navigation-row';
 import { NotesViewer } from '@/components/places/notes-viewer';
-import { BRAND_COLOR, FAVORITE_COLOR } from '@/constants/map-defaults';
+import { BRAND_COLOR, FAVORITE_COLOR, FOCUS_ZOOM } from '@/constants/map-defaults';
 import { cn } from '@/helpers/utils';
 
 export const PlacePopup = ({ place, autoOpen, readOnly = false }) => {
@@ -42,7 +42,7 @@ export const PlacePopup = ({ place, autoOpen, readOnly = false }) => {
     };
 
     const handleCenter = () => {
-        map?.flyTo({ center: [place.lng, place.lat], zoom: 16, duration: 800 });
+        map?.flyTo({ center: [place.lng, place.lat], zoom: FOCUS_ZOOM, duration: 800 });
     };
 
     const handleOpenInMaps = () => {

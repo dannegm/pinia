@@ -10,6 +10,7 @@ import {
     ContextMenuSeparator,
 } from '@/ui/context-menu';
 import { useMap } from '@/ui/map';
+import { FOCUS_ZOOM } from '@/constants/map-defaults';
 import { useGeolocation } from '@/hooks/use-geolocation';
 import { useEvents } from '@/providers/bus-provider';
 import { DeletePlaceButton } from '@/components/places/delete-place-button';
@@ -40,7 +41,7 @@ export const PlaceContextMenu = ({ place, children }) => {
 
     const destination = { lat: place.lat, lng: place.lng, label: place.name, placeId: place.id };
 
-    const handleCenter = () => map?.flyTo({ center: [place.lng, place.lat], zoom: 16, duration: 800 });
+    const handleCenter = () => map?.flyTo({ center: [place.lng, place.lat], zoom: FOCUS_ZOOM, duration: 800 });
 
     const handleNavigateFromHome = () =>
         casa?.place &&

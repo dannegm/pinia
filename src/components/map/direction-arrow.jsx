@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { ArrowUp } from 'lucide-react';
 import { useMap } from '@/ui/map';
+import { FOCUS_ZOOM } from '@/constants/map-defaults';
 import { cn } from '@/helpers/utils';
 
 const ARROW_SIZE = 32; // size-8
@@ -21,7 +22,7 @@ export const DirectionArrow = ({
     coords,
     color,
     className,
-    flyToZoom = 16,
+    flyToZoom = FOCUS_ZOOM,
     label,
     offsets = {},
     priority = 10,

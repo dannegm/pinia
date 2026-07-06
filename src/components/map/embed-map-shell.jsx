@@ -100,7 +100,6 @@ export const EmbedMapShell = () => {
                     <DirectionArrow
                         coords={{ lat: route.origin.lat, lng: route.origin.lng }}
                         color={getRouteBeaconColor(route.origin, places)}
-                        flyToZoom={16}
                         label={route.origin.label}
                         offsets={{ left: panelLeft, bottom: panelBottom, top: routeTopOffset }}
                     />
@@ -109,7 +108,6 @@ export const EmbedMapShell = () => {
                     <DirectionArrow
                         coords={{ lat: route.destination.lat, lng: route.destination.lng }}
                         color={getRouteBeaconColor(route.destination, places)}
-                        flyToZoom={16}
                         label={route.destination.label}
                         offsets={{ left: panelLeft, bottom: panelBottom, top: routeTopOffset }}
                     />

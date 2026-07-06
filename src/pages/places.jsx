@@ -28,6 +28,7 @@ import {
 import { PanelHeader } from '@/components/panels/panel-header';
 import { PanelFooter } from '@/components/panels/panel-footer';
 import { placesQuery, deletePlaceMutation } from '@/queries/places';
+import { FOCUS_ZOOM } from '@/constants/map-defaults';
 import { useGeolocation } from '@/hooks/use-geolocation';
 import { useStableLocation } from '@/hooks/use-stable-location';
 import { haversineDistance } from '@/helpers/geo';
@@ -240,7 +241,7 @@ export const PlacesPage = () => {
                                 onClick={() =>
                                     map.flyTo({
                                         center: [place.lng, place.lat],
-                                        zoom: 16,
+                                        zoom: FOCUS_ZOOM,
                                         duration: 800,
                                     })
                                 }

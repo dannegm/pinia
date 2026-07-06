@@ -9,6 +9,7 @@ import { PlaceClusterMarker } from '@/components/map/place-cluster-marker';
 import { PlacePopup } from '@/components/places/place-popup';
 import { PlaceContextMenu } from '@/components/places/place-context-menu';
 import { placesQuery } from '@/queries/places';
+import { FOCUS_ZOOM } from '@/constants/map-defaults';
 import { usePanelOffset } from '@/hooks/use-panel-offset';
 import { useClusteredPlaces } from '@/hooks/use-clustered-places';
 import { cn } from '@/helpers/utils';
@@ -35,7 +36,7 @@ export const PlacesLayer = ({ topOffset = 0, readOnly = false, pinnedIds = null 
         const place = allPlaces.find(p => p.id === focusedPlaceId);
         if (!place) return;
 
-        map.flyTo({ center: [place.lng, place.lat], zoom: 16, duration: 800 });
+        map.flyTo({ center: [place.lng, place.lat], zoom: FOCUS_ZOOM, duration: 800 });
     }, [placesLoaded, isLoaded, allPlaces, focusedPlaceId, map]);
 
     return (
@@ -93,7 +94,6 @@ export const PlacesLayer = ({ topOffset = 0, readOnly = false, pinnedIds = null 
                         key={place.id}
                         coords={{ lat: place.lat, lng: place.lng }}
                         color={place.category?.color ?? '#6b7280'}
-                        flyToZoom={16}
                         label={place.name}
                         offsets={{ left: panelLeft, bottom: panelBottom, top: topOffset }}
                     />
