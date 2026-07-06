@@ -300,7 +300,7 @@ const Map = forwardRef(function Map(
     currentStyleRef.current = newStyle;
     setIsStyleLoaded(false);
 
-    mapInstance.setStyle(newStyle, { diff: true });
+    mapInstance.setStyle(newStyle, { diff: false });
   }, [mapInstance, resolvedTheme, mapStyles, clearStyleTimeout]);
 
   // Sync projection when the prop changes after mount.
