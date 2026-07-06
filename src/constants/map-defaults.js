@@ -9,7 +9,7 @@ export const MIN_ZOOM = 4;
 export const MAX_ZOOM = 18;
 
 // Zoom level used whenever the map flies to focus a single place/point.
-export const FOCUS_ZOOM = 14;
+export const FOCUS_ZOOM = 16;
 
 // Places cluster together (screen-space, via supercluster) up to this zoom;
 // past it, every place always renders as its own marker.

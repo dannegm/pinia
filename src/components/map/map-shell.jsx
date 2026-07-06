@@ -32,6 +32,7 @@ import { PointNemoMarker } from '@/components/map/point-nemo-marker';
 import { PanelContainer } from '@/components/panels/panel-container';
 import { ContextMenuPulse } from '@/components/map/context-menu-pulse';
 import { ContextMenuPin } from '@/components/map/context-menu-pin';
+import { ClickPulse } from '@/components/map/click-pulse';
 import { ZoomSync } from '@/components/map/zoom-sync';
 import { RoutePanel, ROUTE_PANEL_HEIGHT, ROUTE_PANEL_HEIGHT_MOBILE } from '@/components/map/route-panel';
 import { MapStyleSwitcher } from '@/components/map/map-style-switcher';
@@ -179,6 +180,7 @@ export const MapShell = () => {
                     className='h-full w-full'
                 >
                     <ZoomSync onZoomChange={setZoom} />
+                    <ClickPulse />
 
                     {currentLocation && (
                         <>
