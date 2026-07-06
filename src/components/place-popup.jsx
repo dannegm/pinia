@@ -10,8 +10,9 @@ import { updatePlaceMutation } from '@/queries/places';
 import { PlaceNavigationRow } from '@/components/place-navigation-row';
 import { NotesViewer } from '@/components/notes-viewer';
 import { BRAND_COLOR, FAVORITE_COLOR } from '@/constants/map-defaults';
+import { cn } from '@/helpers/utils';
 
-export const PlacePopup = ({ place, autoOpen }) => {
+export const PlacePopup = ({ place, autoOpen, readOnly = false }) => {
     const queryClient = useQueryClient();
     const { marker } = useMarkerContext();
     const { map } = useMap();
@@ -95,45 +96,51 @@ export const PlacePopup = ({ place, autoOpen }) => {
                 )}
 
                 <div className='flex flex-col gap-2 border-t border-border/60 pt-2.5'>
-                    <div className='flex flex-col gap-1.5'>
-                        <h3 className='text-sm font-semibold text-foreground'>Fijar ruta desde</h3>
-                        <PlaceNavigationRow place={place} />
-                    </div>
+                    {!readOnly && (
+                        <div className='flex flex-col gap-1.5'>
+                            <h3 className='text-sm font-semibold text-foreground'>Fijar ruta desde</h3>
+                            <PlaceNavigationRow place={place} />
+                        </div>
+                    )}
 
-                    <div className='flex gap-1.5 border-t border-border/60 pt-2.5'>
-                        <Tooltip>
-                            <TooltipTrigger
-                                render={
-                                    <ToggleIconButton
-                                        compact
-                                        active={place.is_favorite}
-                                        onClick={toggleFavorite}
-                                        label='Favorito'
-                                        activeColor={FAVORITE_COLOR}
-                                    />
-                                }
-                            >
-                                <Star />
-                            </TooltipTrigger>
-                            <TooltipContent>Favorito</TooltipContent>
-                        </Tooltip>
+                    <div className={cn('flex gap-1.5', { 'border-t border-border/60 pt-2.5': !readOnly })}>
+                        {!readOnly && (
+                            <>
+                                <Tooltip>
+                                    <TooltipTrigger
+                                        render={
+                                            <ToggleIconButton
+                                                compact
+                                                active={place.is_favorite}
+                                                onClick={toggleFavorite}
+                                                label='Favorito'
+                                                activeColor={FAVORITE_COLOR}
+                                            />
+                                        }
+                                    >
+                                        <Star />
+                                    </TooltipTrigger>
+                                    <TooltipContent>Favorito</TooltipContent>
+                                </Tooltip>
 
-                        <Tooltip>
-                            <TooltipTrigger
-                                render={
-                                    <ToggleIconButton
-                                        compact
-                                        active={place.is_beacon}
-                                        onClick={toggleBeacon}
-                                        label='Beacon'
-                                        activeColor={place.category?.color ?? BRAND_COLOR}
-                                    />
-                                }
-                            >
-                                <FlagTriangleRight />
-                            </TooltipTrigger>
-                            <TooltipContent>Beacon</TooltipContent>
-                        </Tooltip>
+                                <Tooltip>
+                                    <TooltipTrigger
+                                        render={
+                                            <ToggleIconButton
+                                                compact
+                                                active={place.is_beacon}
+                                                onClick={toggleBeacon}
+                                                label='Beacon'
+                                                activeColor={place.category?.color ?? BRAND_COLOR}
+                                            />
+                                        }
+                                    >
+                                        <FlagTriangleRight />
+                                    </TooltipTrigger>
+                                    <TooltipContent>Beacon</TooltipContent>
+                                </Tooltip>
+                            </>
+                        )}
 
                         <Tooltip>
                             <TooltipTrigger

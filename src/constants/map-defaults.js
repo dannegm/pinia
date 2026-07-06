@@ -1,10 +1,14 @@
+import { parseAsFloatWithLimits } from '@/helpers/query-params';
+
 export const DEFAULT_VIEWPORT = {
     center: [-108.4693, 25.5691],
     zoom: 14,
 };
 
 export const MIN_ZOOM = 9;
-export const MAX_ZOOM = 18;
+export const MAX_ZOOM = 28;
+
+export const parseAsZoom = parseAsFloatWithLimits(MIN_ZOOM, MAX_ZOOM);
 
 // Brand blue — mirrors --primary in index.css. Kept as a literal hex here
 // because MapLibre paint properties and inline marker styles can't read CSS

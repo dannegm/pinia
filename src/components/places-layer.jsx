@@ -9,10 +9,12 @@ import { PlacePopup } from '@/components/place-popup';
 import { PlaceContextMenu } from '@/components/place-context-menu';
 import { placesQuery } from '@/queries/places';
 import { usePanelOffset } from '@/hooks/use-panel-offset';
+import { cn } from '@/helpers/utils';
 
-export const PlacesLayer = ({ topOffset = 0 }) => {
+export const PlacesLayer = ({ topOffset = 0, readOnly = false, pinnedIds = null }) => {
     const { map, isLoaded } = useMap();
-    const { data: places = [], isSuccess: placesLoaded } = useQuery(placesQuery());
+    const { data: allPlaces = [], isSuccess: placesLoaded } = useQuery(placesQuery());
+    const places = pinnedIds ? allPlaces.filter(place => pinnedIds.includes(place.id)) : allPlaces;
     const { left: panelLeft, bottom: panelBottom } = usePanelOffset();
     const { placeId: editingPlaceId } = useParams({ strict: false });
     const { pathname } = useLocation();
@@ -25,41 +27,47 @@ export const PlacesLayer = ({ topOffset = 0 }) => {
         $hydratedPlace.current = true;
         if (!focusedPlaceId) return;
 
-        const place = places.find(p => p.id === focusedPlaceId);
+        const place = allPlaces.find(p => p.id === focusedPlaceId);
         if (!place) return;
 
         map.flyTo({ center: [place.lng, place.lat], zoom: 16, duration: 800 });
-    }, [placesLoaded, isLoaded, places, focusedPlaceId, map]);
+    }, [placesLoaded, isLoaded, allPlaces, focusedPlaceId, map]);
 
     return (
         <>
             {places
                 .filter(place => place.id !== editingPlaceId)
-                .map(place => (
-                    <MapMarker key={place.id} longitude={place.lng} latitude={place.lat}>
-                        <MarkerContent>
-                            {isPickingPosition ? (
-                                <div
-                                    className='flex-center size-8 rounded-full border-2 border-white text-white opacity-15 shadow-md shadow-black/50 [&>svg]:size-4 bg-(--place-color)'
-                                    style={{ '--place-color': place.category?.color ?? '#6b7280' }}
-                                >
-                                    {place.category?.icon && <DynamicIcon icon={place.category.icon} />}
-                                </div>
-                            ) : (
-                                <PlaceContextMenu place={place}>
-                                    <div
-                                        className='flex-center size-8 rounded-full border-2 border-white text-white shadow-md shadow-black/50 [&>svg]:size-4 bg-(--place-color)'
-                                        style={{ '--place-color': place.category?.color ?? '#6b7280' }}
-                                    >
-                                        {place.category?.icon && <DynamicIcon icon={place.category.icon} />}
-                                    </div>
-                                </PlaceContextMenu>
+                .map(place => {
+                    const icon = (
+                        <div
+                            className={cn(
+                                'flex-center size-8 rounded-full border-2 border-white text-white shadow-md shadow-black/50 [&>svg]:size-4 bg-(--place-color)',
+                                { 'opacity-15': isPickingPosition },
                             )}
-                        </MarkerContent>
-                        <MarkerTooltip>{place.name}</MarkerTooltip>
-                        <PlacePopup place={place} autoOpen={place.id === focusedPlaceId} />
-                    </MapMarker>
-                ))}
+                            style={{ '--place-color': place.category?.color ?? '#6b7280' }}
+                        >
+                            {place.category?.icon && <DynamicIcon icon={place.category.icon} />}
+                        </div>
+                    );
+
+                    return (
+                        <MapMarker key={place.id} longitude={place.lng} latitude={place.lat}>
+                            <MarkerContent>
+                                {isPickingPosition || readOnly ? (
+                                    icon
+                                ) : (
+                                    <PlaceContextMenu place={place}>{icon}</PlaceContextMenu>
+                                )}
+                            </MarkerContent>
+                            <MarkerTooltip>{place.name}</MarkerTooltip>
+                            <PlacePopup
+                                place={place}
+                                autoOpen={place.id === focusedPlaceId}
+                                readOnly={readOnly}
+                            />
+                        </MapMarker>
+                    );
+                })}
 
             {places
                 .filter(place => place.is_beacon)

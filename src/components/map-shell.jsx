@@ -11,7 +11,15 @@ import {
     ContextMenuItem,
     ContextMenuSeparator,
 } from '@/ui/context-menu';
-import { DEFAULT_VIEWPORT, MIN_ZOOM, MAX_ZOOM, BRAND_COLOR, MAP_STYLES, DEFAULT_MAP_STYLE_ID } from '@/constants/map-defaults';
+import {
+    DEFAULT_VIEWPORT,
+    MIN_ZOOM,
+    MAX_ZOOM,
+    BRAND_COLOR,
+    MAP_STYLES,
+    DEFAULT_MAP_STYLE_ID,
+    parseAsZoom,
+} from '@/constants/map-defaults';
 import { useSettings } from '@/hooks/use-settings';
 import { useGeolocation } from '@/hooks/use-geolocation';
 import { useListener } from '@/providers/bus-provider';
@@ -48,6 +56,7 @@ export const MapShell = () => {
     const [savedCenter] = useSettings('mapCenter', DEFAULT_VIEWPORT.center);
     const [mapStyleId, setMapStyleId] = useQueryState('style', { defaultValue: DEFAULT_MAP_STYLE_ID });
     const mapStyleUrl = MAP_STYLES.find(style => style.id === mapStyleId)?.url ?? MAP_STYLES[0].url;
+    const [zoom] = useQueryState('zoom', parseAsZoom.withDefault(DEFAULT_VIEWPORT.zoom));
     const [route, setRoute] = useState(null);
     const [routeParam, setRouteParam] = useQueryState('route', { defaultValue: '' });
     const { data: places, isSuccess: placesLoaded } = useQuery(placesQuery());
@@ -127,7 +136,7 @@ export const MapShell = () => {
                     ref={$map}
                     theme='light'
                     styles={{ light: mapStyleUrl }}
-                    viewport={{ center: savedCenter, zoom: DEFAULT_VIEWPORT.zoom }}
+                    viewport={{ center: savedCenter, zoom }}
                     minZoom={MIN_ZOOM}
                     maxZoom={MAX_ZOOM}
                     attributionControl={false}

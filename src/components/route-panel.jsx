@@ -50,7 +50,7 @@ const buildUberUrl = (origin, destination) => {
     return url.toString();
 };
 
-export const RoutePanel = ({ route, onChange, onClose }) => {
+export const RoutePanel = ({ route, onChange, onClose, readOnly = false }) => {
     const { map } = useMap();
     const { isDesktop, left } = usePanelOffset();
     const offsetLeft = isDesktop ? left + 16 : 8;
@@ -101,21 +101,33 @@ export const RoutePanel = ({ route, onChange, onClose }) => {
                     style={{ maxWidth }}
                 >
                     <div className='flex items-center gap-1.5 overflow-x-auto'>
-                        <PlacePointSelect
-                            value={origin}
-                            onChange={next => onChange({ origin: next, destination })}
-                            placeholder='Origen'
-                            className='w-28 shrink-0 sm:w-36'
-                        />
+                        {readOnly ? (
+                            <span className='w-28 shrink-0 truncate text-sm font-medium text-foreground/90 sm:w-36'>
+                                {origin.label}
+                            </span>
+                        ) : (
+                            <PlacePointSelect
+                                value={origin}
+                                onChange={next => onChange({ origin: next, destination })}
+                                placeholder='Origen'
+                                className='w-28 shrink-0 sm:w-36'
+                            />
+                        )}
 
                         <ArrowRight className='size-4 shrink-0 text-foreground/50' />
 
-                        <PlacePointSelect
-                            value={destination}
-                            onChange={next => onChange({ origin, destination: next })}
-                            placeholder='Destino'
-                            className='w-28 shrink-0 sm:w-36'
-                        />
+                        {readOnly ? (
+                            <span className='w-28 shrink-0 truncate text-sm font-medium text-foreground/90 sm:w-36'>
+                                {destination.label}
+                            </span>
+                        ) : (
+                            <PlacePointSelect
+                                value={destination}
+                                onChange={next => onChange({ origin, destination: next })}
+                                placeholder='Destino'
+                                className='w-28 shrink-0 sm:w-36'
+                            />
+                        )}
 
                         <Tooltip>
                             <TooltipTrigger
@@ -197,21 +209,23 @@ export const RoutePanel = ({ route, onChange, onClose }) => {
                             </TooltipContent>
                         </Tooltip>
 
-                        <Tooltip>
-                            <TooltipTrigger
-                                render={
-                                    <button
-                                        type='button'
-                                        onClick={onClose}
-                                        aria-label='Quitar ruta'
-                                        className={actionButtonClass}
-                                    />
-                                }
-                            >
-                                <X />
-                            </TooltipTrigger>
-                            <TooltipContent>Quitar ruta</TooltipContent>
-                        </Tooltip>
+                        {!readOnly && (
+                            <Tooltip>
+                                <TooltipTrigger
+                                    render={
+                                        <button
+                                            type='button'
+                                            onClick={onClose}
+                                            aria-label='Quitar ruta'
+                                            className={actionButtonClass}
+                                        />
+                                    }
+                                >
+                                    <X />
+                                </TooltipTrigger>
+                                <TooltipContent>Quitar ruta</TooltipContent>
+                            </Tooltip>
+                        )}
                     </div>
                 </div>
 

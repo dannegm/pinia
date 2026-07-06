@@ -1,6 +1,7 @@
 import { createRootRoute, createRoute, createRouter, Outlet } from '@tanstack/react-router';
 import { Providers } from '@/providers/providers';
 import { MapShell } from '@/components/map-shell';
+import { EmbedMapShell } from '@/components/embed-map-shell';
 import { HomePage } from '@/pages/home';
 import { PlacesPage } from '@/pages/places';
 import { AddPlacePage } from '@/pages/places-new';
@@ -60,6 +61,8 @@ const settingsRoute = createRoute({
 });
 const catchAllRoute = createRoute({ getParentRoute: () => shellRoute, path: '$', component: NotFoundPage });
 
+const embedRoute = createRoute({ getParentRoute: () => rootRoute, path: '/embed', component: EmbedMapShell });
+
 const routeTree = rootRoute.addChildren([
     shellRoute.addChildren([
         homeRoute,
@@ -72,6 +75,7 @@ const routeTree = rootRoute.addChildren([
         settingsRoute,
         catchAllRoute,
     ]),
+    embedRoute,
 ]);
 
 export const router = createRouter({ routeTree });
