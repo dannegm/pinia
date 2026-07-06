@@ -12,8 +12,11 @@ import { DynamicIcon } from '@/ui/dynamic-icon';
 import { Alert, AlertDescription } from '@/ui/alert';
 import { PanelFooter } from '@/components/panel-footer';
 import { PinDrop } from '@/components/pin-drop';
+import { PinGlyph } from '@/components/pin-glyph';
+import { CenterPin } from '@/components/center-pin';
 import { CategorySelect } from '@/components/category-select';
 import { cn } from '@/helpers/utils';
+import { useIsTouchDevice } from '@/hooks/use-is-touch-device';
 import { BRAND_COLOR, FAVORITE_COLOR } from '@/constants/map-defaults';
 import { categoriesQuery } from '@/queries/categories';
 
@@ -52,6 +55,7 @@ export const PlaceForm = ({
     mode = 'create',
 }) => {
     const { map } = useMap();
+    const isTouch = useIsTouchDevice();
     const [coords, setCoords] = useState(
         initialCoords ??
             (() => {
@@ -93,7 +97,27 @@ export const PlaceForm = ({
     return (
         <>
             {mode === 'create' ? (
-                <PinDrop coords={coords} onCoordsChange={setCoords} />
+                isTouch ? (
+                    <CenterPin onCoordsChange={setCoords}>
+                        {isPanning => <PinGlyph lifted={isPanning} />}
+                    </CenterPin>
+                ) : (
+                    <PinDrop coords={coords} onCoordsChange={setCoords} />
+                )
+            ) : isTouch ? (
+                <CenterPin onCoordsChange={setCoords}>
+                    {isPanning => (
+                        <div
+                            className={cn(
+                                'flex-center size-8 rounded-full border-2 border-white text-white shadow-md shadow-black/50 transition-transform duration-150 ease-out [&>svg]:size-4 bg-(--place-color)',
+                                isPanning && 'scale-110',
+                            )}
+                            style={{ '--place-color': selectedCategory?.color ?? '#6b7280' }}
+                        >
+                            {selectedCategory?.icon && <DynamicIcon icon={selectedCategory.icon} />}
+                        </div>
+                    )}
+                </CenterPin>
             ) : (
                 <MapMarker longitude={coords.lng} latitude={coords.lat} draggable onDrag={setCoords}>
                     <MarkerContent>
@@ -115,7 +139,9 @@ export const PlaceForm = ({
                                 <Pin size={12} x={6} y={6} absoluteStrokeWidth className='text-foreground' />
                             </Maximize>
                             <AlertDescription>
-                                Usa el botón de arriba para achicar el panel y mover el pin en el mapa.
+                                {isTouch
+                                    ? 'Usa el botón de arriba para achicar el panel y mueve el mapa para posicionar el pin en el centro.'
+                                    : 'Usa el botón de arriba para achicar el panel y mover el pin en el mapa.'}
                             </AlertDescription>
                         </Alert>
 
