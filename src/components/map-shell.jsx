@@ -46,7 +46,7 @@ export const MapShell = () => {
     const navigate = useNavigate();
     const currentLocation = useGeolocation();
     const [savedCenter] = useSettings('mapCenter', DEFAULT_VIEWPORT.center);
-    const [mapStyleId, setMapStyleId] = useSettings('mapStyle', DEFAULT_MAP_STYLE_ID);
+    const [mapStyleId, setMapStyleId] = useQueryState('style', { defaultValue: DEFAULT_MAP_STYLE_ID });
     const mapStyleUrl = MAP_STYLES.find(style => style.id === mapStyleId)?.url ?? MAP_STYLES[0].url;
     const [route, setRoute] = useState(null);
     const [routeParam, setRouteParam] = useQueryState('route', { defaultValue: '' });
