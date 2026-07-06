@@ -29,6 +29,8 @@ import { DirectionArrow } from '@/components/direction-arrow';
 import { PlacesLayer } from '@/components/places-layer';
 import { PointNemoMarker } from '@/components/point-nemo-marker';
 import { PanelContainer } from '@/components/panel-container';
+import { ContextMenuPulse } from '@/components/context-menu-pulse';
+import { ContextMenuPin } from '@/components/context-menu-pin';
 import { ZoomSync } from '@/components/zoom-sync';
 import { RoutePanel, ROUTE_PANEL_HEIGHT, ROUTE_PANEL_HEIGHT_MOBILE } from '@/components/route-panel';
 import { MapStyleSwitcher } from '@/components/map-style-switcher';
@@ -65,6 +67,8 @@ export const MapShell = () => {
     const $hydratedRoute = useRef(false);
     const $map = useRef(null);
     const [rightClickCoords, setRightClickCoords] = useState(null);
+    const [contextMenuOpen, setContextMenuOpen] = useState(false);
+    const $pulseId = useRef(0);
     const { left: panelLeft, bottom: panelBottom, isDesktop } = usePanelOffset();
     const routeTopOffset = route ? (isDesktop ? ROUTE_PANEL_HEIGHT : ROUTE_PANEL_HEIGHT_MOBILE) : 0;
 
@@ -77,7 +81,8 @@ export const MapShell = () => {
         if (!map) return;
         const rect = e.currentTarget.getBoundingClientRect();
         const { lng, lat } = map.unproject([e.clientX - rect.left, e.clientY - rect.top]);
-        setRightClickCoords({ lat, lng });
+        $pulseId.current += 1;
+        setRightClickCoords({ lat, lng, id: $pulseId.current });
     };
 
     const handleCreatePlace = () => {
@@ -128,7 +133,7 @@ export const MapShell = () => {
     }, [route, setRouteParam]);
 
     return (
-        <ContextMenu>
+        <ContextMenu onOpenChange={setContextMenuOpen}>
             <ContextMenuTrigger
                 onContextMenu={handleContextMenu}
                 className='relative block h-dvh w-dvw overflow-hidden'
@@ -160,6 +165,8 @@ export const MapShell = () => {
 
                     <PlacesLayer topOffset={routeTopOffset} />
                     <PointNemoMarker />
+                    {rightClickCoords && <ContextMenuPulse key={rightClickCoords.id} coords={rightClickCoords} />}
+                    {contextMenuOpen && rightClickCoords && <ContextMenuPin coords={rightClickCoords} />}
 
                     {route && shouldShowRouteBeacon(route.origin, places) && (
                         <DirectionArrow
