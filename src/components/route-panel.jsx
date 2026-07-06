@@ -108,7 +108,7 @@ export const RoutePanel = ({ route, onChange, onClose, readOnly = false }) => {
                 >
                     <div className='flex items-center gap-1.5 overflow-x-auto'>
                         {readOnly ? (
-                            <span className='w-28 shrink-0 truncate text-sm font-medium text-foreground/90 sm:w-36'>
+                            <span className='min-w-0 flex-1 truncate text-sm font-medium text-foreground/90 sm:w-36 sm:flex-none'>
                                 {origin.label}
                             </span>
                         ) : (
@@ -116,14 +116,14 @@ export const RoutePanel = ({ route, onChange, onClose, readOnly = false }) => {
                                 value={origin}
                                 onChange={next => onChange({ origin: next, destination })}
                                 placeholder='Origen'
-                                className='w-28 shrink-0 sm:w-36'
+                                className='min-w-0 flex-1 sm:w-36 sm:flex-none'
                             />
                         )}
 
                         <ArrowRight className='size-4 shrink-0 text-foreground/50' />
 
                         {readOnly ? (
-                            <span className='w-28 shrink-0 truncate text-sm font-medium text-foreground/90 sm:w-36'>
+                            <span className='min-w-0 flex-1 truncate text-sm font-medium text-foreground/90 sm:w-36 sm:flex-none'>
                                 {destination.label}
                             </span>
                         ) : (
@@ -131,7 +131,7 @@ export const RoutePanel = ({ route, onChange, onClose, readOnly = false }) => {
                                 value={destination}
                                 onChange={next => onChange({ origin, destination: next })}
                                 placeholder='Destino'
-                                className='w-28 shrink-0 sm:w-36'
+                                className='min-w-0 flex-1 sm:w-36 sm:flex-none'
                             />
                         )}
 
@@ -156,7 +156,7 @@ export const RoutePanel = ({ route, onChange, onClose, readOnly = false }) => {
 
                     <div className='flex items-center gap-1.5'>
                         {routeResult?.duration != null && (
-                            <div className='flex shrink-0 items-center gap-1 text-sm font-medium text-foreground/70 [&>svg]:size-3.5'>
+                            <div className='ml-1 flex shrink-0 items-center gap-1 text-sm font-medium text-foreground/70 [&>svg]:size-3.5 sm:ml-0'>
                                 <Clock />
                                 {formatDuration(routeResult.duration)}
                             </div>
