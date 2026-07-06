@@ -36,7 +36,7 @@ import { ClickPulse } from '@/components/map/click-pulse';
 import { ZoomSync } from '@/components/map/zoom-sync';
 import { RoutePanel, ROUTE_PANEL_HEIGHT, ROUTE_PANEL_HEIGHT_MOBILE } from '@/components/map/route-panel';
 import { MapStyleSwitcher } from '@/components/map/map-style-switcher';
-import { ZoomControl, CompassControl, CenterControl } from '@/components/map/map-toolbar';
+import { ZoomControl, CompassControl, CenterControl, LocateControl } from '@/components/map/map-toolbar';
 import { placesQuery } from '@/queries/places';
 import { systemPlaceQuery } from '@/queries/system-places';
 
@@ -233,10 +233,11 @@ export const MapShell = () => {
                     </div>
 
                     <div
-                        className='absolute right-2 z-110'
+                        className='absolute right-2 z-110 flex flex-col items-end gap-2'
                         style={{ bottom: `${panelBottom + 8}px` }}
                         onContextMenu={e => e.stopPropagation()}
                     >
+                        <LocateControl />
                         <CenterControl />
                     </div>
                 </Map>

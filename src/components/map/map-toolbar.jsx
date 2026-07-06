@@ -1,8 +1,9 @@
 import { useEffect, useRef } from 'react';
-import { Plus, Minus, LocateFixed } from 'lucide-react';
+import { Plus, Minus, LocateFixed, Scan, PersonStanding } from 'lucide-react';
 import { useMap } from '@/ui/map';
 import { useSettings } from '@/hooks/use-settings';
-import { DEFAULT_VIEWPORT } from '@/constants/map-defaults';
+import { useGeolocation } from '@/hooks/use-geolocation';
+import { DEFAULT_VIEWPORT, FOCUS_ZOOM } from '@/constants/map-defaults';
 import { Tooltip, TooltipTrigger, TooltipContent } from '@/ui/tooltip';
 import { CompassNeedleIcon } from '@/ui/icons';
 import { cn } from '@/helpers/utils';
@@ -88,6 +89,25 @@ export const CompassControl = () => {
                     ref={$compass}
                     className='size-6 transform-3d transition-transform duration-200'
                 />
+            </ToolbarButton>
+        </ToolbarGroup>
+    );
+};
+
+export const LocateControl = () => {
+    const { map } = useMap();
+    const currentLocation = useGeolocation();
+
+    const handleLocate = () =>
+        currentLocation &&
+        map?.flyTo({ center: [currentLocation.lng, currentLocation.lat], zoom: FOCUS_ZOOM, duration: 500 });
+
+    return (
+        <ToolbarGroup>
+            <ToolbarButton onClick={handleLocate} label='Centrar en mi ubicación' disabled={!currentLocation}>
+                <Scan className='size-4'>
+                    <PersonStanding size={20} x={2} y={2} absoluteStrokeWidth className='text-foreground' />
+                </Scan>
             </ToolbarButton>
         </ToolbarGroup>
     );
