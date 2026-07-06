@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useQueryState } from 'nuqs';
 import { LocateFixed, Plus, Navigation } from 'lucide-react';
-import { Map, MapControls, useMap } from '@/ui/map';
+import { Map } from '@/ui/map';
 import {
     ContextMenu,
     ContextMenuTrigger,
@@ -11,8 +11,7 @@ import {
     ContextMenuItem,
     ContextMenuSeparator,
 } from '@/ui/context-menu';
-import { DEFAULT_VIEWPORT, MIN_ZOOM, MAX_ZOOM, BRAND_COLOR, MAP_STYLE_URL } from '@/constants/map-defaults';
-import { cn } from '@/helpers/utils';
+import { DEFAULT_VIEWPORT, MIN_ZOOM, MAX_ZOOM, BRAND_COLOR, MAP_STYLES, DEFAULT_MAP_STYLE_ID } from '@/constants/map-defaults';
 import { useSettings } from '@/hooks/use-settings';
 import { useGeolocation } from '@/hooks/use-geolocation';
 import { useListener } from '@/providers/bus-provider';
@@ -23,6 +22,8 @@ import { PlacesLayer } from '@/components/places-layer';
 import { PointNemoMarker } from '@/components/point-nemo-marker';
 import { PanelContainer } from '@/components/panel-container';
 import { RoutePanel, ROUTE_PANEL_HEIGHT, ROUTE_PANEL_HEIGHT_MOBILE } from '@/components/route-panel';
+import { MapStyleSwitcher } from '@/components/map-style-switcher';
+import { ZoomControl, CompassControl, CenterControl } from '@/components/map-toolbar';
 import { placesQuery } from '@/queries/places';
 import { systemPlaceQuery } from '@/queries/system-places';
 
@@ -41,36 +42,12 @@ const shouldShowRouteBeacon = (point, places) => {
 
 const getRouteBeaconColor = (point, places) => findRoutePointPlace(point, places)?.category?.color ?? BRAND_COLOR;
 
-const CenterButton = () => {
-    const { map } = useMap();
-    const [center] = useSettings('mapCenter', DEFAULT_VIEWPORT.center);
-
-    const handleCenter = () => {
-        map?.flyTo({ center, zoom: 16, duration: 500 });
-    };
-
-    return (
-        <div className='flex flex-col overflow-hidden squircle-lg border border-border bg-background shadow-md shadow-black/10'>
-            <button
-                type='button'
-                onClick={handleCenter}
-                aria-label='Centrar mapa'
-                className={cn(
-                    'flex size-9 items-center justify-center text-foreground/70 transition-colors',
-                    'hover:bg-accent hover:text-accent-foreground',
-                    'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset',
-                )}
-            >
-                <LocateFixed className='size-4' />
-            </button>
-        </div>
-    );
-};
-
 export const MapShell = () => {
     const navigate = useNavigate();
     const currentLocation = useGeolocation();
     const [savedCenter] = useSettings('mapCenter', DEFAULT_VIEWPORT.center);
+    const [mapStyleId, setMapStyleId] = useSettings('mapStyle', DEFAULT_MAP_STYLE_ID);
+    const mapStyleUrl = MAP_STYLES.find(style => style.id === mapStyleId)?.url ?? MAP_STYLES[0].url;
     const [route, setRoute] = useState(null);
     const [routeParam, setRouteParam] = useQueryState('route', { defaultValue: '' });
     const { data: places, isSuccess: placesLoaded } = useQuery(placesQuery());
@@ -149,10 +126,11 @@ export const MapShell = () => {
                 <Map
                     ref={$map}
                     theme='light'
-                    styles={{ light: MAP_STYLE_URL }}
+                    styles={{ light: mapStyleUrl }}
                     viewport={{ center: savedCenter, zoom: DEFAULT_VIEWPORT.zoom }}
                     minZoom={MIN_ZOOM}
                     maxZoom={MAX_ZOOM}
+                    attributionControl={false}
                     className='h-full w-full'
                 >
                     {currentLocation && (
@@ -193,13 +171,20 @@ export const MapShell = () => {
 
                     {route && <RoutePanel route={route} onChange={setRoute} onClose={() => setRoute(null)} />}
 
-                    <MapControls position='top-right' showZoom showCompass />
+                    <div className='absolute top-2 right-2 z-10 flex flex-col items-end gap-2'>
+                        <ZoomControl />
+                        <CompassControl />
+                        <MapStyleSwitcher
+                            value={mapStyleId}
+                            onChange={setMapStyleId}
+                        />
+                    </div>
 
                     <div
                         className='absolute right-2 z-10'
                         style={{ bottom: `${panelBottom + 8}px` }}
                     >
-                        <CenterButton />
+                        <CenterControl />
                     </div>
                 </Map>
             </ContextMenuTrigger>

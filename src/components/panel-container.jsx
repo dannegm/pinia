@@ -1,5 +1,5 @@
 import { Outlet, useNavigate } from '@tanstack/react-router';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useMap } from '@/ui/map';
 import { usePanelOffset } from '@/hooks/use-panel-offset';
 import { cn } from '@/helpers/utils';
@@ -18,6 +18,7 @@ export const PanelContainer = ({ routeTopOffset = 0 }) => {
     }, [map, left, bottom, routeTopOffset]);
 
     const close = () => navigate({ to: '/' });
+    const handleDragChange = useCallback((y, dragging) => setDockDrag({ y, dragging }), []);
 
     if (isDesktop) {
         return (
@@ -53,7 +54,11 @@ export const PanelContainer = ({ routeTopOffset = 0 }) => {
             )}
             style={{ '--dock-y': `${dockDrag.y}px` }}
         >
-            <MobilePanelSheet open={isOpen} onClose={close} onDragChange={(y, dragging) => setDockDrag({ y, dragging })}>
+            <MobilePanelSheet
+                open={isOpen}
+                onClose={close}
+                onDragChange={handleDragChange}
+            >
                 <Outlet />
             </MobilePanelSheet>
 

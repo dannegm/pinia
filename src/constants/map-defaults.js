@@ -15,4 +15,21 @@ export const BRAND_COLOR = '#2563eb';
 // and the map popup so "favorito" always renders the same color.
 export const FAVORITE_COLOR = '#f59e0b';
 
-export const MAP_STYLE_URL = `https://api.maptiler.com/maps/streets-v2/style.json?key=${import.meta.env.VITE_MAPTILER_KEY}`;
+export const MAP_STYLES = [
+    {
+        id: 'streets',
+        label: 'Calles',
+        icon: 'Map',
+        url: `https://api.maptiler.com/maps/streets-v2/style.json?key=${import.meta.env.VITE_MAPTILER_KEY}`,
+    },
+    {
+        id: 'satellite',
+        label: 'Satélite',
+        icon: 'Satellite',
+        url: `https://api.maptiler.com/maps/hybrid/style.json?key=${import.meta.env.VITE_MAPTILER_KEY}`,
+    },
+    { id: 'light', label: 'Claro', icon: 'Sun', url: 'https://basemaps.cartocdn.com/gl/positron-gl-style/style.json' },
+    { id: 'dark', label: 'Oscuro', icon: 'Moon', url: 'https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json' },
+];
+
+export const DEFAULT_MAP_STYLE_ID = 'streets';
