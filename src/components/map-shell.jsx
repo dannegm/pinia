@@ -2,7 +2,7 @@ import { useNavigate } from '@tanstack/react-router';
 import { useEffect, useRef, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useQueryState } from 'nuqs';
-import { LocateFixed, Plus, Navigation } from 'lucide-react';
+import { LocateFixed, MapPinPlus, Navigation } from 'lucide-react';
 import { Map } from '@/ui/map';
 import {
     ContextMenu,
@@ -202,7 +202,7 @@ export const MapShell = () => {
             </ContextMenuTrigger>
             <ContextMenuContent>
                 <ContextMenuItem onClick={handleCreatePlace}>
-                    <Plus />
+                    <MapPinPlus />
                     Crear lugar
                 </ContextMenuItem>
                 <ContextMenuItem onClick={handleCenterHere}>

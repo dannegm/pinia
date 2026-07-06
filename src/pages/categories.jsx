@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useQueryState } from 'nuqs';
 import Fuse from 'fuse.js';
-import { Plus, Pencil, Search, X, Eye, EyeOff, Tags } from 'lucide-react';
+import { TagPlus, Pencil, Search, X, Eye, EyeOff, Tags } from 'lucide-react';
 import { useNavigate } from '@tanstack/react-router';
 import { Button } from '@/ui/button';
 import { Alert, AlertDescription } from '@/ui/alert';
@@ -183,7 +183,7 @@ export const CategoriesPage = () => {
 
             <div className='shrink-0 border-t border-border/70 px-4 py-2 sm:py-3'>
                 <Button className='h-10 w-full' onClick={() => navigate({ to: '/categories/new' })}>
-                    <Plus />
+                    <TagPlus />
                     Agregar categoría
                 </Button>
             </div>

@@ -95,7 +95,7 @@ export const RoutePanel = ({ route, onChange, onClose, readOnly = false }) => {
         <>
             {routeCoordinates && <MapRoute coordinates={routeCoordinates} color={BRAND_COLOR} width={4} />}
 
-            <div className='absolute top-2 z-20 flex flex-col gap-1' style={{ left: `${offsetLeft}px` }}>
+            <div className='absolute top-2 z-[110] flex flex-col gap-1' style={{ left: `${offsetLeft}px` }}>
                 <div
                     className='flex flex-col gap-1.5 squircle-lg border border-border bg-background p-1.5 shadow-md shadow-black/10 sm:flex-row sm:items-center'
                     style={{ maxWidth }}

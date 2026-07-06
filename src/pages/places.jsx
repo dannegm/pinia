@@ -3,7 +3,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useQueryState } from 'nuqs';
 import Fuse from 'fuse.js';
 import {
-    Plus,
+    MapPinPlus,
     Pencil,
     Search,
     X,
@@ -310,7 +310,7 @@ export const PlacesPage = () => {
 
             <div className='shrink-0 border-t border-border/70 px-4 py-2 sm:py-3'>
                 <Button className='h-10 w-full' onClick={() => navigate({ to: '/places/new' })}>
-                    <Plus />
+                    <MapPinPlus />
                     Agregar lugar
                 </Button>
             </div>

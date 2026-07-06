@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Star, FlagTriangleRight, MapPin, Clock, NotebookText, Info } from 'lucide-react';
 import { MapMarker, MarkerContent, useMap } from '@/ui/map';
@@ -66,6 +66,11 @@ export const PlaceForm = ({
     const [isBeacon, setIsBeacon] = useState(initialValues?.isBeacon ?? false);
     const { data: categories = [] } = useQuery(categoriesQuery());
     const selectedCategory = categories.find(category => category.id === categoryId);
+
+    useEffect(() => {
+        if (mode !== 'edit' || !initialCoords) return;
+        map.flyTo({ center: [initialCoords.lng, initialCoords.lat], zoom: 16, duration: 800 });
+    }, []);
 
     const handleSubmit = e => {
         e.preventDefault();
