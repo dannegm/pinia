@@ -1,3 +1,5 @@
+@custom-variant dark (&:is(.dark *));
+
 @custom-variant adjacents (&::before, &::after);
 
 @variant adjacents {

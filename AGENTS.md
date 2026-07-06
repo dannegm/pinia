@@ -63,7 +63,7 @@ Core:
   - The `/google-to-maplibre-style` skill (`.agents/skills/google-to-maplibre-style/`) still does that translation if this direction is ever revisited: a `mapping.cjs` table (Google featureType/elementType → CARTO Positron layer ids) plus `convert.cjs`, which always rebuilds `map-style.json` from the pristine base + every source file replayed in order. See the skill's `SKILL.md` for the encoded rules and known unsupported zones.
   - To switch back to the CARTO-based custom style: swap `styles={{ light: MAP_STYLE_URL }}` for `styles={{ light: customMapStyle }}` (import from `@/constants/map-style.json`) in `map-shell.jsx`.
 - Marker clustering: deferred. mapcn's `Clusters` is a separate GeoJSON-based layer, not directly compatible with per-marker drag/popup interactivity — revisit only if plain markers become visually unmanageable.
-- Point Nemo marker: a purely decorative Easter egg, `src/components/point-nemo-marker.jsx` — a permanent marker always rendered at the real-world "Point Nemo" coordinates (oceanic pole of inaccessibility), styled with a `Link2Off` icon; clicking it opens a glitchy "404 / SEÑAL PERDIDA" popup with CRT-scanline/glitch CSS animations (`animate-glitch`, `bg-scanlines`, `animate-crt-flicker` utilities in `src/utilities.css`). Not tied to any data — just a joke.
+- Point Nemo marker: a purely decorative Easter egg, `src/components/point-nemo-marker.jsx` — a permanent marker always rendered at the real-world "Point Nemo" coordinates (oceanic pole of inaccessibility), styled with a `Link2Off` icon; clicking it opens a glitchy "404 / SEÑAL PERDIDA" popup with CRT-scanline/glitch CSS animations (`animate-glitch`, `animate-crt-flicker` utilities in `src/css/anims.css`; `bg-scanlines` in `src/css/utilities.css`, a static background pattern, not an animation). Not tied to any data — just a joke.
 - Notes markup: **implemented**, `src/helpers/notes.js` parses lightweight markup inside the free-text `notes` field. Whole lines matching `tel|wa|ig|x|tw|fb|tg|url: value` are pulled out and rendered as clickable badges (`src/components/note-badge.jsx`, e.g. a `tel:` line becomes a phone badge, `ig:` an Instagram link). Remaining body text supports `**bold**`, `*italic*`, `#tag`, `!command` inline markup and `-`/`*` list items, rendered by `src/components/notes-viewer.jsx`. Clicking a `#tag` navigates to `/places?q=%23tag` — it re-uses the fuzzy notes search rather than being a real relational tag system.
 
 Place-specific:
@@ -144,7 +144,9 @@ Embed view:
 - `NumberScrubber` (`src/ui/number-scrubber.jsx`): draggable number input (Figma/Photoshop-style scrub-to-change), wraps `@/ui/input`, clamped to `min`/`max`/`step`.
 - `JsonViewer` (`src/ui/json-viewer.jsx`, dev/debug tool): wraps `@microlink/react-json-view` in a shadcn `ScrollArea`, fixed `'ocean'` theme. Built but not currently wired into any page. Its ~12px text is a confirmed, accepted special-case exception to the 14px standard — don't bump it, and don't treat 12px as generally acceptable elsewhere.
 
-## Tailwind + shadcn setup (`index.css`)
+## Tailwind + shadcn setup (`src/css/index.css`)
+
+- All CSS lives in `src/css/` (not scattered under `src/`) — `index.css` (entry point, imported once from `main.jsx` as `'./css/index.css'`) plus the sibling files below. `components.json`'s `tailwind.css` points at `src/css/index.css` too, so the shadcn CLI writes into the same place.
 
 - In `@layer base`, add:
   ```css
@@ -153,7 +155,7 @@ Embed view:
   }
   ```
 
-- Custom variants and utilities live in separate CSS files imported into `index.css` (`@import './variants.css'`, `'./utilities.css'`, `'./debug.css'`, after `tailwindcss`/`tw-animate-css`/`shadcn/tailwind.css`):
+- Custom variants and utilities live in separate CSS files imported into `index.css` (`@import './variants.css'`, `'./utilities.css'`, `'./anims.css'`, `'./debug.css'`, after `tailwindcss`/`tw-animate-css`/`shadcn/tailwind.css`) — all relative imports, since every file sits in the same `src/css/` folder:
 
   `variants.css`:
   ```css
@@ -167,7 +169,7 @@ Embed view:
   }
   ```
 
-  `utilities.css` (also grew a few animation utilities for the pin-drop and Point Nemo marker components — `animate-radar-ping`, `bg-scanlines`, `animate-glitch`, `animate-crt-flicker` — not reproduced below, see the file directly):
+  `utilities.css`:
   ```css
   @utility absolute-center {
       position: absolute;
@@ -212,6 +214,9 @@ Embed view:
       image-rendering: --value('auto', 'smooth', 'crisp-edges', 'pixelated');
   }
   ```
+  It also has `bg-scanlines` (a static repeating-gradient pattern for the Point Nemo Easter egg, not an animation) — not reproduced above, see the file directly.
+
+  `anims.css` (all CSS `@keyframes`/`animate-*` utilities live here, split out of `utilities.css` — currently the pin-drop's `animate-radar-ping`/`animate-radar-ping-once` and the Point Nemo Easter egg's `animate-glitch`/`animate-crt-flicker`; not reproduced below, see the file directly).
 
   `debug.css` (dev-only visual helpers):
   ```css
