@@ -69,20 +69,45 @@ export const MapShell = () => {
     const [rightClickCoords, setRightClickCoords] = useState(null);
     const [contextMenuOpen, setContextMenuOpen] = useState(false);
     const $pulseId = useRef(0);
+    const $touchPoint = useRef(null);
     const { left: panelLeft, bottom: panelBottom, isDesktop } = usePanelOffset();
     const routeTopOffset = route ? (isDesktop ? ROUTE_PANEL_HEIGHT : ROUTE_PANEL_HEIGHT_MOBILE) : 0;
+
+    const unprojectClientPoint = (x, y) => {
+        const map = $map.current;
+        if (!map) return null;
+        const rect = map.getContainer().getBoundingClientRect();
+        return map.unproject([x - rect.left, y - rect.top]);
+    };
 
     const handleContextMenu = e => {
         if (e.target.closest('.maplibregl-marker')) {
             e.preventBaseUIHandler?.();
             return;
         }
-        const map = $map.current;
-        if (!map) return;
-        const rect = e.currentTarget.getBoundingClientRect();
-        const { lng, lat } = map.unproject([e.clientX - rect.left, e.clientY - rect.top]);
+        const point = unprojectClientPoint(e.clientX, e.clientY);
+        if (!point) return;
         $pulseId.current += 1;
-        setRightClickCoords({ lat, lng, id: $pulseId.current });
+        setRightClickCoords({ lat: point.lat, lng: point.lng, id: $pulseId.current });
+    };
+
+    const handleTouchStart = e => {
+        if (e.touches.length !== 1) return;
+        const touch = e.touches[0];
+        $touchPoint.current = { x: touch.clientX, y: touch.clientY };
+    };
+
+    const clearTouchPoint = () => {
+        $touchPoint.current = null;
+    };
+
+    const handleOpenChange = (open, eventDetails) => {
+        setContextMenuOpen(open);
+        if (!open || eventDetails?.event?.type !== 'touchstart' || !$touchPoint.current) return;
+        const point = unprojectClientPoint($touchPoint.current.x, $touchPoint.current.y);
+        if (!point) return;
+        $pulseId.current += 1;
+        setRightClickCoords({ lat: point.lat, lng: point.lng, id: $pulseId.current });
     };
 
     const handleCreatePlace = () => {
@@ -133,9 +158,12 @@ export const MapShell = () => {
     }, [route, setRouteParam]);
 
     return (
-        <ContextMenu onOpenChange={setContextMenuOpen}>
+        <ContextMenu onOpenChange={handleOpenChange}>
             <ContextMenuTrigger
                 onContextMenu={handleContextMenu}
+                onTouchStart={handleTouchStart}
+                onTouchEnd={clearTouchPoint}
+                onTouchCancel={clearTouchPoint}
                 className='relative block h-dvh w-dvw overflow-hidden'
             >
                 <Map

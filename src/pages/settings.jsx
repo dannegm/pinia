@@ -1,10 +1,22 @@
 import { useRef, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { RotateCcw, Download, Upload, MapPin, Home, DatabaseBackup, CheckCircle2, AlertCircle } from 'lucide-react';
+import {
+    RotateCcw,
+    Download,
+    Upload,
+    MapPin,
+    Home,
+    DatabaseBackup,
+    CheckCircle2,
+    AlertCircle,
+    Bug,
+} from 'lucide-react';
 import { useMap } from '@/ui/map';
 import { useSettings } from '@/hooks/use-settings';
 import { Button } from '@/ui/button';
 import { Alert, AlertDescription } from '@/ui/alert';
+import { Switch } from '@/ui/switch';
+import { Field, FieldContent, FieldTitle, FieldDescription } from '@/ui/field';
 import { PanelHeader } from '@/components/panels/panel-header';
 import { PlaceSelect } from '@/components/places/place-select';
 import { DEFAULT_VIEWPORT } from '@/constants/map-defaults';
@@ -181,6 +193,22 @@ const BackupSetting = () => {
     );
 };
 
+const DebugSetting = () => {
+    const [debug, setDebug] = useSettings('debug', false);
+
+    return (
+        <SettingSection icon={Bug} title='Modo debug'>
+            <Field orientation='horizontal'>
+                <FieldContent>
+                    <FieldTitle>Activar modo debug</FieldTitle>
+                    <FieldDescription>Muestra contornos de depuración sobre la interfaz.</FieldDescription>
+                </FieldContent>
+                <Switch checked={debug} onCheckedChange={setDebug} />
+            </Field>
+        </SettingSection>
+    );
+};
+
 export const SettingsPage = () => {
     return (
         <div className='flex h-full min-h-0 flex-col'>
@@ -190,6 +218,7 @@ export const SettingsPage = () => {
                     <MapCenterSetting />
                     <HomePlaceSetting />
                     <BackupSetting />
+                    <DebugSetting />
                 </div>
             </div>
         </div>
