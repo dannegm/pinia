@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { Star, FlagTriangleRight, MapPin, Clock, NotebookText, Info } from 'lucide-react';
+import { Star, FlagTriangleRight, MapPin, Clock, NotebookText, Info, Maximize, Pin } from 'lucide-react';
 import { MapMarker, MarkerContent, useMap } from '@/ui/map';
 import { Button } from '@/ui/button';
 import { Input } from '@/ui/input';
@@ -9,6 +9,8 @@ import { Popover, PopoverContent, PopoverTrigger, PopoverHeader, PopoverTitle, P
 import { Textarea } from '@/ui/textarea';
 import { NumberScrubber } from '@/ui/number-scrubber';
 import { DynamicIcon } from '@/ui/dynamic-icon';
+import { Alert, AlertDescription } from '@/ui/alert';
+import { PanelFooter } from '@/components/panel-footer';
 import { PinDrop } from '@/components/pin-drop';
 import { CategorySelect } from '@/components/category-select';
 import { cn } from '@/helpers/utils';
@@ -108,6 +110,15 @@ export const PlaceForm = ({
             <form onSubmit={handleSubmit} className='flex flex-1 min-h-0 flex-col'>
                 <div className='flex-1 min-h-0 overflow-y-auto p-4'>
                     <FieldGroup>
+                        <Alert className='sm:hidden'>
+                            <Maximize>
+                                <Pin size={12} x={6} y={6} absoluteStrokeWidth className='text-foreground' />
+                            </Maximize>
+                            <AlertDescription>
+                                Usa el botón de arriba para achicar el panel y mover el pin en el mapa.
+                            </AlertDescription>
+                        </Alert>
+
                         <Field>
                             <FieldLabel htmlFor='place-name'>Nombre</FieldLabel>
                             <div className='flex items-center gap-2'>
@@ -372,12 +383,12 @@ export const PlaceForm = ({
                     </FieldGroup>
                 </div>
 
-                <div className='flex shrink-0 flex-col gap-2 border-t border-border/70 px-4 py-2 sm:py-3'>
+                <PanelFooter>
                     {secondaryAction}
                     <Button type='submit' disabled={pending || categories.length === 0} className='h-10 w-full'>
                         {submitLabel}
                     </Button>
-                </div>
+                </PanelFooter>
             </form>
         </>
     );

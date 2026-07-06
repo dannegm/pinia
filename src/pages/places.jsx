@@ -26,6 +26,7 @@ import {
     useFavoritesFilter,
 } from '@/components/category-filter-select';
 import { PanelHeader } from '@/components/panel-header';
+import { PanelFooter } from '@/components/panel-footer';
 import { placesQuery, deletePlaceMutation } from '@/queries/places';
 import { useGeolocation } from '@/hooks/use-geolocation';
 import { useStableLocation } from '@/hooks/use-stable-location';
@@ -308,12 +309,12 @@ export const PlacesPage = () => {
                 </div>
             </div>
 
-            <div className='shrink-0 border-t border-border/70 px-4 py-2 sm:py-3'>
+            <PanelFooter>
                 <Button className='h-10 w-full' onClick={() => navigate({ to: '/places/new' })}>
                     <MapPinPlus />
                     Agregar lugar
                 </Button>
-            </div>
+            </PanelFooter>
         </div>
     );
 };

@@ -117,16 +117,16 @@ export const EmbedMapShell = () => {
 
                 {route && <RoutePanel route={route} onChange={setRoute} readOnly />}
 
-                <div className='absolute top-2 right-2 z-10 flex flex-col items-end gap-2'>
+                <div className='absolute top-2 right-2 z-[110] flex flex-col items-end gap-2'>
                     <ZoomControl />
                     <CompassControl />
                 </div>
 
-                <div className='absolute right-2 bottom-2 z-10'>
+                <div className='absolute right-2 bottom-2 z-[110]'>
                     <CenterControl />
                 </div>
 
-                <div className='absolute bottom-2 left-2 z-10'>
+                <div className='absolute bottom-2 left-2 z-[110]'>
                     <button
                         type='button'
                         onClick={openFullApp}

@@ -8,7 +8,6 @@ import { Alert, AlertDescription } from '@/ui/alert';
 import { DeletePlaceButton } from '@/components/delete-place-button';
 import { placesQuery, updatePlaceMutation, deletePlaceMutation } from '@/queries/places';
 import { useEvents } from '@/providers/bus-provider';
-import { useMediaQuery } from '@/hooks/use-media-query';
 
 export const EditPlacePage = () => {
     const navigate = useNavigate();
@@ -17,7 +16,6 @@ export const EditPlacePage = () => {
     const [deleteError, setDeleteError] = useState(null);
     const { data: places = [] } = useQuery(placesQuery());
     const place = places.find(p => p.id === placeId);
-    const isDesktop = useMediaQuery('(min-width: 640px)');
     const { emit } = useEvents();
     const [collapsed, setCollapsed] = useState(false);
 
@@ -57,22 +55,20 @@ export const EditPlacePage = () => {
                 title='Editar lugar'
                 onBack={goBack}
                 action={
-                    !isDesktop && (
-                        <button
-                            type='button'
-                            onClick={toggleCollapsed}
-                            aria-label={collapsed ? 'Restaurar panel' : 'Despejar mapa'}
-                            className='flex-center -mr-1.5 size-9 shrink-0 rounded-lg text-foreground/70 transition-colors hover:bg-accent hover:text-accent-foreground [&>svg]:size-5'
-                        >
-                            <Maximize>
-                                {collapsed ? (
-                                    <Pencil size={12} x={6} y={6} absoluteStrokeWidth className='text-foreground' />
-                                ) : (
-                                    <Pin size={12} x={6} y={6} absoluteStrokeWidth className='text-foreground' />
-                                )}
-                            </Maximize>
-                        </button>
-                    )
+                    <button
+                        type='button'
+                        onClick={toggleCollapsed}
+                        aria-label={collapsed ? 'Restaurar panel' : 'Despejar mapa'}
+                        className='flex-center -mr-1.5 size-9 shrink-0 rounded-lg text-foreground/70 transition-colors hover:bg-accent hover:text-accent-foreground [&>svg]:size-5 sm:hidden'
+                    >
+                        <Maximize>
+                            {collapsed ? (
+                                <Pencil size={12} x={6} y={6} absoluteStrokeWidth className='text-foreground' />
+                            ) : (
+                                <Pin size={12} x={6} y={6} absoluteStrokeWidth className='text-foreground' />
+                            )}
+                        </Maximize>
+                    </button>
                 }
             />
 

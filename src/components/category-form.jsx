@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Palette } from 'lucide-react';
+import { PanelFooter } from '@/components/panel-footer';
 import { Button } from '@/ui/button';
 import { Input } from '@/ui/input';
 import { Switch } from '@/ui/switch';
@@ -74,12 +75,12 @@ export const CategoryForm = ({ initialValues, onSubmit, submitLabel, pending, se
                 </FieldGroup>
             </div>
 
-            <div className='flex shrink-0 flex-col gap-2 border-t border-border/70 px-4 py-2 sm:py-3'>
+            <PanelFooter>
                 {secondaryAction}
                 <Button type='submit' disabled={pending} className='h-10 w-full'>
                     {submitLabel}
                 </Button>
-            </div>
+            </PanelFooter>
         </form>
     );
 };

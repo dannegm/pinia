@@ -183,7 +183,7 @@ export const MapShell = () => {
 
                     {route && <RoutePanel route={route} onChange={setRoute} onClose={() => setRoute(null)} />}
 
-                    <div className='absolute top-2 right-2 z-10 flex flex-col items-end gap-2'>
+                    <div className='absolute top-2 right-2 z-[110] flex flex-col items-end gap-2'>
                         <ZoomControl />
                         <CompassControl />
                         <MapStyleSwitcher
@@ -193,7 +193,7 @@ export const MapShell = () => {
                     </div>
 
                     <div
-                        className='absolute right-2 z-10'
+                        className='absolute right-2 z-[110]'
                         style={{ bottom: `${panelBottom + 8}px` }}
                     >
                         <CenterControl />

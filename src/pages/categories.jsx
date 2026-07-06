@@ -11,6 +11,7 @@ import { DynamicIcon } from '@/ui/dynamic-icon';
 import { Tooltip, TooltipTrigger, TooltipContent } from '@/ui/tooltip';
 import { InputGroup, InputGroupAddon, InputGroupButton, InputGroupInput } from '@/ui/input-group';
 import { PanelHeader } from '@/components/panel-header';
+import { PanelFooter } from '@/components/panel-footer';
 import { categoriesQuery, updateCategoryMutation, deleteCategoryMutation } from '@/queries/categories';
 import { cn } from '@/helpers/utils';
 
@@ -181,12 +182,12 @@ export const CategoriesPage = () => {
                 </div>
             </div>
 
-            <div className='shrink-0 border-t border-border/70 px-4 py-2 sm:py-3'>
+            <PanelFooter>
                 <Button className='h-10 w-full' onClick={() => navigate({ to: '/categories/new' })}>
                     <TagPlus />
                     Agregar categoría
                 </Button>
-            </div>
+            </PanelFooter>
         </div>
     );
 };
