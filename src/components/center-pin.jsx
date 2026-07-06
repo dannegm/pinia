@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { useMap } from '@/ui/map';
 
 export const CenterPin = ({ onCoordsChange, children }) => {
@@ -28,7 +29,9 @@ export const CenterPin = ({ onCoordsChange, children }) => {
         };
     }, [isLoaded, map]);
 
-    return (
+    if (!map) return null;
+
+    return createPortal(
         <div
             className='pointer-events-none absolute'
             style={{
@@ -39,6 +42,7 @@ export const CenterPin = ({ onCoordsChange, children }) => {
             }}
         >
             <div className='flex-center h-full w-full'>{children(isPanning)}</div>
-        </div>
+        </div>,
+        map.getContainer(),
     );
 };
