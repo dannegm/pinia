@@ -29,6 +29,7 @@ import { DirectionArrow } from '@/components/direction-arrow';
 import { PlacesLayer } from '@/components/places-layer';
 import { PointNemoMarker } from '@/components/point-nemo-marker';
 import { PanelContainer } from '@/components/panel-container';
+import { ZoomSync } from '@/components/zoom-sync';
 import { RoutePanel, ROUTE_PANEL_HEIGHT, ROUTE_PANEL_HEIGHT_MOBILE } from '@/components/route-panel';
 import { MapStyleSwitcher } from '@/components/map-style-switcher';
 import { ZoomControl, CompassControl, CenterControl } from '@/components/map-toolbar';
@@ -56,7 +57,7 @@ export const MapShell = () => {
     const [savedCenter] = useSettings('mapCenter', DEFAULT_VIEWPORT.center);
     const [mapStyleId, setMapStyleId] = useQueryState('style', { defaultValue: DEFAULT_MAP_STYLE_ID });
     const mapStyleUrl = MAP_STYLES.find(style => style.id === mapStyleId)?.url ?? MAP_STYLES[0].url;
-    const [zoom] = useQueryState('zoom', parseAsZoom.withDefault(DEFAULT_VIEWPORT.zoom));
+    const [zoom, setZoom] = useQueryState('zoom', parseAsZoom.withDefault(DEFAULT_VIEWPORT.zoom));
     const [route, setRoute] = useState(null);
     const [routeParam, setRouteParam] = useQueryState('route', { defaultValue: '' });
     const { data: places, isSuccess: placesLoaded } = useQuery(placesQuery());
@@ -142,6 +143,8 @@ export const MapShell = () => {
                     attributionControl={false}
                     className='h-full w-full'
                 >
+                    <ZoomSync onZoomChange={setZoom} />
+
                     {currentLocation && (
                         <>
                             <CurrentLocationMarker coords={currentLocation} />

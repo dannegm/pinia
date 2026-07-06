@@ -15,6 +15,7 @@ import {
 import { usePanelOffset } from '@/hooks/use-panel-offset';
 import { DirectionArrow } from '@/components/direction-arrow';
 import { PlacesLayer } from '@/components/places-layer';
+import { ZoomSync } from '@/components/zoom-sync';
 import { PointNemoMarker } from '@/components/point-nemo-marker';
 import { RoutePanel, ROUTE_PANEL_HEIGHT, ROUTE_PANEL_HEIGHT_MOBILE } from '@/components/route-panel';
 import { ZoomControl, CompassControl, CenterControl } from '@/components/map-toolbar';
@@ -51,7 +52,7 @@ export const EmbedMapShell = () => {
     const [routeParam] = useQueryState('route', { defaultValue: '' });
     const [focusedPlaceId] = useQueryState('place', { defaultValue: '' });
     const [styleId] = useQueryState('style', { defaultValue: DEFAULT_MAP_STYLE_ID });
-    const [zoom] = useQueryState('zoom', parseAsZoom.withDefault(DEFAULT_VIEWPORT.zoom));
+    const [zoom, setZoom] = useQueryState('zoom', parseAsZoom.withDefault(DEFAULT_VIEWPORT.zoom));
     const [showPlaces] = useQueryState('showPlaces', parseAsBoolean.withDefault(true));
     const mapStyleUrl = MAP_STYLES.find(style => style.id === styleId)?.url ?? MAP_STYLES[0].url;
     const { data: places, isSuccess: placesLoaded } = useQuery(placesQuery());
@@ -90,6 +91,8 @@ export const EmbedMapShell = () => {
                 attributionControl={false}
                 className='h-full w-full'
             >
+                <ZoomSync onZoomChange={setZoom} />
+
                 <PlacesLayer topOffset={routeTopOffset} readOnly pinnedIds={pinnedIds} />
                 <PointNemoMarker />
 
