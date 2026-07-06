@@ -8,6 +8,11 @@ export const DEFAULT_VIEWPORT = {
 export const MIN_ZOOM = 4;
 export const MAX_ZOOM = 18;
 
+// Places cluster together (screen-space, via supercluster) up to this zoom;
+// past it, every place always renders as its own marker.
+export const CLUSTER_MAX_ZOOM = 16;
+export const CLUSTER_RADIUS = 48;
+
 export const parseAsZoom = parseAsFloatWithLimits(MIN_ZOOM, MAX_ZOOM);
 
 // Brand blue — mirrors --primary in index.css. Kept as a literal hex here
