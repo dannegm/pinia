@@ -29,3 +29,6 @@
 @custom-variant ios (&:where([data-os='ios'], [data-os='ios'] *));
 @custom-variant ipados (&:where([data-os='ipados'], [data-os='ipados'] *));
 @custom-variant chromeos (&:where([data-os='chromeos'], [data-os='chromeos'] *));
+
+@custom-variant touch (&:where([data-touch='true'], [data-touch='true'] *));
+@custom-variant no-touch (&:where([data-touch='false'], [data-touch='false'] *));

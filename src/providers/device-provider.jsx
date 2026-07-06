@@ -20,6 +20,10 @@ export const DeviceProvider = ({ children }) => {
         );
         document.documentElement.setAttribute('data-os', os ? toSlug(os.name) : 'unknown');
         document.documentElement.setAttribute('data-device', device);
+        document.documentElement.setAttribute(
+            'data-touch',
+            window.matchMedia('(pointer: coarse)').matches,
+        );
     }, []);
 
     useEffect(() => {
