@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from '@tanstack/react-router';
-import { CategoryForm } from '@/components/category-form';
-import { PanelHeader } from '@/components/panel-header';
+import { CategoryForm } from '@/components/categories/category-form';
+import { PanelHeader } from '@/components/panels/panel-header';
 import { createCategoryMutation } from '@/queries/categories';
 
 export const AddCategoryPage = () => {

@@ -2,10 +2,10 @@ import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useNavigate, useParams } from '@tanstack/react-router';
 import { Maximize, Pin, Pencil } from 'lucide-react';
-import { PlaceForm } from '@/components/place-form';
-import { PanelHeader } from '@/components/panel-header';
+import { PlaceForm } from '@/components/places/place-form';
+import { PanelHeader } from '@/components/panels/panel-header';
 import { Alert, AlertDescription } from '@/ui/alert';
-import { DeletePlaceButton } from '@/components/delete-place-button';
+import { DeletePlaceButton } from '@/components/places/delete-place-button';
 import { placesQuery, updatePlaceMutation, deletePlaceMutation } from '@/queries/places';
 import { useEvents } from '@/providers/bus-provider';
 

@@ -5,7 +5,7 @@ import { useGeolocation } from '@/hooks/use-geolocation';
 import { Popover, PopoverContent, PopoverTrigger } from '@/ui/popover';
 import { InputGroup, InputGroupAddon, InputGroupInput } from '@/ui/input-group';
 import { ScrollArea } from '@/ui/scroll-area';
-import { PlaceOption } from '@/components/place-select';
+import { PlaceOption } from '@/components/places/place-select';
 import { placesQuery } from '@/queries/places';
 import { systemPlaceQuery } from '@/queries/system-places';
 import { useEvents } from '@/providers/bus-provider';

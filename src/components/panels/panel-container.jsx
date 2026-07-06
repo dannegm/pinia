@@ -4,10 +4,10 @@ import { useMap } from '@/ui/map';
 import { usePanelOffset } from '@/hooks/use-panel-offset';
 import { useListener } from '@/providers/bus-provider';
 import { cn } from '@/helpers/utils';
-import { PanelNavButtons } from '@/components/panel-nav-buttons';
-import { CreatePlaceButton } from '@/components/create-place-button';
-import { PanelLogo } from '@/components/panel-logo';
-import { MobilePanelSheet } from '@/components/mobile-panel-sheet';
+import { PanelNavButtons } from '@/components/panels/panel-nav-buttons';
+import { CreatePlaceButton } from '@/components/places/create-place-button';
+import { PanelLogo } from '@/components/panels/panel-logo';
+import { MobilePanelSheet } from '@/components/panels/mobile-panel-sheet';
 
 const COLLAPSED_HEIGHT = '30dvh';
 

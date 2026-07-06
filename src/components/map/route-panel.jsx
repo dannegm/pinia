@@ -4,7 +4,7 @@ import { ArrowRight, ArrowLeftRight, Map as MapIcon, CarTaxiFront, Share2, X, Cl
 import { useMap, MapRoute } from '@/ui/map';
 import { usePanelOffset } from '@/hooks/use-panel-offset';
 import { routeQuery } from '@/queries/route';
-import { PlacePointSelect } from '@/components/place-point-select';
+import { PlacePointSelect } from '@/components/places/place-point-select';
 import { Tooltip, TooltipTrigger, TooltipContent } from '@/ui/tooltip';
 import { CheckIcon } from '@/ui/icons';
 import { BRAND_COLOR } from '@/constants/map-defaults';

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Palette } from 'lucide-react';
-import { PanelFooter } from '@/components/panel-footer';
+import { PanelFooter } from '@/components/panels/panel-footer';
 import { Button } from '@/ui/button';
 import { Input } from '@/ui/input';
 import { Switch } from '@/ui/switch';

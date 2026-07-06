@@ -13,12 +13,12 @@ import {
     parseAsZoom,
 } from '@/constants/map-defaults';
 import { usePanelOffset } from '@/hooks/use-panel-offset';
-import { DirectionArrow } from '@/components/direction-arrow';
-import { PlacesLayer } from '@/components/places-layer';
-import { ZoomSync } from '@/components/zoom-sync';
-import { PointNemoMarker } from '@/components/point-nemo-marker';
-import { RoutePanel, ROUTE_PANEL_HEIGHT, ROUTE_PANEL_HEIGHT_MOBILE } from '@/components/route-panel';
-import { ZoomControl, CompassControl, CenterControl } from '@/components/map-toolbar';
+import { DirectionArrow } from '@/components/map/direction-arrow';
+import { PlacesLayer } from '@/components/map/places-layer';
+import { ZoomSync } from '@/components/map/zoom-sync';
+import { PointNemoMarker } from '@/components/map/point-nemo-marker';
+import { RoutePanel, ROUTE_PANEL_HEIGHT, ROUTE_PANEL_HEIGHT_MOBILE } from '@/components/map/route-panel';
+import { ZoomControl, CompassControl, CenterControl } from '@/components/map/map-toolbar';
 import { placesQuery } from '@/queries/places';
 
 const placeToPoint = place => ({ lat: place.lat, lng: place.lng, label: place.name, placeId: place.id });

@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { useNavigate } from '@tanstack/react-router';
 import { useMap } from '@/ui/map';
-import { POINT_NEMO } from '@/components/point-nemo-marker';
+import { POINT_NEMO } from '@/components/map/point-nemo-marker';
 
 export const NotFoundPage = () => {
     const { map, isLoaded } = useMap();

@@ -1,6 +1,6 @@
 import { useNavigate } from '@tanstack/react-router';
 import { parseNotes, parseNoteBlocks } from '@/helpers/notes';
-import { NoteBadge } from '@/components/note-badge';
+import { NoteBadge } from '@/components/places/note-badge';
 
 const InlineSegment = ({ segment, onTagClick }) => {
     if (segment.type === 'bold') return <strong className='font-semibold text-foreground'>{segment.value}</strong>;

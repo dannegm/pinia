@@ -3,8 +3,8 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from '@tanstack/react-router';
 import { useQueryState, parseAsFloat } from 'nuqs';
 import { Maximize, Pin, Pencil } from 'lucide-react';
-import { PlaceForm } from '@/components/place-form';
-import { PanelHeader } from '@/components/panel-header';
+import { PlaceForm } from '@/components/places/place-form';
+import { PanelHeader } from '@/components/panels/panel-header';
 import { createPlaceMutation } from '@/queries/places';
 import { useEvents } from '@/providers/bus-provider';
 

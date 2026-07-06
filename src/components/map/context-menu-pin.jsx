@@ -1,5 +1,5 @@
 import { MapMarker, MarkerContent } from '@/ui/map';
-import { PinGlyph } from '@/components/pin-glyph';
+import { PinGlyph } from '@/components/map/pin-glyph';
 
 export const ContextMenuPin = ({ coords }) => (
     <MapMarker longitude={coords.lng} latitude={coords.lat} anchor='bottom'>

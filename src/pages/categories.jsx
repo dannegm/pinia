@@ -6,12 +6,12 @@ import { TagPlus, Pencil, Search, X, Eye, EyeOff, Tags } from 'lucide-react';
 import { useNavigate } from '@tanstack/react-router';
 import { Button } from '@/ui/button';
 import { Alert, AlertDescription } from '@/ui/alert';
-import { DeleteCategoryButton } from '@/components/delete-category-button';
+import { DeleteCategoryButton } from '@/components/categories/delete-category-button';
 import { DynamicIcon } from '@/ui/dynamic-icon';
 import { Tooltip, TooltipTrigger, TooltipContent } from '@/ui/tooltip';
 import { InputGroup, InputGroupAddon, InputGroupButton, InputGroupInput } from '@/ui/input-group';
-import { PanelHeader } from '@/components/panel-header';
-import { PanelFooter } from '@/components/panel-footer';
+import { PanelHeader } from '@/components/panels/panel-header';
+import { PanelFooter } from '@/components/panels/panel-footer';
 import { categoriesQuery, updateCategoryMutation, deleteCategoryMutation } from '@/queries/categories';
 import { cn } from '@/helpers/utils';
 

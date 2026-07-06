@@ -7,8 +7,8 @@ import { Tooltip, TooltipTrigger, TooltipContent } from '@/ui/tooltip';
 import { DynamicIcon } from '@/ui/dynamic-icon';
 import { CheckIcon } from '@/ui/icons';
 import { updatePlaceMutation } from '@/queries/places';
-import { PlaceNavigationRow } from '@/components/place-navigation-row';
-import { NotesViewer } from '@/components/notes-viewer';
+import { PlaceNavigationRow } from '@/components/places/place-navigation-row';
+import { NotesViewer } from '@/components/places/notes-viewer';
 import { BRAND_COLOR, FAVORITE_COLOR } from '@/constants/map-defaults';
 import { cn } from '@/helpers/utils';
 

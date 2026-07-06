@@ -12,7 +12,7 @@ import {
 import { useMap } from '@/ui/map';
 import { useGeolocation } from '@/hooks/use-geolocation';
 import { useEvents } from '@/providers/bus-provider';
-import { DeletePlaceButton } from '@/components/delete-place-button';
+import { DeletePlaceButton } from '@/components/places/delete-place-button';
 import { updatePlaceMutation, deletePlaceMutation } from '@/queries/places';
 import { systemPlaceQuery } from '@/queries/system-places';
 

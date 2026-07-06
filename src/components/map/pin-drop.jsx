@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { MapMarker, MarkerContent } from '@/ui/map';
-import { PinGlyph } from '@/components/pin-glyph';
+import { PinGlyph } from '@/components/map/pin-glyph';
 
 export const PinDrop = ({ coords, onCoordsChange }) => {
     const [isDragging, setIsDragging] = useState(false);

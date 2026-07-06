@@ -1,7 +1,7 @@
 import { createRootRoute, createRoute, createRouter, Outlet } from '@tanstack/react-router';
 import { Providers } from '@/providers/providers';
-import { MapShell } from '@/components/map-shell';
-import { EmbedMapShell } from '@/components/embed-map-shell';
+import { MapShell } from '@/components/map/map-shell';
+import { EmbedMapShell } from '@/components/map/embed-map-shell';
 import { HomePage } from '@/pages/home';
 import { PlacesPage } from '@/pages/places';
 import { AddPlacePage } from '@/pages/places-new';

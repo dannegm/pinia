@@ -14,7 +14,7 @@ import {
 import { useNavigate } from '@tanstack/react-router';
 import { Button } from '@/ui/button';
 import { Alert, AlertDescription } from '@/ui/alert';
-import { DeletePlaceButton } from '@/components/delete-place-button';
+import { DeletePlaceButton } from '@/components/places/delete-place-button';
 import { DynamicIcon } from '@/ui/dynamic-icon';
 import { Tooltip, TooltipTrigger, TooltipContent } from '@/ui/tooltip';
 import { InputGroup, InputGroupAddon, InputGroupButton, InputGroupInput } from '@/ui/input-group';
@@ -24,9 +24,9 @@ import {
     CategoryFilterSelect,
     useCategoryFilter,
     useFavoritesFilter,
-} from '@/components/category-filter-select';
-import { PanelHeader } from '@/components/panel-header';
-import { PanelFooter } from '@/components/panel-footer';
+} from '@/components/categories/category-filter-select';
+import { PanelHeader } from '@/components/panels/panel-header';
+import { PanelFooter } from '@/components/panels/panel-footer';
 import { placesQuery, deletePlaceMutation } from '@/queries/places';
 import { useGeolocation } from '@/hooks/use-geolocation';
 import { useStableLocation } from '@/hooks/use-stable-location';

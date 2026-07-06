@@ -99,7 +99,7 @@ Embed view:
 - `useRef` variables: `$` prefix, no `Ref` suffix — `$editor`, not `editorRef`.
 - `async/await`, never `.then()/.catch()`.
 - `kebab-case` for every file and folder, no exceptions. Component files `kebab-case.jsx`, utility files `kebab-case.js`. Inside files: components PascalCase, hooks camelCase with a `use` prefix.
-- `src/components/`: general, scope-specific components (feature/domain components). `src/ui/`: primitive components (shadcn/ui-style building blocks). Decide which one a new component belongs in before creating it.
+- `src/components/`: general, scope-specific components (feature/domain components), grouped into domain subfolders — `categories/`, `map/`, `panels/`, `places/`. `panels/` is specifically the VSCode-style sidebar panel chrome (container, header, footer, nav rail, mobile sheet, logo); a floating map overlay like `route-panel.jsx` still lives in `map/` despite the name, since it's part of the map surface, not the panel-navigation system. Add a new subfolder only when a new domain doesn't fit an existing one. `src/ui/`: primitive components (shadcn/ui-style building blocks), kept flat. Decide which one a new component belongs in before creating it.
 - `src/helpers/` for utility functions (not `src/lib/`) — e.g. `cn()` lives at `src/helpers/utils.js`.
 - `src/hooks/` for custom hooks (kebab-case filename matching the camelCase export, e.g. `use-settings.js` exports `useSettings`).
 - `src/constants/` for plain constant/config objects (e.g. `default-settings.js`).
