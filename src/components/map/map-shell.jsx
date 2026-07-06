@@ -173,6 +173,7 @@ export const MapShell = () => {
                     viewport={{ center: savedCenter, zoom }}
                     minZoom={MIN_ZOOM}
                     maxZoom={MAX_ZOOM}
+                    renderWorldCopies
                     attributionControl={false}
                     className='h-full w-full'
                 >

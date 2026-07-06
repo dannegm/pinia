@@ -5,8 +5,8 @@ export const DEFAULT_VIEWPORT = {
     zoom: 14,
 };
 
-export const MIN_ZOOM = 9;
-export const MAX_ZOOM = 28;
+export const MIN_ZOOM = 4;
+export const MAX_ZOOM = 18;
 
 export const parseAsZoom = parseAsFloatWithLimits(MIN_ZOOM, MAX_ZOOM);
 
