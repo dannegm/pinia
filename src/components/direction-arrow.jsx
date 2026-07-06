@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { ArrowUp } from 'lucide-react';
 import { useMap } from '@/ui/map';
+import { usePanelOffset } from '@/hooks/use-panel-offset';
 import { cn } from '@/helpers/utils';
 
 const TOOLTIP_POSITION_CLASSES = {
@@ -24,6 +25,7 @@ export const DirectionArrow = ({
     priority = 10,
 }) => {
     const { map, isLoaded } = useMap();
+    const { isDesktop } = usePanelOffset();
     const [arrow, setArrow] = useState(null);
     const { top = 0, right = 0, bottom = 0, left = 0 } = offsets;
 
@@ -34,7 +36,7 @@ export const DirectionArrow = ({
             const { width, height } = map.getContainer().getBoundingClientRect();
             const projected = map.project([coords.lng, coords.lat]);
 
-            const pad = 40;
+            const pad = isDesktop ? 40 : 20;
             const minX = pad + left;
             const maxX = width - pad - right;
             const minY = pad + top;
@@ -84,7 +86,7 @@ export const DirectionArrow = ({
             map.off('zoom', update);
             setArrow(null);
         };
-    }, [isLoaded, map, coords, top, right, bottom, left]);
+    }, [isLoaded, map, coords, top, right, bottom, left, isDesktop]);
 
     if (!arrow) return null;
 

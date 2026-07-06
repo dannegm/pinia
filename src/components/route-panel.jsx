@@ -54,7 +54,10 @@ export const RoutePanel = ({ route, onChange, onClose, readOnly = false }) => {
     const { map } = useMap();
     const { isDesktop, left } = usePanelOffset();
     const offsetLeft = isDesktop ? left + 16 : 8;
-    const maxWidth = `calc(100dvw - ${offsetLeft}px - ${PANEL_GAP}px - ${ZOOM_CONTROLS_WIDTH}px - ${ZOOM_CONTROLS_MARGIN}px)`;
+    const maxWidth = isDesktop
+        ? `calc(100dvw - ${offsetLeft}px - ${PANEL_GAP}px - ${ZOOM_CONTROLS_WIDTH}px - ${ZOOM_CONTROLS_MARGIN}px)`
+        : undefined;
+    const mobileRightOffset = PANEL_GAP + ZOOM_CONTROLS_WIDTH + ZOOM_CONTROLS_MARGIN;
     const [copied, setCopied] = useState(false);
 
     const { origin, destination } = route;
@@ -95,10 +98,13 @@ export const RoutePanel = ({ route, onChange, onClose, readOnly = false }) => {
         <>
             {routeCoordinates && <MapRoute coordinates={routeCoordinates} color={BRAND_COLOR} width={4} />}
 
-            <div className='absolute top-2 z-[110] flex flex-col gap-1' style={{ left: `${offsetLeft}px` }}>
+            <div
+                className='absolute top-2 z-[110] flex flex-col gap-1'
+                style={{ left: `${offsetLeft}px`, ...(!isDesktop && { right: `${mobileRightOffset}px` }) }}
+            >
                 <div
                     className='flex flex-col gap-1.5 squircle-lg border border-border bg-background p-1.5 shadow-md shadow-black/10 sm:flex-row sm:items-center'
-                    style={{ maxWidth }}
+                    style={maxWidth ? { maxWidth } : undefined}
                 >
                     <div className='flex items-center gap-1.5 overflow-x-auto'>
                         {readOnly ? (
