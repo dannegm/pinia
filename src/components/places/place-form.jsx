@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
-import { Star, FlagTriangleRight, MapPin, Clock, NotebookText, Info, Maximize, Pin } from 'lucide-react';
+import { useMutation, useQuery } from '@tanstack/react-query';
+import { Star, FlagTriangleRight, MapPin, Clock, NotebookText, Info, Locate, Maximize, Pin } from 'lucide-react';
 import { MapMarker, MarkerContent, useMap } from '@/ui/map';
 import { Button } from '@/ui/button';
 import { Input } from '@/ui/input';
 import { Field, FieldGroup, FieldLabel, FieldSeparator } from '@/ui/field';
 import { Popover, PopoverContent, PopoverTrigger, PopoverHeader, PopoverTitle, PopoverDescription } from '@/ui/popover';
+import { Tooltip, TooltipTrigger, TooltipContent } from '@/ui/tooltip';
 import { Textarea } from '@/ui/textarea';
 import { NumberScrubber } from '@/ui/number-scrubber';
 import { DynamicIcon } from '@/ui/dynamic-icon';
@@ -19,6 +20,7 @@ import { cn } from '@/helpers/utils';
 import { useIsTouchDevice } from '@/hooks/use-is-touch-device';
 import { BRAND_COLOR, FAVORITE_COLOR, FOCUS_ZOOM } from '@/constants/map-defaults';
 import { categoriesQuery } from '@/queries/categories';
+import { reverseGeocodeMutation } from '@/queries/geocode';
 
 const MarkerToggleRow = ({ active, onClick, color, label, description, children }) => (
     <button
@@ -72,6 +74,11 @@ export const PlaceForm = ({
     const [isBeacon, setIsBeacon] = useState(initialValues?.isBeacon ?? false);
     const { data: categories = [] } = useQuery(categoriesQuery());
     const selectedCategory = categories.find(category => category.id === categoryId);
+    const {
+        mutate: reverseGeocode,
+        isPending: isGeocoding,
+        isError: isGeocodeError,
+    } = useMutation(reverseGeocodeMutation({ onSuccess: label => setAddress(label) }));
 
     useEffect(() => {
         if (mode !== 'edit' || !initialCoords) return;
@@ -212,10 +219,28 @@ export const PlaceForm = ({
                         <FieldSeparator>Detalles</FieldSeparator>
 
                         <Field>
-                            <FieldLabel htmlFor='place-address'>
-                                <MapPin className='size-3.5 text-foreground/40' />
-                                Dirección
-                            </FieldLabel>
+                            <div className='flex items-center justify-between'>
+                                <FieldLabel htmlFor='place-address'>
+                                    <MapPin className='size-3.5 text-foreground/40' />
+                                    Dirección
+                                </FieldLabel>
+                                <Tooltip>
+                                    <TooltipTrigger
+                                        render={
+                                            <button
+                                                type='button'
+                                                onClick={() => reverseGeocode(coords)}
+                                                disabled={isGeocoding}
+                                                aria-label='Obtener dirección desde el pin'
+                                                className='flex-center size-5 shrink-0 rounded-full text-foreground/40 transition-colors hover:bg-accent hover:text-accent-foreground disabled:opacity-50 [&>svg]:size-3.5'
+                                            />
+                                        }
+                                    >
+                                        <Locate className={cn(isGeocoding && 'animate-pulse')} />
+                                    </TooltipTrigger>
+                                    <TooltipContent>Obtener dirección desde el pin</TooltipContent>
+                                </Tooltip>
+                            </div>
                             <Textarea
                                 id='place-address'
                                 value={address}
@@ -223,6 +248,9 @@ export const PlaceForm = ({
                                 placeholder='Opcional'
                                 rows={2}
                             />
+                            {isGeocodeError && (
+                                <p className='text-xs text-destructive'>No se pudo obtener la dirección.</p>
+                            )}
                         </Field>
 
                         <Field>
