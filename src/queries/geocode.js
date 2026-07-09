@@ -12,7 +12,16 @@ export const reverseGeocodeMutation = (opts = {}) => ({
         const data = await response.json();
         const [feature] = data.features;
         if (!feature) throw new Error('No se encontró una dirección para este punto');
-        return feature.properties.label;
+
+        const { street, housenumber, neighbourhood, county, region, country, postalcode } = feature.properties;
+
+        const lines = [
+            [street, housenumber].filter(Boolean).join(' '),
+            [neighbourhood, county].filter(Boolean).join(', '),
+            [region, country, postalcode].filter(Boolean).join(', '),
+        ].filter(Boolean);
+
+        return lines.join('\n');
     },
     ...opts,
 });

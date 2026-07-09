@@ -41,6 +41,13 @@
     image-rendering: --value('auto', 'smooth', 'crisp-edges', 'pixelated');
 }
 
+@utility mask-hexagon {
+    mask-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><path d='M95 41.34 Q100 50 95 58.66 L80 84.641 Q75 93.301 65 93.301 L35 93.301 Q25 93.301 20 84.641 L5 58.66 Q0 50 5 41.34 L20 15.359 Q25 6.699 35 6.699 L65 6.699 Q75 6.699 80 15.359 L95 41.34 Z'/></svg>");
+    mask-repeat: no-repeat;
+    mask-position: center;
+    mask-size: 100% 100%;
+}
+
 @utility bg-scanlines {
     background-image: repeating-linear-gradient(
         to bottom,

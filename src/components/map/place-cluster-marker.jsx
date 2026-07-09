@@ -24,19 +24,26 @@ export const PlaceClusterMarker = ({ places, dimmed = false }) => {
     const visiblePlaces = uniqueByCategory(places).slice(0, 4);
 
     return (
-        <div
-            className={cn(
-                'flex-center size-16 rounded-full border-2 border-white text-white shadow-md shadow-black/50 bg-(image:--cluster-gradient)',
-                { 'opacity-15': dimmed },
-            )}
-            style={{ '--cluster-gradient': buildGradient(colors) }}
-        >
-            <div className='grid grid-cols-2 gap-0.5 p-1'>
-                {visiblePlaces.map(place => (
-                    <div key={place.id} className='flex-center [&>svg]:size-5'>
-                        {place.category?.icon && <DynamicIcon icon={place.category.icon} />}
-                    </div>
-                ))}
+        <div className={cn('relative size-16 drop-shadow-md drop-shadow-black/50', { 'opacity-15': dimmed })}>
+            <div className='mask-hexagon absolute inset-0 bg-white' />
+            <div
+                className='mask-hexagon absolute inset-0.5 flex-center text-white bg-(image:--cluster-gradient)'
+                style={{ '--cluster-gradient': buildGradient(colors) }}
+            >
+                <div className={cn('grid gap-0.5 p-2', visiblePlaces.length === 1 ? 'grid-cols-1' : 'grid-cols-2')}>
+                    {visiblePlaces.map((place, index) => (
+                        <div
+                            key={place.id}
+                            className={cn(
+                                'flex-center',
+                                visiblePlaces.length >= 3 ? '[&>svg]:size-4.5' : '[&>svg]:size-5',
+                                { 'col-span-2': visiblePlaces.length === 3 && index === 2 },
+                            )}
+                        >
+                            {place.category?.icon && <DynamicIcon icon={place.category.icon} />}
+                        </div>
+                    ))}
+                </div>
             </div>
         </div>
     );
