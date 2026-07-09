@@ -10,7 +10,7 @@ import { DeleteCategoryButton } from '@/components/categories/delete-category-bu
 import { DynamicIcon } from '@/ui/dynamic-icon';
 import { Tooltip, TooltipTrigger, TooltipContent } from '@/ui/tooltip';
 import { InputGroup, InputGroupAddon, InputGroupButton, InputGroupInput } from '@/ui/input-group';
-import { PanelHeader } from '@/components/panels/panel-header';
+import { PanelHeader, PanelCollapseButton } from '@/components/panels/panel-header';
 import { PanelFooter } from '@/components/panels/panel-footer';
 import { categoriesQuery, updateCategoryMutation, deleteCategoryMutation } from '@/queries/categories';
 import { cn } from '@/helpers/utils';
@@ -56,6 +56,7 @@ export const CategoriesPage = () => {
         <div className='flex h-full min-h-0 flex-col'>
             <PanelHeader
                 title='Categorías'
+                startSlot={<PanelCollapseButton onClick={() => navigate({ to: '/' })} />}
                 description={
                     categories.length === 0
                         ? 'Aún no hay categorías.'

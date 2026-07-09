@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useNavigate, useParams } from '@tanstack/react-router';
 import { CategoryForm } from '@/components/categories/category-form';
-import { PanelHeader } from '@/components/panels/panel-header';
+import { PanelHeader, PanelBackButton } from '@/components/panels/panel-header';
 import { Alert, AlertDescription } from '@/ui/alert';
 import { DeleteCategoryButton } from '@/components/categories/delete-category-button';
 import { categoriesQuery, updateCategoryMutation, deleteCategoryMutation } from '@/queries/categories';
@@ -43,7 +43,7 @@ export const EditCategoryPage = () => {
 
     return (
         <div className='flex h-full min-h-0 flex-col'>
-            <PanelHeader title='Editar categoría' onBack={goBack} />
+            <PanelHeader title='Editar categoría' startSlot={<PanelBackButton onClick={goBack} />} />
 
             {deleteError && (
                 <div className='shrink-0 px-4 pt-3'>

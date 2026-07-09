@@ -3,7 +3,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useNavigate, useParams } from '@tanstack/react-router';
 import { Maximize, Pin, Pencil } from 'lucide-react';
 import { PlaceForm } from '@/components/places/place-form';
-import { PanelHeader } from '@/components/panels/panel-header';
+import { PanelHeader, PanelBackButton } from '@/components/panels/panel-header';
 import { Alert, AlertDescription } from '@/ui/alert';
 import { DeletePlaceButton } from '@/components/places/delete-place-button';
 import { placesQuery, updatePlaceMutation, deletePlaceMutation } from '@/queries/places';
@@ -53,8 +53,8 @@ export const EditPlacePage = () => {
         <div className='flex h-full min-h-0 flex-col'>
             <PanelHeader
                 title='Editar lugar'
-                onBack={goBack}
-                action={
+                startSlot={<PanelBackButton onClick={goBack} />}
+                endSlot={
                     <button
                         type='button'
                         onClick={toggleCollapsed}

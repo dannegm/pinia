@@ -25,7 +25,7 @@ import {
     useCategoryFilter,
     useFavoritesFilter,
 } from '@/components/categories/category-filter-select';
-import { PanelHeader } from '@/components/panels/panel-header';
+import { PanelHeader, PanelCollapseButton } from '@/components/panels/panel-header';
 import { PanelFooter } from '@/components/panels/panel-footer';
 import { placesQuery, deletePlaceMutation } from '@/queries/places';
 import { FOCUS_ZOOM } from '@/constants/map-defaults';
@@ -133,7 +133,11 @@ export const PlacesPage = () => {
 
     return (
         <div className='flex h-full min-h-0 flex-col'>
-            <PanelHeader title='Lugares' description={summary} />
+            <PanelHeader
+                title='Lugares'
+                description={summary}
+                startSlot={<PanelCollapseButton onClick={() => navigate({ to: '/' })} />}
+            />
 
             <div className='flex shrink-0 flex-col gap-1 sm:gap-3 p-4 pb-3'>
                 <InputGroup>

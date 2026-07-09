@@ -4,7 +4,7 @@ import { useNavigate } from '@tanstack/react-router';
 import { useQueryState, parseAsFloat } from 'nuqs';
 import { Maximize, Pin, Pencil } from 'lucide-react';
 import { PlaceForm } from '@/components/places/place-form';
-import { PanelHeader } from '@/components/panels/panel-header';
+import { PanelHeader, PanelBackButton } from '@/components/panels/panel-header';
 import { createPlaceMutation } from '@/queries/places';
 import { useEvents } from '@/providers/bus-provider';
 
@@ -37,8 +37,8 @@ export const AddPlacePage = () => {
         <div className='flex h-full min-h-0 flex-col'>
             <PanelHeader
                 title='Nuevo lugar'
-                onBack={goBack}
-                action={
+                startSlot={<PanelBackButton onClick={goBack} />}
+                endSlot={
                     <button
                         type='button'
                         onClick={toggleCollapsed}

@@ -11,13 +11,14 @@ import {
     AlertCircle,
     Bug,
 } from 'lucide-react';
+import { useNavigate } from '@tanstack/react-router';
 import { useMap } from '@/ui/map';
 import { useSettings } from '@/hooks/use-settings';
 import { Button } from '@/ui/button';
 import { Alert, AlertDescription } from '@/ui/alert';
 import { Switch } from '@/ui/switch';
 import { Field, FieldContent, FieldTitle, FieldDescription } from '@/ui/field';
-import { PanelHeader } from '@/components/panels/panel-header';
+import { PanelHeader, PanelCollapseButton } from '@/components/panels/panel-header';
 import { PlaceSelect } from '@/components/places/place-select';
 import { DEFAULT_VIEWPORT } from '@/constants/map-defaults';
 import { systemPlaceQuery, setSystemPlaceMutation } from '@/queries/system-places';
@@ -210,9 +211,15 @@ const DebugSetting = () => {
 };
 
 export const SettingsPage = () => {
+    const navigate = useNavigate();
+
     return (
         <div className='flex h-full min-h-0 flex-col'>
-            <PanelHeader title='Ajustes' description='Personaliza cómo se comporta tu mapa.' />
+            <PanelHeader
+                title='Ajustes'
+                description='Personaliza cómo se comporta tu mapa.'
+                startSlot={<PanelCollapseButton onClick={() => navigate({ to: '/' })} />}
+            />
             <div className='flex-1 min-h-0 overflow-y-auto p-4'>
                 <div className='flex flex-col gap-3'>
                     <MapCenterSetting />
